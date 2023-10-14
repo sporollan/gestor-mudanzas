@@ -23,12 +23,22 @@ public class TestArbolAVL extends Test {
     }
     public boolean runTests()
     {
-        boolean exito = true;
         Object[][] casos = {
             {},
             {1},
             {5, 4, 6, 3, 7},
+            /*
+             *     5
+             *   4   6
+             * 3        7
+             */
             {1, 2, 3, 4, 5}
+            /*
+             *  3
+             * 1   4
+             *    2  5
+             *         
+             */
         };
         Object[][] indices = {
             {},
@@ -37,12 +47,16 @@ public class TestArbolAVL extends Test {
             {}
         };
         Object[][] esperados = {
-            {"[]"},
-            {"[1: null, null]"},
             {""},
+            {"1: null, null"},
+            {
+             "5: 4, 6\n"+
+             "4: 3, null\n"+
+             "3: null, null\n"+
+             "6: null, 7\n" +
+             "7: null, null"},
             {""}
         };
-        super.runTests(casos, indices, esperados);
-        return exito;
+        return super.runTests(casos, indices, esperados);
     }
 }

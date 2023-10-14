@@ -14,12 +14,31 @@ public class ArbolAVL {
         return false;
     }
     
-    private boolean _insertarAux(Object elem, NodoAVL r)
+    private boolean _insertarAux(Object elem, NodoAVL n, NodoAVL p, boolean i)
     {
         boolean exito = false;
-        if(r != null)
+        if(n != null)
         {
-            
+            if((int)n.getElem() > (int)elem)
+            {
+                exito = this._insertarAux(elem, n.getIzquierdo(), n, true);
+            }
+            else
+            {
+                exito = this._insertarAux(elem, n.getDerecho(), n, false);
+            }
+        }
+        else
+        {
+            exito = true;
+            if(i)
+            {
+                p.setIzquierdo(new NodoAVL(elem, null, null));
+            }
+            else
+            {
+                p.setDerecho(new NodoAVL(elem, null, null));
+            }
         }
         return exito;
     }
@@ -35,7 +54,14 @@ public class ArbolAVL {
         }
         else
         {
-            exito = this._insertarAux(elem, this.raiz);
+            if((int)this.raiz.getElem() > (int)elem)
+            {
+                exito = this._insertarAux(elem, this.raiz.getIzquierdo(), this.raiz, true);
+            }
+            else
+            {
+                exito = this._insertarAux(elem, this.raiz.getDerecho(), this.raiz, false);
+            }
         }
 
         return exito;
@@ -74,6 +100,18 @@ public class ArbolAVL {
     private String _toStringAux(NodoAVL n)
     {
         String s = "";
+        if(n != null)
+        {
+            s += "\n";
+            s += n.getElem();
+            s += ": ";
+            s += addElem(n.getIzquierdo());
+            s += ", ";
+            s += addElem(n.getDerecho());
+
+            s += this._toStringAux(n.getIzquierdo());
+            s += this._toStringAux(n.getDerecho());
+        }
         return s;
 
     }
@@ -93,7 +131,7 @@ public class ArbolAVL {
     @Override
     public String toString()
     {
-        String s = "[";
+        String s = "";
         NodoAVL n = this.raiz; 
         NodoAVL i;
         NodoAVL d;
@@ -111,7 +149,7 @@ public class ArbolAVL {
             s += this._toStringAux(n.getIzquierdo());
             s += this._toStringAux(n.getDerecho());
         }
-        return s + "]";
+        return s;
     }
 
     // otras operaciones de ABB

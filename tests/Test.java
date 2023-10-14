@@ -12,8 +12,8 @@ public class Test {
         else
         {
             System.out.println(testName + " FAIL");
-            System.out.println("\tEsperado: " + esperado);
-            System.out.println("\tObtenido: " + obtenido);
+            System.out.println("\tEsperado:\n" + esperado);
+            System.out.println("\tObtenido:\n" + obtenido);
             exito = false;
         }
         return exito;
