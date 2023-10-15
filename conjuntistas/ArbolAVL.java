@@ -13,19 +13,71 @@ public class ArbolAVL {
     {
         return false;
     }
+
+    private int _getBalance(NodoAVL n)
+    {
+        int b = 0;
+        int ai = 0;
+        int ad = 0;
+        if(n != null)
+        {
+            NodoAVL i = n.getIzquierdo();
+            NodoAVL d = n.getDerecho();
+
+            if(i!=null)
+            {
+                ai = i.getAltura();
+            }
+            if(d != null)
+            {
+                ai = d.getAltura();
+            }
+
+            b = ai - ad;
+        }
+        return b;
+    }
+
+    private void _comprobarBalance(NodoAVL p, NodoAVL pp)
+    {
+        int bp = this._getBalance(p);
+        int bpp = this._getBalance(pp);
+        if(bpp == 2)
+        {
+            if(bp == 1 || bp == 0)
+            {
+                // simple a derecha
+            }
+            else if(bp == -1)
+            {
+                // doble izquierda-derecha
+            }
+        }
+        else if(bpp == -2)
+        {
+            if(bp == 0 || bp == -1)
+            {
+                // simple a izquierda
+            }
+            else if(bp == 1)
+            {
+                // doble derecha-izquierda
+            }
+        }
+    }
     
-    private boolean _insertarAux(Object elem, NodoAVL n, NodoAVL p, boolean i)
+    private boolean _insertarAux(Object elem, NodoAVL n, NodoAVL p, boolean i, NodoAVL pp)
     {
         boolean exito = false;
         if(n != null)
         {
             if((int)n.getElem() > (int)elem)
             {
-                exito = this._insertarAux(elem, n.getIzquierdo(), n, true);
+                exito = this._insertarAux(elem, n.getIzquierdo(), n, true, p);
             }
             else
             {
-                exito = this._insertarAux(elem, n.getDerecho(), n, false);
+                exito = this._insertarAux(elem, n.getDerecho(), n, false, p);
             }
         }
         else
@@ -39,6 +91,7 @@ public class ArbolAVL {
             {
                 p.setDerecho(new NodoAVL(elem, null, null));
             }
+            this._comprobarBalance(p, pp);
         }
         return exito;
     }
@@ -56,12 +109,16 @@ public class ArbolAVL {
         {
             if((int)this.raiz.getElem() > (int)elem)
             {
-                exito = this._insertarAux(elem, this.raiz.getIzquierdo(), this.raiz, true);
+                exito = this._insertarAux(elem, this.raiz.getIzquierdo(), this.raiz, true, null);
             }
             else
             {
-                exito = this._insertarAux(elem, this.raiz.getDerecho(), this.raiz, false);
+                exito = this._insertarAux(elem, this.raiz.getDerecho(), this.raiz, false, null);
             }
+        }
+        if(exito)
+        {
+            this.raiz.recalcularAltura();
         }
 
         return exito;
@@ -150,6 +207,13 @@ public class ArbolAVL {
             s += this._toStringAux(n.getDerecho());
         }
         return s;
+    }
+
+    public int getAltura()
+    {
+        if(this.raiz != null)
+            return this.raiz.getAltura();
+        return -1;
     }
 
     // otras operaciones de ABB

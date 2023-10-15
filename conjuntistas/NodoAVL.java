@@ -13,6 +13,7 @@ public class NodoAVL
         this.elem = elem;
         this.izquierdo = izquierdo;
         this.derecho = derecho;
+        this.altura = 0;
     }
     public Object getElem() {
         return elem;
@@ -26,8 +27,30 @@ public class NodoAVL
         return altura;
     }
 
+    private int _recalcularAlturaAux(NodoAVL n, int a)
+    {
+        int ai;
+        int ad;
+        if( n != null )
+        {
+            ai = this._recalcularAlturaAux(n.izquierdo, a);
+            ad = this._recalcularAlturaAux(n.derecho, a);
+            a = ai > ad ? ai : ad;
+            n.altura = a;
+        }
+        else
+        {
+            return 0;
+        }
+        return a + 1;
+
+    }
     public void recalcularAltura() {
-        this.altura = 0;
+        int ai = 0;
+        int ad = 0;
+        ai = this._recalcularAlturaAux(this.izquierdo, 0);
+        ad = this._recalcularAlturaAux(this.derecho, 0);
+        this.altura = ai > ad ? ai : ad;
     }
 
     public NodoAVL getIzquierdo() {

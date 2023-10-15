@@ -6,7 +6,7 @@ import tests.Test;
 public class TestLista extends Test{
 
     @Override
-    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casosI)
+    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
     {
         boolean exito = false;
         Lista lista = new Lista();
@@ -17,53 +17,53 @@ public class TestLista extends Test{
         {
             lista.insertar(caso[i], (int)indices[i]);
         }
-        exito = this._assertEquals(lista.toString(), esperados[0], "TestInsertar"+casosI);
+        exito = this._assertEquals(lista.toString(), esperados[0], "TestInsertar"+casosI, v);
 
         if(exito)
         {
             lista.eliminar((int)indices[L]);
-            exito = this._assertEquals(lista.toString(), esperados[1], "TestEliminar"+casosI);
+            exito = this._assertEquals(lista.toString(), esperados[1], "TestEliminar"+casosI, v);
         }
 
         if(exito)
         {
             Object n = lista.recuperar((int)indices[L+1]);
-            exito = this._assertEquals(n, esperados[2], "TestRecuperar"+casosI);
+            exito = this._assertEquals(n, esperados[2], "TestRecuperar"+casosI, v);
         }
 
         if(exito)
         {
             int loc = lista.localizar(indices[L+2]);
-            exito = this._assertEquals(loc, esperados[3], "TestLocalizar"+casosI);
+            exito = this._assertEquals(loc, esperados[3], "TestLocalizar"+casosI, v);
         }
 
         if(exito)
         {
             int len = lista.longitud();
-            exito = this._assertEquals(len, esperados[4], "TestLongitud"+casosI);
+            exito = this._assertEquals(len, esperados[4], "TestLongitud"+casosI, v);
         }
 
         if(exito)
         {
-            boolean v = lista.esVacia();
-            exito = this._assertEquals(v, esperados[5], "TestEsVacia"+casosI);
+            boolean vac = lista.esVacia();
+            exito = this._assertEquals(vac, esperados[5], "TestEsVacia"+casosI, v);
         }
 
         if(exito)
         {
             Lista lista2 = lista.clone();
-            exito = this._assertEquals(lista2.toString(), esperados[1], "TestClone"+casosI);
+            exito = this._assertEquals(lista2.toString(), esperados[1], "TestClone"+casosI, v);
         }
 
         if(exito)
         {
             lista.vaciar();
-            exito = this._assertEquals(lista.toString(), "[]", "TestVaciar"+casosI);
+            exito = this._assertEquals(lista.toString(), "[]", "TestVaciar"+casosI, v);
         }
         return exito;
     }
 
-    public boolean runTests()
+    public boolean runTests(boolean v)
     {
         Object[][] casosLista = {
             {},
@@ -86,7 +86,7 @@ public class TestLista extends Test{
             {"[1]", "[]", null, -1, 0, true},
             {"[a, b, c, d]", "[a, b, d]", 'b', 3, 3, false}
         };
-        return super.runTests(casosLista, indicesLista, esperadosLista);
+        return super.runTests(casosLista, indicesLista, esperadosLista, v);
     }
 
 }

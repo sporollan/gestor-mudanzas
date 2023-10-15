@@ -10,11 +10,12 @@ public class Main {
         TestLista testLista = new TestLista();
         TestArbolAVL testArbolAVL = new TestArbolAVL();
         boolean exito;
+        boolean v = args.length>0 && args[0].equals("-v") ? true: false;
 
-        exito = testLista.runTests();
+        exito = testLista.runTests(v);
         if(exito)
         {
-            exito = testArbolAVL.runTests();
+            exito = testArbolAVL.runTests(v);
         }
 
         if(exito)
