@@ -39,8 +39,9 @@ public class ArbolAVL {
         return b;
     }
 
-    private void _rotarDerecha(NodoAVL n, NodoAVL p)
+    private void _rotarDerecha(NodoAVL n, NodoAVL p, boolean i)
     {
+
         NodoAVL izquierdo = n.getIzquierdo();
         if(this.raiz == n)
         {
@@ -48,15 +49,21 @@ public class ArbolAVL {
         }
         else
         {
-            p.setIzquierdo(izquierdo);
+            if(i)
+                p.setDerecho(izquierdo);
+            else
+                p.setIzquierdo(izquierdo);
+
         }
         n.setIzquierdo(null);
 
         izquierdo.setDerecho(n);
+
     }
 
-    private void _rotarIzquierda(NodoAVL n, NodoAVL p)
+    private void _rotarIzquierda(NodoAVL n, NodoAVL p, boolean i)
     {
+
         NodoAVL derecho = n.getDerecho();
         if(this.raiz == n)
         {
@@ -64,11 +71,15 @@ public class ArbolAVL {
         }
         else
         {
-            p.setDerecho(derecho);
+            if(i)
+                p.setIzquierdo(derecho);
+            else
+                p.setDerecho(derecho);
         }
         n.setDerecho(null);
 
         derecho.setIzquierdo(n);
+
     }
 
     private void _comprobarBalance(NodoAVL p, NodoAVL pp, NodoAVL ppp)
@@ -80,14 +91,14 @@ public class ArbolAVL {
             if(bp == 1 || bp == 0)
             {
                 // simple a derecha
-                this._rotarDerecha(pp, ppp);
+                this._rotarDerecha(pp, ppp, false);
                 this.raiz.recalcularAltura();
             }
             else if(bp == -1)
             {
                 // doble izquierda-derecha
-                this._rotarIzquierda(p, pp);
-                this._rotarDerecha(pp, ppp);
+                this._rotarIzquierda(p, pp, true);
+                this._rotarDerecha(pp, ppp, false);
                 this.raiz.recalcularAltura();
             }
         }
@@ -96,14 +107,14 @@ public class ArbolAVL {
             if(bp == 0 || bp == -1)
             {
                 // simple a izquierda
-                this._rotarIzquierda(pp, ppp);
+                this._rotarIzquierda(pp, ppp, false);
                 this.raiz.recalcularAltura();
             }
             else if(bp == 1)
             {
                 // doble derecha-izquierda
-                this._rotarDerecha(p, pp);
-                this._rotarIzquierda(pp, ppp);
+                this._rotarDerecha(p, pp, true);
+                this._rotarIzquierda(pp, ppp, false);
                 this.raiz.recalcularAltura();
             }
         }
