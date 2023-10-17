@@ -39,15 +39,20 @@ public class ArbolAVL {
         return b;
     }
 
-    private void _rotarDerecha(NodoAVL n)
+    private void _rotarDerecha(NodoAVL n, NodoAVL p)
     {
-        System.out.println("rotando a derecha");
-        NodoAVL aux = n;
-        System.out.println(n.getElem());
-        n = n.getIzquierdo();
-        System.out.println(n.getElem());
-        n.setDerecho(aux);
-        System.out.println(n.getDerecho().getElem());
+        NodoAVL izquierdo = n.getIzquierdo();
+        if(this.raiz == n)
+        {
+            this.raiz = izquierdo;
+        }
+        else
+        {
+            p.setIzquierdo(izquierdo);
+        }
+        n.setIzquierdo(null);
+
+        izquierdo.setDerecho(n);
     }
 
     private void _rotarIzquierda(NodoAVL n, NodoAVL p)
@@ -75,13 +80,15 @@ public class ArbolAVL {
             if(bp == 1 || bp == 0)
             {
                 // simple a derecha
-                this._rotarDerecha(pp);
+                this._rotarDerecha(pp, ppp);
+                this.raiz.recalcularAltura();
             }
             else if(bp == -1)
             {
                 // doble izquierda-derecha
                 this._rotarIzquierda(p, pp);
-                this._rotarDerecha(pp);
+                this._rotarDerecha(pp, ppp);
+                this.raiz.recalcularAltura();
             }
         }
         else if(bpp == -2)
@@ -95,8 +102,9 @@ public class ArbolAVL {
             else if(bp == 1)
             {
                 // doble derecha-izquierda
-                this._rotarDerecha(p);
+                this._rotarDerecha(p, pp);
                 this._rotarIzquierda(pp, ppp);
+                this.raiz.recalcularAltura();
             }
         }
     }
