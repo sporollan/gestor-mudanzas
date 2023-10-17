@@ -57,10 +57,10 @@ public class TestArbolAVL extends Test {
              "7: null, null",
             2
         },
-            {"3: 1, 4\n"+
+            {"2: 1, 4\n"+
              "1: null, null\n"+
-              "4: 2, 5\n"+
-              "2: null, null"+
+              "4: 3, 5\n"+
+              "3: null, null\n"+
               "5: null, null",
             2}
         };
