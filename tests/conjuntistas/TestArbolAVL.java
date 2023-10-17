@@ -40,10 +40,12 @@ public class TestArbolAVL extends Test {
              *         
              */
             {5, 4, 3, 2, 1},
-            {10, 5, 7}
+            {10, 5, 7},
+            {100, 50, 150, 25, 30, 60, 55}
 
         };
         Object[][] indices = {
+            {},
             {},
             {},
             {},
@@ -81,6 +83,16 @@ public class TestArbolAVL extends Test {
                 "5: null, null\n"+
                 "10: null, null",
                 1
+            },
+            {
+                "100: 30, 150\n"+
+                "30: 25, 55\n"+
+                "25: null, null\n"+
+                "55: 50, 60\n"+
+                "50: null, null\n"+
+                "60: null, null\n"+
+                "150: null, null",
+                3
             }
         };
         return super.runTests(casos, indices, esperados, v);
