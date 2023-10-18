@@ -214,7 +214,7 @@ public class ArbolAVL {
         if(n != null)
         {
             s += "\n";
-            s += n.getElem();
+            s += n.getElem() + "(" + n.getAltura() + ")";
             s += ": ";
             s += _addElem(n.getIzquierdo());
             s += ", ";
@@ -232,7 +232,7 @@ public class ArbolAVL {
         String s = "";
         if(n != null)
         {
-            s += n.getElem();
+            s += n.getElem() + "(" + n.getAltura() + ")";
         }
         else
             s += null;
@@ -248,7 +248,7 @@ public class ArbolAVL {
         NodoAVL d;
         if(n!=null)
         {
-            s += n.getElem() + ": ";
+            s += n.getElem() + "(" + n.getAltura() + "): ";
             i = this.raiz.getIzquierdo();
             s += _addElem(i);
 
