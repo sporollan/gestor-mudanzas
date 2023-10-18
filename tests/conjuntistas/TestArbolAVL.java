@@ -55,43 +55,43 @@ public class TestArbolAVL extends Test {
         };
         Object[][] esperados = {
             {"", -1},
-            {"1: null, null", 0},
+            {"1(0): null, null", 0},
             {
-             "5: 4, 6\n"+
-             "4: 3, null\n"+
-             "3: null, null\n"+
-             "6: null, 7\n" +
-             "7: null, null",
+             "5(2): 4(1), 6(1)\n"+
+             "4(1): 3(0), null\n"+
+             "3(0): null, null\n"+
+             "6(1): null, 7(0)\n" +
+             "7(0): null, null",
             2
         },
-            {"2: 1, 4\n"+
-             "1: null, null\n"+
-              "4: 3, 5\n"+
-              "3: null, null\n"+
-              "5: null, null",
+            {"2(2): 1(0), 4(1)\n"+
+             "1(0): null, null\n"+
+              "4(1): 3(0), 5(0)\n"+
+              "3(0): null, null\n"+
+              "5(0): null, null",
             2},
             {
-                "4: 2, 5\n" +
-                "2: 1, 3\n" +
-                "1: null, null\n" +
-                "3: null, null\n" +
-                "5: null, null",
+                "4(2): 2(1), 5(0)\n" +
+                "2(1): 1(0), 3(0)\n" +
+                "1(0): null, null\n" +
+                "3(0): null, null\n" +
+                "5(0): null, null",
                 2
             },
             {
-                "7: 5, 10\n"+
-                "5: null, null\n"+
-                "10: null, null",
+                "7(1): 5(0), 10(0)\n"+
+                "5(0): null, null\n"+
+                "10(0): null, null",
                 1
             },
             {
-                "100: 30, 150\n"+
-                "30: 25, 55\n"+
-                "25: null, null\n"+
-                "55: 50, 60\n"+
-                "50: null, null\n"+
-                "60: null, null\n"+
-                "150: null, null",
+                "100(3): 30(2), 150(0)\n"+
+                "30(2): 25(0), 55(1)\n"+
+                "25(0): null, null\n"+
+                "55(1): 50(0), 60(0)\n"+
+                "50(0): null, null\n"+
+                "60(0): null, null\n"+
+                "150(0): null, null",
                 3
             }
         };
