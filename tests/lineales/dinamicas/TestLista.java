@@ -1,6 +1,6 @@
 package tests.lineales.dinamicas;
 
-import lineales.dinamicas.Lista;
+import lib.lineales.dinamicas.Lista;
 import tests.Test;
 
 public class TestLista extends Test{

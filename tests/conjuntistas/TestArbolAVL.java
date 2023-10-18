@@ -1,6 +1,6 @@
 package tests.conjuntistas;
 
-import conjuntistas.ArbolAVL;
+import lib.conjuntistas.ArbolAVL;
 import tests.Test;
 
 public class TestArbolAVL extends Test {

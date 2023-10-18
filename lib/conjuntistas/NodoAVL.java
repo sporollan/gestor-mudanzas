@@ -1,4 +1,4 @@
-package conjuntistas;
+package lib.conjuntistas;
 
 
 public class NodoAVL

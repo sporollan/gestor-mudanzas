@@ -1,6 +1,6 @@
-package conjuntistas;
+package lib.conjuntistas;
 
-import lineales.dinamicas.Lista;
+import lib.lineales.dinamicas.Lista;
 
 
 public class ArbolAVL {

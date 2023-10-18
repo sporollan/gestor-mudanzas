@@ -1,4 +1,4 @@
-package lineales.dinamicas;
+package lib.lineales.dinamicas;
 
 public class Nodo {
     Nodo enlace;
