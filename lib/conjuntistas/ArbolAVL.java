@@ -120,12 +120,13 @@ public class ArbolAVL {
         }
     }
     
-    private boolean _insertarAux(Object elem, NodoAVL n, NodoAVL p, boolean i, NodoAVL pp, NodoAVL ppp)
+    private boolean _insertarAux(Comparable<Object> elem, NodoAVL n, NodoAVL p, boolean i, NodoAVL pp, NodoAVL ppp)
     {
         boolean exito = false;
         if(n != null)
         {
-            if((int)n.getElem() > (int)elem)
+            //if((int)n.getElem() > (int)elem)
+            if(n.getElem().compareTo(elem) > 0)
             {
                 exito = this._insertarAux(elem, n.getIzquierdo(), n, true, p, pp);
             }
@@ -151,7 +152,7 @@ public class ArbolAVL {
         return exito;
     }
 
-    public boolean insertar(Object elem)
+    public boolean insertar(Comparable<Object> elem)
     {
         boolean exito = false;
 
@@ -162,7 +163,8 @@ public class ArbolAVL {
         }
         else
         {
-            if((int)this.raiz.getElem() > (int)elem)
+            //if((int)this.raiz.getElem() > (int)elem)
+            if(this.raiz.getElem().compareTo(elem) > 0)
             {
                 exito = this._insertarAux(elem, this.raiz.getIzquierdo(), this.raiz, true, null, null);
             }

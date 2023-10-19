@@ -4,7 +4,7 @@ import lib.conjuntistas.ArbolAVL;
 import tests.Test;
 
 public class TestArbolAVL extends Test {
-    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
+    public boolean evaluarCaso(Comparable<Object>[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
     {
         boolean exito = false;
         ArbolAVL a = new ArbolAVL();
@@ -23,7 +23,7 @@ public class TestArbolAVL extends Test {
     }
     public boolean runTests(boolean v)
     {
-        Object[][] casos = {
+        Comparable[][] casos = {
             {},
             {1},
             {5, 4, 6, 3, 7},
@@ -41,10 +41,12 @@ public class TestArbolAVL extends Test {
              */
             {5, 4, 3, 2, 1},
             {10, 5, 7},
-            {100, 50, 150, 25, 30, 60, 55}
+            {100, 50, 150, 25, 30, 60, 55},
+            {'x', 'm', 'z', 'f', 'g', 'o', 'n'}
 
         };
         Object[][] indices = {
+            {},
             {},
             {},
             {},
@@ -92,6 +94,16 @@ public class TestArbolAVL extends Test {
                 "50(0): null, null\n"+
                 "60(0): null, null\n"+
                 "150(0): null, null",
+                3
+            },
+            {
+                "x(3): g(2), z(0)\n" + //
+                        "g(2): f(0), n(1)\n" + //
+                        "f(0): null, null\n" + //
+                        "n(1): m(0), o(0)\n" + //
+                        "m(0): null, null\n" + //
+                        "o(0): null, null\n" + //
+                        "z(0): null, null",
                 3
             }
         };

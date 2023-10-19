@@ -25,12 +25,12 @@ public class Test {
         }
         return exito;
     }
-    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casoI, boolean v)
+    public boolean evaluarCaso(Comparable<Object>[] caso, Object[] indices, Object[] esperados, int casoI, boolean v)
     {
         return false;
     }
 
-    public boolean runTests(Object[][] casos, Object[][] indices, Object[][] esperados, boolean v)
+    public boolean runTests(Comparable<Object>[][] casos, Object[][] indices, Object[][] esperados, boolean v)
     {
         boolean exito = true;
 

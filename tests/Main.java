@@ -12,9 +12,11 @@ public class Main {
         boolean exito;
         boolean v = args.length>0 && args[0].equals("-v") ? true: false;
 
+        System.out.println("Tests Lista");
         exito = testLista.runTests(v);
         if(exito)
         {
+            System.out.println("Tests ArbolAVL");
             exito = testArbolAVL.runTests(v);
         }
 
