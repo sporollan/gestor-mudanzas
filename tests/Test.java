@@ -6,9 +6,9 @@ public class Test {
         boolean exito;
         if(obtenido == esperado || (obtenido != null && obtenido.equals(esperado)))
         {
-            System.out.println(testName + " OK");
             if(v)
             {
+                System.out.println(testName + " OK");
                 System.out.println("\tEsperado:\n" + esperado);
                 System.out.println("\tObtenido:\n" + obtenido);
                 System.out.println();
@@ -47,6 +47,7 @@ public class Test {
             );
             casosI+=1;
         }
+        System.out.println("Casos evaluados: " + casosI + "/" + casosL);
         return exito;
     }
 }
