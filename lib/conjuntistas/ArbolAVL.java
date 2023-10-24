@@ -180,9 +180,12 @@ public class ArbolAVL {
         return exito;
     }
 
-    public boolean eliminar(Object elem)
+    public boolean eliminar(Comparable<Object> elem)
     {
-        return false;
+        boolean exito = false;
+        NodoAVL derecho, izquierdo;
+        
+        return exito;
     }
 
     public Lista listar()

@@ -6,7 +6,7 @@ import tests.Test;
 public class TestLista extends Test{
 
     @Override
-    public boolean evaluarCaso(Comparable<Object>[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
+    public boolean evaluarCaso(Comparable<Object>[] caso, Comparable[] indices, Object[] esperados, int casosI, boolean v)
     {
         boolean exito = false;
         Lista lista = new Lista();
@@ -72,7 +72,7 @@ public class TestLista extends Test{
             {1},
             {'a', 'b', 'c', 'd'}
         };
-        Object[][] indicesLista = {
+        Comparable[][] indicesLista = {
             {1, 1, 1},
             {1, 1, 1, 1, 1, 1, 7},
             {1, 2, 3, 4, 2, 2, 3},
