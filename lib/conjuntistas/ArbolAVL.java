@@ -59,7 +59,7 @@ public class ArbolAVL {
             else
             {
                 n.setIzquierdo(new NodoAVL(elem, null, null));
-                this.raiz.recalcularAltura();
+                //this.raiz.recalcularAltura();
             }
         }
         else
@@ -72,9 +72,10 @@ public class ArbolAVL {
             else
             {
                 n.setDerecho(new NodoAVL(elem, null, null));
-                this.raiz.recalcularAltura();
+                //this.raiz.recalcularAltura();
             }
         }
+        n.recalcularAltura();
         this._comprobarBalance(n);
         return exito;
     }
