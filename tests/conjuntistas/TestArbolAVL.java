@@ -108,7 +108,7 @@ public class TestArbolAVL extends Test {
                 "30(1): 25(0), null\n"+   //   30     100
                 "25(0): null, null\n"+     // 25     60   150
                 "100(2): 60(1), 150(0)\n"+   //       55
-                "60(1): null, 55(0)\n"+
+                "60(1): 55(0), null\n"+
                 "55(0): null, null\n"+     //  
                 "150(0): null, null",
                                            // eliminar 30
@@ -124,7 +124,7 @@ public class TestArbolAVL extends Test {
                         "g(1): f(0), null\n" + //        m
                         "f(0): null, null\n" + //    g        x
                         "x(2): o(1), z(0)\n" + //  f         o z
-                        "o(0): n(0), null\n" + //           n
+                        "o(1): n(0), null\n" + //           n
                         "n(0): null, null\n" + //
                         "z(0): null, null",
                 "o(2): g(1), x(1)\n" + //      eliminar m

@@ -1,6 +1,7 @@
 package lib.conjuntistas;
 
 import lib.lineales.dinamicas.Lista;
+import lib.lineales.dinamicas.Nodo;
 
 
 public class ArbolAVL {
@@ -14,169 +15,160 @@ public class ArbolAVL {
         return false;
     }
 
+    private void _rotarDerecha(NodoAVL n)
+    {
+        NodoAVL naux = n.getIzquierdo();
+        Comparable aux = n.getElem();
+        n.setElem(naux.getElem());
+        naux.setElem(aux);
+        n.setIzquierdo(n.getIzquierdo().getIzquierdo());
+        naux.setIzquierdo(naux.getDerecho());
+        naux.setDerecho(n.getDerecho());
+
+        n.setDerecho(naux);
+
+    }
+
+    private void _rotarIzquierda(NodoAVL n)
+    {
+        NodoAVL naux = n.getDerecho();
+        Comparable aux = n.getElem();
+        n.setElem(naux.getElem());
+        naux.setElem(aux);
+        n.setDerecho(n.getDerecho().getDerecho());
+        naux.setDerecho(naux.getIzquierdo());
+        naux.setIzquierdo(n.getIzquierdo());
+        n.setIzquierdo(naux);
+    }
+
+    
+    private boolean _insertarAux(NodoAVL n, Comparable elem)
+    {
+        boolean exito = true;
+        if (elem.compareTo(n.getElem()) == 0)
+        {
+            exito = false;
+        }
+        else if (elem.compareTo(n.getElem()) < 0)
+        {
+            // elem es menor que n.getElem()
+            if(n.getIzquierdo() != null)
+            {
+                exito = _insertarAux(n.getIzquierdo(), elem);
+            }
+            else
+            {
+                n.setIzquierdo(new NodoAVL(elem, null, null));
+                this.raiz.recalcularAltura();
+            }
+        }
+        else
+        {
+            // es mayor
+            if(n.getDerecho() != null)
+            {
+                exito = _insertarAux(n.getDerecho(), elem);
+            } 
+            else
+            {
+                n.setDerecho(new NodoAVL(elem, null, null));
+                this.raiz.recalcularAltura();
+            }
+        }
+        this._comprobarBalance(n);
+        return exito;
+    }
+
     private int _getBalance(NodoAVL n)
     {
         int b = 0;
         int ai = -1;
         int ad = -1;
+
         if(n != null)
-        {
-            NodoAVL i = n.getIzquierdo();
-            NodoAVL d = n.getDerecho();
-            if(i!=null)
-            {
-                ai = i.getAltura();
-            }
-            if(d != null)
-            {
-                ad = d.getAltura();
-
-            }
-
+        {  
+            if(n.getIzquierdo()!=null)
+                ai = n.getIzquierdo().getAltura();
+            if(n.getDerecho()!=null)
+                ad = n.getDerecho().getAltura();
             b = ai - ad;
-
         }
         return b;
     }
 
-    private void _rotarDerecha(NodoAVL n, NodoAVL p, boolean i)
+    private void _comprobarBalance(NodoAVL n)
     {
+        int b, bh;
+        NodoAVL nh = null;
+        int ai = -1;
+        int ad = -1;
 
-        NodoAVL izquierdo = n.getIzquierdo();
-        if(this.raiz == n)
-        {
-            this.raiz = izquierdo;
-        }
-        else
-        {
-            if(i)
-                p.setDerecho(izquierdo);
-            else
-                p.setIzquierdo(izquierdo);
-
-        }
-        n.setIzquierdo(null);
-
-        izquierdo.setDerecho(n);
-
-    }
-
-    private void _rotarIzquierda(NodoAVL n, NodoAVL p, boolean i)
-    {
-
-        NodoAVL derecho = n.getDerecho();
-        if(this.raiz == n)
-        {
-            this.raiz = derecho;
-        }
-        else
-        {
-            if(i)
-                p.setIzquierdo(derecho);
-            else
-                p.setDerecho(derecho);
-        }
-        n.setDerecho(null);
-
-        derecho.setIzquierdo(n);
-
-    }
-
-    private void _comprobarBalance(NodoAVL p, NodoAVL pp, NodoAVL ppp)
-    {
-        int bp = this._getBalance(p);
-        int bpp = this._getBalance(pp);
-        if(bpp == 2)
-        {
-            if(bp == 1 || bp == 0)
-            {
-                // simple a derecha
-                this._rotarDerecha(pp, ppp, false);
-                this.raiz.recalcularAltura();
-            }
-            else if(bp == -1)
-            {
-                // doble izquierda-derecha
-                this._rotarIzquierda(p, pp, true);
-                this._rotarDerecha(pp, ppp, false);
-                this.raiz.recalcularAltura();
-            }
-        }
-        else if(bpp == -2)
-        {
-            if(bp == 0 || bp == -1)
-            {
-                // simple a izquierda
-                this._rotarIzquierda(pp, ppp, false);
-                this.raiz.recalcularAltura();
-            }
-            else if(bp == 1)
-            {
-                // doble derecha-izquierda
-                this._rotarDerecha(p, pp, true);
-                this._rotarIzquierda(pp, ppp, false);
-                this.raiz.recalcularAltura();
-            }
-        }
-    }
-    
-    private boolean _insertarAux(Comparable<Object> elem, NodoAVL n, NodoAVL p, boolean i, NodoAVL pp, NodoAVL ppp)
-    {
-        boolean exito = false;
         if(n != null)
         {
-            //if((int)n.getElem() > (int)elem)
-            if(n.getElem().compareTo(elem) > 0)
+            b = this._getBalance(n);
+            if(n.getIzquierdo() != null)
+                ai = n.getIzquierdo().getAltura();
+            if(n.getDerecho() != null)
+                ad = n.getDerecho().getAltura();
+            if(ai > ad && ai > -1)
+                nh = n.getIzquierdo();
+            else if (ad > ai && ad > -1)
+                nh = n.getDerecho();
+            if(nh != null)
             {
-                exito = this._insertarAux(elem, n.getIzquierdo(), n, true, p, pp);
-            }
-            else
-            {
-                exito = this._insertarAux(elem, n.getDerecho(), n, false, p, pp);
+                bh = this._getBalance(nh);
+                if(b == 2)
+                {
+                    if(bh == 1 || bh == 0)
+                    {
+                        // simple a derecha
+                        this._rotarDerecha(n);
+                        this.raiz.recalcularAltura();
+                    }
+                    else if(bh == -1)
+                    {
+                        // doble izquierda-derecha
+                        this._rotarIzquierda(nh);
+                        this._rotarDerecha(n);
+                        this.raiz.recalcularAltura();
+                    }
+                }
+                else if(b == -2)
+                {
+                    if(bh == 0 || bh == -1)
+                    {
+                        // simple a izquierda
+                        this._rotarIzquierda(n);
+                        this.raiz.recalcularAltura();
+                    }
+                    else if(bh == 1)
+                    {
+                        // doble derecha-izquierda
+                        this._rotarDerecha(nh);
+                        this._rotarIzquierda(n);
+                        this.raiz.recalcularAltura();
+                    }
+                }
             }
         }
-        else
-        {
-            exito = true;
-            if(i)
-            {
-                p.setIzquierdo(new NodoAVL(elem, null, null));
-            }
-            else
-            {
-                p.setDerecho(new NodoAVL(elem, null, null));
-            }
-            this.raiz.recalcularAltura();
-            this._comprobarBalance(p, pp, ppp);
-        }
-        return exito;
     }
 
-    public boolean insertar(Comparable<Object> elem)
+    public boolean insertar(Comparable elem)
     {
         boolean exito = false;
-
-        if(this.raiz == null)
+        if(this.raiz == null) 
         {
             this.raiz = new NodoAVL(elem, null, null);
-            exito = true;
         }
         else
         {
-            //if((int)this.raiz.getElem() > (int)elem)
-            if(this.raiz.getElem().compareTo(elem) > 0)
-            {
-                exito = this._insertarAux(elem, this.raiz.getIzquierdo(), this.raiz, true, null, null);
-            }
-            else
-            {
-                exito = this._insertarAux(elem, this.raiz.getDerecho(), this.raiz, false, null, null);
-            }
+            exito = _insertarAux(this.raiz, elem);
         }
         if(exito)
         {
+            this.raiz.recalcularAltura();
+            this._comprobarBalance(this.raiz);
         }
-
         return exito;
     }
 
