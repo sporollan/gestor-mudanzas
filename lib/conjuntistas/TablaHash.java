@@ -25,7 +25,10 @@ public class TablaHash {
 
     public boolean pertenece(Object elem)
     {
-        return false;
+        int pos = elem.hashCode() % this.TAMANIO;
+        if(pos < 0)
+            pos = -1 * pos;
+        return this.tabla[pos] != null;
     }
 
     public boolean insertar(Object nuevoElem)
@@ -68,6 +71,14 @@ public class TablaHash {
     {
         String s = "";
         return s;
+    }
+
+    public Object obtener(String clave)
+    {
+        int pos = clave.hashCode() % this.TAMANIO;
+        if(pos < 0)
+            pos = pos *-1;
+        return tabla[pos].getElem();
     }
 
     

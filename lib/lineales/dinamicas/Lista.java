@@ -159,4 +159,9 @@ public class Lista {
 
         return lista + "]";
     }
+
+    public int hashCode()
+    {
+        return this.cabecera.getElem().hashCode();
+    }
 }

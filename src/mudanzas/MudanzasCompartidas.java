@@ -4,6 +4,7 @@ import java.util.Scanner;
 
 import lib.conjuntistas.ArbolAVL;
 import lib.conjuntistas.TablaHash;
+import lib.lineales.dinamicas.Lista;
 
 public class MudanzasCompartidas {
     boolean isRunning;
@@ -93,20 +94,28 @@ public class MudanzasCompartidas {
 
     public void insertarSolicitud()
     {
-        Comparable cp1, cp2;
-        String nombre;
+        int cp1, cp2;
+        String nombre, clave;
         try
         {
             System.out.println("Codigo Postal Origen");
-            cp1 = (Comparable)sc.nextInt();
+            cp1 = sc.nextInt();
             sc.nextLine();
             System.out.println("Codigo Postal Destino");
-            cp2 = (Comparable)sc.nextInt();
+            cp2 = sc.nextInt();
             sc.nextLine();
             System.out.println("Nombre");
             nombre = sc.nextLine();
 
-            solicitudes.insertar(new Solicitud(cp1, cp2, nombre));
+            clave = cp1 +""+ cp2;
+            if(solicitudes.pertenece(clave))
+                ((Lista)solicitudes.obtener(clave)).insertar((Object)new Solicitud(cp1, cp2, nombre), 1);
+            else
+            {
+                Lista s = new Lista();
+                s.insertar(new Solicitud(cp1, cp2, nombre), 1);
+                solicitudes.insertar(s);
+            }
         } 
         catch (Exception e)
         {
@@ -116,19 +125,19 @@ public class MudanzasCompartidas {
 
     public void mostrarSolicitudes()
     {
-        Comparable cp1, cp2;
+        int cp1, cp2;
         String clave;
         try
         {
             System.out.println("Codigo Postal Origen");
-            cp1 = (Comparable)sc.nextInt();
+            cp1 = sc.nextInt();
             sc.nextLine();
             System.out.println("Codigo Postal Destino");
-            cp2 = (Comparable)sc.nextInt();
+            cp2 = sc.nextInt();
             sc.nextLine();
 
-            clave = (String)cp1 + (String)cp2;
-            System.out.println(solicitudes.toString(clave));
+            clave = cp1 + ""+cp2;
+            System.out.println(solicitudes.obtener(clave));
         } 
         catch (Exception e)
         {

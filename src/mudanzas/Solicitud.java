@@ -21,7 +21,7 @@ public class Solicitud {
         c += destino;
         h = c.hashCode();
         if(h < 0)
-            h *= -1;
+            h = -1 * h;
         return h;
     }
 
