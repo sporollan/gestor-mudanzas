@@ -4,7 +4,7 @@ import lib.conjuntistas.ArbolAVL;
 import tests.Test;
 
 public class TestArbolAVL extends Test {
-    public boolean evaluarCaso(Comparable<Object>[] caso, Comparable[] indices, Object[] esperados, int casosI, boolean v)
+    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
     {
         boolean exito = false;
         ArbolAVL a = new ArbolAVL();
@@ -12,7 +12,7 @@ public class TestArbolAVL extends Test {
 
         for(int i = 0; i <L; i++)
         {
-            a.insertar(caso[i]);
+            a.insertar((Comparable)caso[i]);
         }
         exito = this._assertEquals(a.toString(), esperados[0], "TestAVLInsertar"+casosI, v);
         if(exito)

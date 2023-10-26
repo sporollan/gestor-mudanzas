@@ -2,10 +2,11 @@ package tests.conjuntistas;
 
 import lib.conjuntistas.ArbolAVL;
 import lib.conjuntistas.TablaHash;
+import src.mudanzas.Solicitud;
 import tests.Test;
 
 public class TestTablaHash extends Test {
-    public boolean evaluarCaso(Comparable<Object>[] caso, Comparable[] indices, Object[] esperados, int casosI, boolean v)
+    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
     {
         boolean exito = false;
         TablaHash t = new TablaHash();
@@ -25,16 +26,22 @@ public class TestTablaHash extends Test {
     }
     public boolean runTests(boolean v)
     {
-        Comparable[][] casos = {
-            {1, 2, 3, 4, 5}
+        Object[][] casos = {
+            {1, 2, 3, 4, 5},
+            {new Solicitud(8300, 2400, "S1")}
         };
         Comparable[][] indices = {
+            {},
             {}
         };
         Object[][] esperados = {
             {
-                "1 2 3 4 5 "
+                "1 2 3 4 5 ",
+            },
+            {
+                "S1 "
             }
+
         };
         return super.runTests(casos, indices, esperados, v);
     }

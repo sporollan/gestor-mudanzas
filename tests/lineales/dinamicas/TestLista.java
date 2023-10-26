@@ -6,7 +6,7 @@ import tests.Test;
 public class TestLista extends Test{
 
     @Override
-    public boolean evaluarCaso(Comparable<Object>[] caso, Comparable[] indices, Object[] esperados, int casosI, boolean v)
+    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
     {
         boolean exito = false;
         Lista lista = new Lista();

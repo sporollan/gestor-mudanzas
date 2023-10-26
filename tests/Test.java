@@ -25,13 +25,13 @@ public class Test {
         }
         return exito;
     }
-    public boolean evaluarCaso(Comparable<Object>[] caso, Comparable[] indices, Object[] esperados, int casoI, boolean v)
+    public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casoI, boolean v)
     {
         System.out.println("evaluarCaso");
         return false;
     }
 
-    public boolean runTests(Comparable<Object>[][] casos, Comparable[][] indices, Object[][] esperados, boolean v)
+    public boolean runTests(Object[][] casos, Object[][] indices, Object[][] esperados, boolean v)
     {
         boolean exito = true;
 
