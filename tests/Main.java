@@ -2,6 +2,7 @@ package tests;
 
 import tests.lineales.dinamicas.TestLista;
 import tests.conjuntistas.TestArbolAVL;
+import tests.conjuntistas.TestTablaHash;
 
 public class Main {
 
@@ -9,6 +10,7 @@ public class Main {
     {
         TestLista testLista = new TestLista();
         TestArbolAVL testArbolAVL = new TestArbolAVL();
+        TestTablaHash testTablaHash = new TestTablaHash();
         boolean exito;
         boolean v = args.length>0 && args[0].equals("-v") ? true: false;
 
@@ -18,6 +20,11 @@ public class Main {
         {
             System.out.println("Tests ArbolAVL");
             exito = testArbolAVL.runTests(v);
+        }
+        if(exito)
+        {
+            System.out.println("Tests TablaHash");
+            exito = testTablaHash.runTests(v);
         }
 
         if(exito)
