@@ -64,5 +64,11 @@ public class TablaHash {
         return s;
     }
 
+    public String toString(String clave)
+    {
+        String s = "";
+        return s;
+    }
+
     
 }
