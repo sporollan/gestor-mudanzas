@@ -56,9 +56,10 @@ public class TablaHash {
     public String toString()
     {
         String s = "";
-        for(int i = 1; i <= this.cant; i++)
+        for(int i = 0; i < this.TAMANIO; i++)
         {
-            s += this.tabla[i] + " ";
+            if(this.tabla[i] != null)
+                s += this.tabla[i] + " ";
         }
         return s;
     }
