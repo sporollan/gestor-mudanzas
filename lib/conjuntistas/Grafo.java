@@ -4,7 +4,7 @@ import lib.lineales.dinamicas.Lista;
 
 public class Grafo {
     NodoVert inicio;
-    private NodoVert ubicarVertice(Object buscado)
+    public NodoVert ubicarVertice(Object buscado)
     {
         NodoVert aux = this.inicio;
         while (aux != null && !aux.getElem().equals(buscado))
@@ -99,6 +99,37 @@ public class Grafo {
                     ady = ady.getSigAdyacente();
                 }
             }
+        }
+        return exito;
+    }
+
+    private void insertarNodoAdy(NodoVert nodoOrigen, NodoVert nodoDestino, Object e)
+    {
+        NodoAdy adyO;
+        adyO = nodoOrigen.getPrimerAdy();
+        if(adyO == null)
+        {
+            nodoOrigen.setPrimerAdy(new NodoAdy(nodoDestino, null, e));
+        }
+        else
+        {
+            while(adyO.getSigAdyacente() != null)
+                adyO = adyO.getSigAdyacente();
+            adyO.setSigAdyacente(new NodoAdy(nodoDestino, null, e));
+        }
+    }
+
+    public boolean insertarArco(Object o, Object d, Object e)
+    {
+        boolean exito = false;
+        NodoVert nodoOrigen = this.ubicarVertice(o);
+        NodoVert nodoDestino = this.ubicarVertice(d);
+
+        if(nodoDestino != null && nodoOrigen != null)
+        {
+            exito = true;
+            insertarNodoAdy(nodoOrigen, nodoDestino, e);
+            insertarNodoAdy(nodoDestino, nodoOrigen, e);
         }
         return exito;
     }

@@ -49,12 +49,46 @@ public class MudanzasCompartidas {
             System.out.println("Gestionar Rutas");
             System.out.println("1. Mostrar");
             System.out.println("2. Insertar");
+            System.out.println("3. Consultar Ruta");
             i = sc.nextLine();
             if(i.equals("1"))
                 System.out.println(rutas.listarEnProfundidad());
             if(i.equals("2"))
-                insertarCiudad();
+                insertarRuta();
+            if(i.equals("3"))
+                consultarRuta();
         }  
+    }
+
+    public void consultarRuta()
+    {
+        int cpo, cpd, m;
+        int distancia;
+        try
+        {
+            System.out.println("Origen(cp)");
+            cpo = sc.nextInt();
+            sc.nextLine();
+            m = cpo / 1000;
+            if(m < 1 || m > 9)
+                throw new Exception();
+
+            System.out.println("Destino(cp)");
+            cpd = sc.nextInt();
+            sc.nextLine();
+            m = cpd / 1000;
+            if(m < 1 || m > 9)
+                throw new Exception();
+
+            if(rutas.existeCamino(cpo, cpd))
+                System.out.println("La ruta existe");
+            else
+                System.out.println("La ruta no existe");
+        } 
+        catch (Exception e)
+        {
+            System.out.println("Error de input");
+        } 
     }
 
     public void mostrarMenuCiudades()
@@ -69,7 +103,7 @@ public class MudanzasCompartidas {
             if(i.equals("1"))
                 System.out.println(ciudades.toString());
             if(i.equals("2"))
-                insertarRuta();
+                insertarCiudad();
         }
     }
 
@@ -102,7 +136,7 @@ public class MudanzasCompartidas {
         } 
         catch (Exception e)
         {
-            System.out.println("Error de input");
+           System.out.println("Error de input");
         }
 
     }
@@ -128,18 +162,25 @@ public class MudanzasCompartidas {
 
     public void insertarCiudad()
     {
-        Comparable cp;
+        int cpo, m;
         String nombre;
         try
         {
             System.out.println("Codigo Postal");
-            cp = (Comparable)sc.nextInt();
+            cpo = sc.nextInt();
             sc.nextLine();
+            m = cpo / 1000;
+            if(m < 1 || m > 9)
+                throw new Exception();
             System.out.println("Nombre");
             nombre = sc.nextLine();
 
-            if (ciudades.insertar(new Ciudad(cp, nombre)))
+            if (ciudades.insertar(new Ciudad(cpo, nombre)))
+            {
                 System.out.println("Insertado con exito");
+                if (rutas.insertarVertice(cpo))
+                    System.out.println("Vertice creado con exito");
+            }
         } 
         catch (Exception e)
         {

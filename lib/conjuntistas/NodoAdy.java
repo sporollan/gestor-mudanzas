@@ -3,10 +3,13 @@ package lib.conjuntistas;
 public class NodoAdy {
     NodoVert vertice;
     NodoAdy sigAdyacente;
-    public NodoAdy()
+    Object etiqueta;
+
+    public NodoAdy(NodoVert vertice, NodoAdy sigAdyacente, Object etiqueta)
     {
-        vertice = null;
-        sigAdyacente = null;
+        this.vertice = vertice;
+        this.sigAdyacente = sigAdyacente;
+        this.etiqueta = etiqueta;
     }
     public NodoVert getVertice() {
         return vertice;

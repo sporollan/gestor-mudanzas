@@ -160,6 +160,7 @@ public class ArbolAVL {
         if(this.raiz == null) 
         {
             this.raiz = new NodoAVL(elem, null, null);
+            exito = true;
         }
         else
         {
