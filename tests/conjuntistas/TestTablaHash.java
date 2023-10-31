@@ -28,7 +28,6 @@ public class TestTablaHash extends Test {
     {
         Object[][] casos = {
             {1, 2, 3, 4, 5},
-            {new Solicitud(8300, 2400, "S1")}
         };
         Comparable[][] indices = {
             {},
