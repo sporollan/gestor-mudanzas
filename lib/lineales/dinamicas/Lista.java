@@ -164,4 +164,9 @@ public class Lista {
     {
         return this.cabecera.getElem().hashCode();
     }
+
+    public int compareTo(Lista elem)
+    {
+        return ((Comparable)this.cabecera.getElem()).compareTo((Comparable)elem);
+    }
 }
