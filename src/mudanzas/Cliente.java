@@ -1,0 +1,18 @@
+package src.mudanzas;
+
+public class Cliente {
+    final Comparable clave;
+    String nombres;
+    String apellidos;
+    String telefono;
+    String email;
+
+    public Cliente(Comparable clave, String nombres, String apellidos, String telefono, String email)
+    {
+        this.clave = clave;
+        this.nombres = nombres;
+        this.apellidos = apellidos;
+        this.telefono = telefono;
+        this.email = email;
+    }
+}
