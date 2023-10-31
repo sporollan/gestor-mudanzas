@@ -10,6 +10,44 @@ public class ArbolAVL {
     {
         this.raiz = null;
     }
+    private Comparable obtenerAux(NodoAVL n, Comparable clave)
+    {
+        Comparable obtenido = null;
+        if(n != null)
+        {
+            if(n.getElem().compareTo(clave) == 0)
+                obtenido = n.getElem();
+            else if (n.getElem().compareTo(clave) > 0)
+            {
+                obtenido = obtenerAux(n.getIzquierdo(), clave);
+            }
+            else
+            {
+                obtenido = obtenerAux(n.getDerecho(), clave);
+            }
+        }
+        return obtenido;
+    }
+    public Comparable obtener(Comparable clave)
+    {
+        Comparable obtenido = null;
+        if(this.raiz != null)
+        {
+            if(this.raiz.getElem().compareTo(clave) == 0)
+            {
+                obtenido = this.raiz.getElem();
+            }
+            else if(this.raiz.getElem().compareTo(clave) > 0)
+            {
+                obtenido = obtenerAux(this.raiz.getIzquierdo(), clave);
+            }
+            else
+            {
+                obtenido = obtenerAux(this.raiz.getDerecho(), clave);
+            }
+        }
+        return obtenido;
+    }
     public boolean pertenece(Object elem)
     {
         return false;
@@ -45,11 +83,11 @@ public class ArbolAVL {
     private boolean _insertarAux(NodoAVL n, Comparable elem)
     {
         boolean exito = true;
-        if (elem.compareTo(n.getElem()) == 0)
+        if (n.getElem().compareTo(elem) == 0)
         {
             exito = false;
         }
-        else if (elem.compareTo(n.getElem()) < 0)
+        else if (n.getElem().compareTo(elem) > 0)
         {
             // elem es menor que n.getElem()
             if(n.getIzquierdo() != null)
