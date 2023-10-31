@@ -1,23 +1,38 @@
 package src.mudanzas;
 
 public class Solicitud {
-    Comparable origen;
     Comparable destino;
     String nombre;
+    String fecha;
+    Object cliente;
+    int metrosCubicos;
+    int bultos;
+    String domicilioRetiro;
+    String domicilioEntrega;
+    boolean estaPago;
 
-    public Solicitud(Comparable origen, Comparable destino, String nombre)
+    public Solicitud(Comparable destino, String nombre, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
     {   
-        this.origen = origen;
         this.destino = destino;
         this.nombre = nombre;
+        this.fecha = fecha;
+        this.cliente = cliente;
+        this.metrosCubicos = metrosCubicos;
+        this.bultos = bultos;
+        this.domicilioEntrega = domicilioEntrega;
+        this.domicilioRetiro = domicilioRetiro;
+        this.estaPago = estaPago;
+    }
 
+    public Comparable getDestino()
+    {
+        return this.destino;
     }
 
     public int hashCode()
     {
         String c = "";
         int h;
-        c += origen;
         c += destino;
         h = c.hashCode();
         if(h < 0)
@@ -28,5 +43,10 @@ public class Solicitud {
     public String toString()
     {
         return this.nombre;
+    }
+
+    public int compareTo(Comparable n)
+    {
+        return this.destino.compareTo(n);
     }
 }
