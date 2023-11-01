@@ -1,6 +1,6 @@
 package src.mudanzas;
 
-public class Solicitud {
+public class Solicitud implements Comparable{
     Comparable destino;
     String nombre;
     String fecha;
@@ -45,8 +45,10 @@ public class Solicitud {
         return this.nombre;
     }
 
-    public int compareTo(Comparable n)
+    @Override
+    public int compareTo(Object cp)
     {
-        return this.destino.compareTo(n);
+        return this.destino.compareTo((Comparable)cp);
     }
+
 }
