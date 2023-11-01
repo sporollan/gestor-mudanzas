@@ -1,6 +1,6 @@
 package lib.lineales.dinamicas;
 
-public class Lista {
+public class Lista implements Comparable{
     Nodo cabecera;
     int len;
 
@@ -165,7 +165,8 @@ public class Lista {
         return this.cabecera.getElem().hashCode();
     }
 
-    public int compareTo(Lista elem)
+    @Override
+    public int compareTo(Object elem)
     {
         return ((Comparable)this.cabecera.getElem()).compareTo((Comparable)elem);
     }
