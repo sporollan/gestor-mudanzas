@@ -26,7 +26,14 @@ public class Ciudad implements Comparable{
     @Override
     public int compareTo(Object n)
     {
-        return codigo.compareTo(n);
+        int r;
+        try{
+            r = codigo.compareTo(n);
+        } catch (Exception e)
+        {
+            r = codigo.compareTo(((Ciudad)n).getCodigo());
+        }
+        return r;
     }
 
     public boolean insertarSolicitud(Solicitud s)
