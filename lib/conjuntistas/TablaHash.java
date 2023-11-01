@@ -78,7 +78,7 @@ public class TablaHash {
         int pos = clave.hashCode() % this.TAMANIO;
         if(pos < 0)
             pos = pos *-1;
-        return tabla[pos].getElem();
+        return tabla[pos] != null ? tabla[pos].getElem() : null;
     }
 
     
