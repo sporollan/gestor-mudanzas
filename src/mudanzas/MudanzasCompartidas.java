@@ -39,7 +39,145 @@ public class MudanzasCompartidas {
                 mostrarMenuSolicitudes();
             if(i.equals("3"))
                 mostrarMenuRutas();
+            if(i.equals("4"))
+                mostrarMenuClientes();
         }
+    }
+
+    public void mostrarMenuClientes()
+    {
+        String i = "";
+        while(!i.equals("q"))
+        {
+            System.out.println("Gestionar Clientes");
+            System.out.println("1. Mostrar");
+            System.out.println("2. Insertar");
+            i = sc.nextLine();
+            if(i.equals("1"))
+                System.out.println(clientes);
+            if(i.equals("2"))
+                insertarCliente();
+        }  
+    }
+
+    public void insertarCliente()
+    {
+        String[] stringValues = {
+            "Nombres", "Apellidos", "Telefono", "Email"
+        };
+        String[] sInputs = new String[stringValues.length+1];
+        String clave;
+        boolean continuar;
+        
+        // cargar clave de cliente
+        clave = scanClaveCliente();
+        continuar = !clave.equals("q");
+
+        // cargar datos de cliente
+        if(continuar)
+        {
+            sInputs = cargarStringsSc(stringValues);
+            continuar = !sInputs[stringValues.length].equals("q");
+        }
+
+        // almacenar los datos en la estructura
+        if(continuar)
+        {
+            if(clientes.insertar(new Cliente(clave, sInputs[0], sInputs[1], sInputs[2], sInputs[3])))
+                System.out.println("Cliente insertado con exito");
+        }
+    }
+
+    public Cliente scanCliente()
+    {
+        Cliente cliente = null;
+        String c = "";
+        while(!c.equals("q") && cliente == null)
+        {
+            c = scanClaveCliente();
+            cliente = (Cliente)this.clientes.obtener(c);
+        }
+        return cliente;
+    }
+
+    public String scanClaveCliente()
+    {
+        String clave = "";
+        boolean valida = false;
+        while(!valida && !clave.equals("q"))
+        {
+            try
+            {
+                System.out.println("Clave Cliente (ej. dni12345678)");
+                clave = sc.nextLine();
+                valida = comprobarClaveCliente(clave);
+            } catch (Exception e){}
+        }
+        return clave;
+    }
+
+    public String[] cargarStringsSc(String[] stringValues)
+    {
+        int sL = stringValues.length;
+        String[] scannedInputs = new String[sL+1];
+        int i = 0;
+        do
+        {
+            scannedInputs[i] = scanString(stringValues[i]);
+            i+=1;
+        } while(!scannedInputs[i-1].equals("q") && i < sL);
+
+        // se almacena el ultimo valor ingresado al final, para leer q
+        scannedInputs[sL] = scannedInputs[i-1];
+
+        return scannedInputs;
+    }
+
+    public String scanString(String message)
+    {
+        String s = "";
+        while(s.equals("") && !s.equals("q"))
+        {
+            try
+            {
+                System.out.println(message);
+                s = sc.nextLine();
+            } catch (Exception e){}
+        }
+        return s;
+    }
+
+    public int[] cargarIntsSc(String[] intValues)
+    {
+        int sL = intValues.length;
+        int[] scannedInputs = new int[sL+1];
+        int i = 0;
+        do
+        {
+            scannedInputs[i] = scanInt(intValues[i]);
+            i+=1;
+        } while(scannedInputs[i-1] != -1 && i < sL);
+
+        // se almacena el ultimo valor ingresado al final, para leer q
+        scannedInputs[sL] = scannedInputs[i-1];
+
+        return scannedInputs;
+    }
+
+    public int scanInt(String message)
+    {
+        int i = -1;
+        String input ="";
+        while(i < 1 && !input.equals("q"))
+        {
+            try
+            {
+                System.out.println(message);
+                input = sc.nextLine();
+                i = Integer.parseInt(input);
+            } catch (Exception e){}
+        }
+        return i;
     }
 
     public void mostrarMenuRutas()
@@ -63,32 +201,50 @@ public class MudanzasCompartidas {
 
     public void consultarRuta()
     {
-        int cpo, cpd, m;
-        try
+        int cpo = -1;
+        int cpd = -1;
+        boolean continuar = true;
+
+        cpo = scanCp("Origen(cp)");
+        continuar = cpo != -1;
+
+        if(continuar)
         {
-            System.out.println("Origen(cp)");
-            cpo = sc.nextInt();
-            sc.nextLine();
-            m = cpo / 1000;
-            if(m < 1 || m > 9)
-                throw new Exception();
+            cpd = scanCp("Destino(cp)");
+            continuar = cpd != -1;
+        }
 
-            System.out.println("Destino(cp)");
-            cpd = sc.nextInt();
-            sc.nextLine();
-            m = cpd / 1000;
-            if(m < 1 || m > 9)
-                throw new Exception();
-
+        if(continuar)
+        {
             if(rutas.existeCamino(cpo, cpd))
                 System.out.println("La ruta existe");
             else
                 System.out.println("La ruta no existe");
-        } 
-        catch (Exception e)
+        }
+    }
+
+    public int scanCp(String message)
+    {
+        String s = "";
+        int cp = -1;
+        boolean valido = false;
+        while(!valido && !s.equals("q"))
         {
-            System.out.println("Error de input");
-        } 
+            try
+            {
+                System.out.println(message);
+                s = sc.nextLine();
+                if(!s.equals("q"))
+                {
+                    cp = Integer.parseInt(s);
+                    valido = comprobarCp(cp);
+                }
+
+            } catch (Exception e){
+                cp = -1;
+            }
+        }
+        return cp;
     }
 
     public void mostrarMenuCiudades()
@@ -109,34 +265,30 @@ public class MudanzasCompartidas {
 
     public void insertarRuta()
     {
-        int cpo, cpd, m;
-        int distancia;
-        try
+        int cpo = -1;
+        int cpd = -1;
+        int distancia = -1;
+        boolean continuar = true;
+
+        cpo = scanCp("Origen(cp)");
+        continuar = cpo != -1;
+
+        if(continuar)
         {
-            System.out.println("Origen(cp)");
-            cpo = sc.nextInt();
-            sc.nextLine();
-            m = cpo / 1000;
-            if(m < 1 || m > 9)
-                throw new Exception();
+            cpd = scanCp("Destino(cp)");
+            continuar = cpd != -1;
+        }
 
-            System.out.println("Destino(cp)");
-            cpd = sc.nextInt();
-            sc.nextLine();
-            m = cpd / 1000;
-            if(m < 1 || m > 9)
-                throw new Exception();
+        if(continuar)
+        {
+            distancia = scanInt("Distancia");
+            continuar = distancia != -1;
+        }
 
-            System.out.println("Distancia");
-            distancia = sc.nextInt();
-            sc.nextLine();
-
+        if(continuar)
+        {
             if(rutas.insertarArco(cpo, cpd, distancia))
                 System.out.println("Insertado con exito");
-        } 
-        catch (Exception e)
-        {
-           System.out.println("Error de input");
         }
 
     }
@@ -160,46 +312,20 @@ public class MudanzasCompartidas {
     public void insertarCiudad()
     {
         int cpo = -1;
-        String nombre, provincia, input;
-        boolean valido;
+        String[] stringValues = {"Nombre", "Provincia"};
+        String[] sInputs = new String[stringValues.length+1];
+        boolean continuar = true;
 
-        valido = false;
-        input = "";
-        while(!valido && !input.equals("q"))
+        cpo = scanCp("Codigo Postal");
+        continuar = cpo != -1;
+
+        if(continuar)
         {
-            try
-            {
-                System.out.println("Codigo Postal");
-                input = sc.nextLine();
-                cpo = Integer.parseInt(input);
-                valido = comprobarCp(cpo);
-            } catch (Exception e){}
+            sInputs = cargarStringsSc(stringValues);
+            continuar = !sInputs[stringValues.length].equals("q");
         }
 
-        nombre = "";
-        while(nombre.equals("") && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Nombre");
-                input = sc.nextLine();
-                nombre = input;
-            } catch (Exception e){}
-        }
-
-        provincia = "";
-        while(provincia.equals("") && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Provincia");
-                input = sc.nextLine();
-                provincia = input;
-            } catch (Exception e){}
-        }
-
-
-        if (!input.equals("q") && ciudades.insertar(new Ciudad((Comparable)cpo, nombre, provincia)))
+        if (continuar && ciudades.insertar(new Ciudad((Comparable)cpo, sInputs[0], sInputs[1])))
         {
             System.out.println("Insertado con exito");
             if (rutas.insertarVertice((Comparable)cpo))
@@ -231,198 +357,111 @@ public class MudanzasCompartidas {
 
     public void insertarSolicitud()
     {
-        int cp1, cp2, metrosCubicos, bultos;
         boolean estaPago;
-        String nombre, fecha, claveCliente, domicilioRetiro, domicilioEntrega, input;
+        String input;
+
+        String[] stringValues = {"Nombre", "Fecha", "Domicilio Retiro", "Domicilio Entrega"};
+        String[] intValues = {"Metros Cubicos", "Bultos"};
+        String[] sInputs = new String[stringValues.length+1];
+        int[] iInputs = new int[intValues.length+1];
+
         Solicitud solicitud;
         Ciudad ciudadOrigen, ciudadDestino;
-        Object cliente;
+        Cliente cliente;
+        boolean continuar = true;
 
-        input = "";
-        ciudadOrigen = null;
-        while(ciudadOrigen == null && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Codigo Postal Origen");
-                input = sc.nextLine();
-                cp1 = Integer.parseInt(input);
-                comprobarCp(cp1);
-                ciudadOrigen = (Ciudad)this.ciudades.obtener((Comparable)cp1);
-            } catch (Exception e){}
-        }
+        ciudadOrigen = scanCiudad("Origen");
+        continuar = ciudadOrigen != null;
 
         ciudadDestino = null;
-        while(ciudadDestino == null && !input.equals("q"))
+        if(continuar)
         {
-            try
-            {
-                System.out.println("Codigo Postal Destino");
-                input = sc.nextLine();
-                cp2 = Integer.parseInt(input);
-                comprobarCp(cp2);
-                ciudadDestino = (Ciudad)this.ciudades.obtener(cp2);
-            } catch (Exception e){}
+            ciudadDestino = scanCiudad("Destino");
+            continuar = ciudadDestino != null;
         }
 
-        nombre = "";
-        while(nombre.equals("") && !input.equals("q"))
+        if(continuar)
         {
-            try
-            {
-                System.out.println("Nombre");
-                input = sc.nextLine();
-                nombre = input;
-            } catch (Exception e){}
+            sInputs = cargarStringsSc(stringValues);
+            continuar = !sInputs[stringValues.length].equals("q");
         }
 
-        fecha = "";
-        while(!fecha.equals("") && !input.equals("q"))
+        if(continuar)
         {
-            try
-            {
-                System.out.println("Fecha");
-                input = sc.nextLine();
-                fecha = input;
-            } catch (Exception e){}
+            iInputs = cargarIntsSc(intValues);
+            continuar = !(iInputs[intValues.length] == -1);
         }
 
         cliente = null;
-        claveCliente = "";
-        while(cliente == null && !claveCliente.equals("q") && !input.equals("q"))
+        if(continuar)
         {
-            try{
-                System.out.println("Clave Cliente (ej: dni12345678)");
-                input = sc.nextLine();
-                claveCliente = input;
-                comprobarClaveCliente(claveCliente);
-                cliente = clientes.obtener(claveCliente);
-            } catch(Exception e){};
-        }
-
-        metrosCubicos = -1;
-        while(metrosCubicos < 0 && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Metros Cubicos");
-                input = sc.nextLine();
-                metrosCubicos = Integer.parseInt(input);
-            } catch (Exception e){}
-        }
-
-        bultos = -1;
-        while(bultos < 0 && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Cantidad Bultos");
-                input = sc.nextLine();
-                bultos = Integer.parseInt(input);
-            } catch (Exception e){}
-        }
-
-        domicilioRetiro = "";
-        while(domicilioRetiro.equals("") && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Domicilio Retiro");
-                input = sc.nextLine();
-                domicilioRetiro = input;
-            } catch (Exception e){}
-        }
-
-        domicilioEntrega = "";
-        while(domicilioEntrega.equals("") && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Domicilio Entrega");
-                input = sc.nextLine();
-                domicilioEntrega = input;
-            } catch (Exception e){}
+            cliente = scanCliente();
+            continuar = cliente != null;
         }
 
         estaPago = false;
-        input = !input.equals("q") ? "" : "q";
-        while(!(input.equals("y") || input.equals("n") || input.equals("q")))
+        if(continuar)
         {
-            try
+            estaPago = false;
+            input = "";
+            while(!(input.equals("y") || input.equals("n") || input.equals("q")))
             {
-                System.out.println("Esta Pago? y/n");
-                input = sc.nextLine();
-                estaPago = input == "y";
-            } catch (Exception e){}
+                try
+                {
+                    System.out.println("Esta Pago? y/n");
+                    input = sc.nextLine();
+                    estaPago = input == "y";
+                } catch (Exception e){}
+            }
+            continuar = !input.equals("q");
         }
 
-        if(!input.equals("q"))
+        if(continuar)
         {
-            solicitud = new Solicitud(ciudadDestino, nombre, fecha, cliente, metrosCubicos, bultos, domicilioRetiro, domicilioEntrega, estaPago);
+            solicitud = new Solicitud(ciudadDestino, sInputs[0], sInputs[1], cliente, iInputs[0], iInputs[1], sInputs[2], sInputs[3], estaPago);
             if(ciudadOrigen.insertarSolicitud(solicitud))
                 System.out.println("Solicitud creada con exito");
         }
-            
-            /*
-            Lista solicitudes = ciudadOrigen.obtenerSolicitudes(cp2);
+    }
 
-            if(solicitudes != null)
-                solicitudes.insertar(new Solicitud(cp2, nombre, fecha, cliente, metrosCubicos, bultos, domicilioRetiro, domicilioEntrega, estaPago), 1);
-            else
-            {
-                solicitudes = new Lista();
-                solicitudes.insertar(new Solicitud(cp2, nombre, fecha, cliente, metrosCubicos, bultos, domicilioRetiro, domicilioEntrega, estaPago), 1);
-                ciudadOrigen.insertarSolicitud(solicitudes);
-            }
-            */
+    public Ciudad scanCiudad(String message)
+    {
+        Ciudad ciudad = null;
+        int cp = 0;
+        while(cp != -1 && ciudad == null)
+        {
+            cp = scanCp("Codigo Postal " + message);
+            ciudad = (Ciudad)this.ciudades.obtener((Comparable)cp);
+        }
+        return ciudad;
     }
 
     public void mostrarSolicitudes()
     {
-        int cp1, cp2;
-        String input = "";
         Ciudad ciudadOrigen, ciudadDestino;
         Lista solicitudes;
+        boolean continuar;
 
-        ciudadOrigen = null;
-        while(ciudadOrigen == null && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println("Codigo Postal Origen");
-                input = sc.nextLine();
-                cp1 = Integer.parseInt(input);
-                comprobarCp(cp1);
-                ciudadOrigen = (Ciudad)ciudades.obtener(cp1);
-            }
-            catch (Exception e)
-            {}
-        }
+        ciudadOrigen = scanCiudad("Codigo Postal Origen");
+        continuar = ciudadOrigen != null;
 
         ciudadDestino = null;
-        while(ciudadDestino == null && !input.equals("q"))
+        if(continuar)
         {
-            try
-            {
-                System.out.println("Codigo Postal Destino");
-                input = sc.nextLine();
-                cp2 = Integer.parseInt(input);
-                comprobarCp(cp2);
-                ciudadDestino = (Ciudad)ciudades.obtener(cp2);
-                if(ciudadDestino != null)
-                {
-                    solicitudes = ciudadOrigen.obtenerSolicitudes(cp2);
-                    System.out.println("Solicitudes entre las ciudades:");
-                    System.out.println(ciudadOrigen + " y " + ciudadDestino);
-                    System.out.println(solicitudes);
-                }
-                else
-                {
-                    System.out.println("Ciudad no encontrada para el codigo dado");
-                }
-            }
-            catch (Exception e)
-            {}
+            ciudadDestino = scanCiudad("Codigo Postal Destino");
+            continuar = ciudadDestino != null;
+        }
+
+        if(continuar)
+        {
+            solicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
+            System.out.println("Solicitudes entre las ciudades:");
+            System.out.println(ciudadOrigen + " y " + ciudadDestino);
+            System.out.println(solicitudes);
+        }
+        else
+        {
+            System.out.println("Ciudad no encontrada para el codigo dado");
         }
     }
 
