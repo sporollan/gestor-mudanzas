@@ -28,4 +28,10 @@ public class Cliente {
     {
         return nombres + " " + apellidos;
     }
+
+    @Override
+    public boolean equals(Object clave)
+    {
+        return this.clave.equals(clave);
+    }
 }
