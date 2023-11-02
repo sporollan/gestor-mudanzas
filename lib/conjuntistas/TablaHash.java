@@ -36,7 +36,6 @@ public class TablaHash {
         int pos = nuevoElem.hashCode() % this.TAMANIO;
         Nodo aux = this.tabla[pos];
         boolean encontrado = false;
-
         while(!encontrado && aux != null)
         {
             encontrado = aux.getElem().equals(nuevoElem);
@@ -78,7 +77,13 @@ public class TablaHash {
         int pos = clave.hashCode() % this.TAMANIO;
         if(pos < 0)
             pos = pos *-1;
-        return tabla[pos] != null ? tabla[pos].getElem() : null;
+        Nodo aux = this.tabla[pos];
+
+        while(aux != null && !aux.getElem().equals(clave))
+        {
+            aux = aux.getEnlace();
+        }
+        return aux == null ? null : aux.getElem();
     }
 
     
