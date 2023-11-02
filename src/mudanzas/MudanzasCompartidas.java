@@ -366,7 +366,7 @@ public class MudanzasCompartidas {
         boolean estaPago;
         String input;
 
-        String[] stringValues = {"Nombre", "Fecha", "Domicilio Retiro", "Domicilio Entrega"};
+        String[] stringValues = {"Fecha", "Domicilio Retiro", "Domicilio Entrega"};
         String[] intValues = {"Metros Cubicos", "Bultos"};
         String[] sInputs = new String[stringValues.length+1];
         int[] iInputs = new int[intValues.length+1];
@@ -424,7 +424,7 @@ public class MudanzasCompartidas {
 
         if(continuar)
         {
-            solicitud = new Solicitud(ciudadDestino, sInputs[0], sInputs[1], cliente, iInputs[0], iInputs[1], sInputs[2], sInputs[3], estaPago);
+            solicitud = new Solicitud(ciudadDestino, sInputs[0], cliente, iInputs[0], iInputs[1], sInputs[1], sInputs[2], estaPago);
             if(ciudadOrigen.insertarSolicitud(solicitud))
                 System.out.println("Solicitud creada con exito");
         }
@@ -491,10 +491,10 @@ public class MudanzasCompartidas {
     {
         StringTokenizer tokenizer = new StringTokenizer(data, ";");
         String tipo = tokenizer.nextToken();
-        String claveCliente, apellido, nombre, telefono, email;
         
         if(tipo.equals("P"))
         {
+            String claveCliente, apellido, nombre, telefono, email;
             claveCliente = tokenizer.nextToken();
             claveCliente = claveCliente + tokenizer.nextToken();
             apellido = tokenizer.nextToken();
@@ -504,6 +504,42 @@ public class MudanzasCompartidas {
 
             if(clientes.insertar(new Cliente(claveCliente, nombre, apellido, telefono, email)))
                 System.out.println("Cliente insertado");
+        }
+        else if (tipo.equals("C"))
+        {
+            Comparable codigo;
+            String nombre, provincia;
+
+            codigo = Integer.parseInt(tokenizer.nextToken());
+            nombre = tokenizer.nextToken();
+            provincia = tokenizer.nextToken();
+
+            if(ciudades.insertar(new Ciudad(codigo, nombre, provincia)))
+                System.out.println("Ciudad insertada");
+        }
+        else if (tipo.equals("S"))
+        {
+            // S;5000;8300;15/06/2023;DNI;35678965;13;5;Sarmiento 3400;Roca 2100;T
+            Comparable cpo, cpd;
+            String fecha;
+            String claveCliente;
+            int metrosCubicos, bultos;
+            String dirRetiro, dirEntrega;
+            Boolean esPago;
+
+            cpo = Integer.parseInt(tokenizer.nextToken());
+            cpd = Integer.parseInt(tokenizer.nextToken());
+            fecha = tokenizer.nextToken();
+            claveCliente = tokenizer.nextToken() + tokenizer.nextToken();
+            metrosCubicos = Integer.parseInt(tokenizer.nextToken());
+            bultos = Integer.parseInt(tokenizer.nextToken());
+            dirRetiro = tokenizer.nextToken();
+            dirEntrega = tokenizer.nextToken();
+            esPago = tokenizer.nextToken().equals("T");
+
+            Ciudad ciudadOrigen = (Ciudad)ciudades.obtener(cpo);
+            if(ciudadOrigen.insertarSolicitud(new Solicitud((Ciudad)ciudades.obtener(cpd), fecha, clientes.obtener(claveCliente), metrosCubicos, bultos, dirRetiro, dirEntrega, esPago)))
+                System.out.println("Solicitud insertada");
         }
     }
 

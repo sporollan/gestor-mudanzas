@@ -2,7 +2,6 @@ package src.mudanzas;
 
 public class Solicitud implements Comparable{
     Comparable destino;
-    String nombre;
     String fecha;
     Object cliente;
     int metrosCubicos;
@@ -11,10 +10,9 @@ public class Solicitud implements Comparable{
     String domicilioEntrega;
     boolean estaPago;
 
-    public Solicitud(Comparable destino, String nombre, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
+    public Solicitud(Comparable destino, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
     {   
         this.destino = destino;
-        this.nombre = nombre;
         this.fecha = fecha;
         this.cliente = cliente;
         this.metrosCubicos = metrosCubicos;
@@ -42,7 +40,7 @@ public class Solicitud implements Comparable{
 
     public String toString()
     {
-        return this.nombre;
+        return destino + ", " + fecha + ", " + cliente;
     }
 
     @Override
