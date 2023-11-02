@@ -1,6 +1,9 @@
 package src.mudanzas;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import lib.conjuntistas.ArbolAVL;
 import lib.conjuntistas.Grafo;
@@ -50,13 +53,16 @@ public class MudanzasCompartidas {
         while(!i.equals("q"))
         {
             System.out.println("Gestionar Clientes");
-            System.out.println("1. Mostrar");
+            System.out.println("1. Listar");
             System.out.println("2. Insertar");
+            System.out.println("3. Mostrar");
             i = sc.nextLine();
             if(i.equals("1"))
                 System.out.println(clientes);
             if(i.equals("2"))
                 insertarCliente();
+            if(i.equals("3"))
+                System.out.println(scanCliente());
         }  
     }
 
@@ -462,6 +468,42 @@ public class MudanzasCompartidas {
         else
         {
             System.out.println("Ciudad no encontrada para el codigo dado");
+        }
+    }
+
+    public void cargarArchivo(String path)
+    {
+        try {
+        File file = new File(path);
+        Scanner myReader = new Scanner(file);
+        while (myReader.hasNextLine()) {
+            String data = myReader.nextLine();
+            cargar(data);
+        }
+        myReader.close();
+        } catch (FileNotFoundException e) {
+        System.out.println("An error occurred.");
+        e.printStackTrace();
+        }
+    }
+
+    public void cargar(String data)
+    {
+        StringTokenizer tokenizer = new StringTokenizer(data, ";");
+        String tipo = tokenizer.nextToken();
+        String claveCliente, apellido, nombre, telefono, email;
+        
+        if(tipo.equals("P"))
+        {
+            claveCliente = tokenizer.nextToken();
+            claveCliente = claveCliente + tokenizer.nextToken();
+            apellido = tokenizer.nextToken();
+            nombre = tokenizer.nextToken();
+            telefono = tokenizer.nextToken();
+            email = tokenizer.nextToken();
+
+            if(clientes.insertar(new Cliente(claveCliente, nombre, apellido, telefono, email)))
+                System.out.println("Cliente insertado");
         }
     }
 
