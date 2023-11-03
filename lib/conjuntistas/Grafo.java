@@ -133,4 +133,50 @@ public class Grafo {
         }
         return exito;
     }
+    public Object obtener(Object origen, Object destino)
+    {
+        Object etiqueta = null;
+        NodoVert auxO = null;
+        NodoVert auxD = null;
+        NodoVert aux = this.inicio;
+
+        while((auxO == null || auxD == null) && aux != null)
+        {
+            if (aux.getElem().equals(origen)) auxO=aux;
+            if (aux.getElem().equals(destino)) auxD=aux;
+            aux = aux.getSigVertice();
+        }
+
+        if(auxO != null && auxD != null)
+        {
+            Lista visitados = new Lista();
+            etiqueta = obtenerAux(auxO, null, destino, visitados);
+        }
+        return etiqueta;
+    }
+
+    private Object obtenerAux(NodoVert n, Object etiqueta, Object dest, Lista vis)
+    {
+        Object ret = null;
+        if(n != null)
+        {
+            if(!n.getElem().equals(dest))
+            {
+                vis.insertar(n.getElem(), vis.longitud() + 1);
+                NodoAdy ady = n.getPrimerAdy();
+                while (etiqueta == null && ady != null)
+                {
+                    if(vis.localizar(ady.getVertice().getElem()) < 0)
+                    {
+                        etiqueta = obtenerAux(ady.getVertice(), ady.getEtiqueta(), dest, vis);
+                    }
+                    ady = ady.getSigAdyacente();
+                }
+            }else
+            {
+                ret = etiqueta;
+            }
+        }
+        return etiqueta;
+    }
 }

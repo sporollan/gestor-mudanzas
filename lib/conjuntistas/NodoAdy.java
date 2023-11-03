@@ -23,5 +23,9 @@ public class NodoAdy {
     public void setSigAdyacente(NodoAdy sigAdyacente) {
         this.sigAdyacente = sigAdyacente;
     }
+    public Object getEtiqueta()
+    {
+        return this.etiqueta;
+    }
     
 }
