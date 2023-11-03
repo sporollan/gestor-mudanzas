@@ -186,6 +186,22 @@ public class MudanzasCompartidas {
         return i;
     }
 
+    public float scanFloat(String message)
+    {
+        float i = -1;
+        String input ="";
+        while(i < 1 && !input.equals("q"))
+        {
+            try
+            {
+                System.out.println(message);
+                input = sc.nextLine();
+                i = Float.parseFloat(input);
+            } catch (Exception e){}
+        }
+        return i;
+    }
+
     public void mostrarMenuRutas()
     {
         String i = "";
@@ -223,7 +239,12 @@ public class MudanzasCompartidas {
         if(continuar)
         {
             if(rutas.existeCamino(cpo, cpd))
+            {
                 System.out.println("La ruta existe");
+                System.out.println("Desde " + this.ciudades.obtener(cpo));
+                System.out.println("Hasta " + this.ciudades.obtener(cpd));
+                System.out.println("Distancia " + rutas.obtener(cpo, cpd));
+            }
             else
                 System.out.println("La ruta no existe");
         }
@@ -273,7 +294,7 @@ public class MudanzasCompartidas {
     {
         int cpo = -1;
         int cpd = -1;
-        int distancia = -1;
+        float distancia = -1;
         boolean continuar = true;
 
         cpo = scanCp("Origen(cp)");
@@ -287,7 +308,7 @@ public class MudanzasCompartidas {
 
         if(continuar)
         {
-            distancia = scanInt("Distancia");
+            distancia = scanFloat("Distancia");
             continuar = distancia != -1;
         }
 
@@ -515,7 +536,11 @@ public class MudanzasCompartidas {
             provincia = tokenizer.nextToken();
 
             if(ciudades.insertar(new Ciudad(codigo, nombre, provincia)))
+            {
                 System.out.println("Ciudad insertada");
+                if (rutas.insertarVertice(codigo))
+                    System.out.println("Vertice creado con exito");
+            }
         }
         else if (tipo.equals("S"))
         {
@@ -540,6 +565,19 @@ public class MudanzasCompartidas {
             Ciudad ciudadOrigen = (Ciudad)ciudades.obtener(cpo);
             if(ciudadOrigen.insertarSolicitud(new Solicitud((Ciudad)ciudades.obtener(cpd), fecha, clientes.obtener(claveCliente), metrosCubicos, bultos, dirRetiro, dirEntrega, esPago)))
                 System.out.println("Solicitud insertada");
+        }
+        else if (tipo.equals("R"))
+        {
+            Comparable cpo, cpd;
+            float distancia;
+            cpo = Integer.parseInt(tokenizer.nextToken());
+            cpd = Integer.parseInt(tokenizer.nextToken());
+            distancia = Float.parseFloat(tokenizer.nextToken());
+
+            if(rutas.insertarArco(cpo, cpd, distancia))
+                System.out.println("Ruta insertada");
+            else
+                System.out.println("Ruta no insertada");
         }
     }
 
