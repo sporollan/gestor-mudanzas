@@ -179,4 +179,67 @@ public class Grafo {
         }
         return etiqueta;
     }
+
+    public Lista obtenerCaminoPorDistancia(Object origen, Object destino)
+    {
+        NodoVert auxO = null;
+        NodoVert auxD = null;
+        NodoVert aux = this.inicio;
+        Lista caminos = new Lista();
+        caminos.insertar((float)999999, 1);
+
+        while((auxO == null || auxD == null) && aux != null)
+        {
+            if (aux.getElem().equals(origen)) auxO=aux;
+            if (aux.getElem().equals(destino)) auxD=aux;
+            aux = aux.getSigVertice();
+        }
+
+        if(auxO != null && auxD != null)
+        {
+            Lista visitados = new Lista();
+            caminos = obtenerCaminoPorDistanciaAux(auxO, 0, destino, visitados, caminos);
+        }
+        return caminos;
+    }
+
+    public Lista obtenerCaminoPorDistanciaAux(NodoVert n, float distancia, Object dest, Lista vis, Lista caminos)
+    {
+        if(n != null)
+        {
+            if(!n.getElem().equals(dest))
+            {
+                vis.insertar(n.getElem(), vis.longitud() + 1);
+                NodoAdy ady = n.getPrimerAdy();
+                float newDistancia;
+                while (ady != null)
+                {
+                    newDistancia = (float)ady.getEtiqueta() + distancia;
+                    if(vis.localizar(ady.getVertice().getElem()) < 0 && newDistancia < (float)caminos.recuperar(1))
+                    { 
+                        Lista v = vis.clone();
+                        System.out.println(n.getElem() + " " + ady.getVertice().getElem() + " " + ady.getEtiqueta());
+                        obtenerCaminoPorDistanciaAux(ady.getVertice(), distancia + (float)ady.getEtiqueta(), dest, v, caminos);
+                    }
+                    ady = ady.getSigAdyacente();
+                }
+            }else
+            {
+                vis.insertar(n.getElem(), vis.longitud()+1);
+                vis.insertar(distancia, vis.longitud()+1);
+                caminos.insertar(vis, caminos.longitud()+1);
+                if(distancia < (float)caminos.recuperar(1))
+                {
+                    caminos.eliminar(1);
+                    caminos.insertar(distancia, 1);
+                }
+            }
+        }
+        return caminos;
+    }
+
+    public Lista obtenerCaminoPorNodo()
+    {
+        return new Lista();
+    }
 }
