@@ -116,6 +116,7 @@ public class Lista implements Comparable{
         return this.len == 0;
     }
 
+    @Override
     public Lista clone()
     {
         Lista l = new Lista();
@@ -123,6 +124,8 @@ public class Lista implements Comparable{
         if(cabeceraAuxO != null)
         {
             l.cabecera = new Nodo(cabeceraAuxO.getElem(), null);
+            l.len+=1;
+
             cabeceraAuxO = cabeceraAuxO.getEnlace();
         }
         Nodo cabeceraAuxN = l.cabecera;
@@ -131,6 +134,7 @@ public class Lista implements Comparable{
             cabeceraAuxN.setEnlace(new Nodo(cabeceraAuxO.getElem(), null));
             cabeceraAuxN = cabeceraAuxN.getEnlace();
             cabeceraAuxO = cabeceraAuxO.getEnlace();
+            l.len+=1;
         }
         return l;
     }
@@ -140,6 +144,7 @@ public class Lista implements Comparable{
         this.cabecera = null;
     }
 
+    @Override
     public String toString()
     {
         String lista = "[";
@@ -160,6 +165,7 @@ public class Lista implements Comparable{
         return lista + "]";
     }
 
+    @Override
     public int hashCode()
     {
         return this.cabecera.getElem().hashCode();

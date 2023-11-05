@@ -49,10 +49,12 @@ public class TestLista extends Test{
             exito = this._assertEquals(vac, esperados[5], "TestEsVacia"+casosI, v);
         }
 
+
         if(exito)
         {
             Lista lista2 = lista.clone();
             exito = this._assertEquals(lista2.toString(), esperados[1], "TestClone"+casosI, v);
+            exito = exito && this._assertEquals(lista2.longitud(), esperados[6], "TestCloneLongitud", v);
         }
 
         if(exito)
@@ -80,11 +82,11 @@ public class TestLista extends Test{
             {1, 2, 3, 4, 3, 2, 'd'}
         };
         Object[][] esperadosLista = {
-            {"[]", "[]", null, -1, 0, true},
-            {"[6, 7, 8, 9]", "[7, 8, 9]", 7, 1, 3, false},
-            {"[1, 2, 3, 4]", "[1, 3, 4]", 3, 2, 3, false},
-            {"[1]", "[]", null, -1, 0, true},
-            {"[a, b, c, d]", "[a, b, d]", 'b', 3, 3, false}
+            {"[]", "[]", null, -1, 0, true, 0},
+            {"[6, 7, 8, 9]", "[7, 8, 9]", 7, 1, 3, false, 3},
+            {"[1, 2, 3, 4]", "[1, 3, 4]", 3, 2, 3, false, 3},
+            {"[1]", "[]", null, -1, 0, true, 0},
+            {"[a, b, c, d]", "[a, b, d]", 'b', 3, 3, false, 3}
         };
         return super.runTests(casosLista, indicesLista, esperadosLista, v);
     }
