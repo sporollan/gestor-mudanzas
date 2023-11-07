@@ -31,7 +31,7 @@ public class MudanzasCompartidas {
         this.fileManager = new FileManager(inputReader, clientes, ciudades, rutas);
     }
 
-    public void gestionarMenu()
+    public void gestionar()
     {
         String seleccion = "";
         while(!seleccion.equals("q"))
@@ -62,6 +62,6 @@ public class MudanzasCompartidas {
     public void run()
     {
         fileManager.cargarArchivo("files/inicial.txt");
-        gestionarMenu();
+        gestionar();
     }
 }
