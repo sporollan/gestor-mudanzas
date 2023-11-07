@@ -1,6 +1,7 @@
 package src.mudanzas;
 
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import lib.conjuntistas.ArbolAVL;
 import lib.conjuntistas.TablaHash;
@@ -17,7 +18,24 @@ public class InputReader {
         this.ciudades = ciudades;
     }
 
-    private boolean comprobarCp(int cp) throws Exception
+    public void comprobarFecha(String fecha) throws Exception
+    {
+        StringTokenizer tokenizer = new StringTokenizer(fecha, "/");
+        if(fecha.length() != 10)
+            throw new Exception();
+        int dia = Integer.parseInt(tokenizer.nextToken());
+        if(dia < 1 || dia > 30)
+            throw new Exception();
+        int mes = Integer.parseInt(tokenizer.nextToken());
+        if(mes < 1 || mes > 12)
+            throw new Exception();
+        String y = tokenizer.nextToken();
+        if(y.length() != 4)
+            throw new Exception();
+        Integer.parseInt(y);
+    }
+
+    public boolean comprobarCp(int cp) throws Exception
     {
         int m;
         m = cp / 1000;
@@ -29,7 +47,7 @@ public class InputReader {
         return true;
     }
 
-    private boolean comprobarClaveCliente(String cc) throws Exception
+    public boolean comprobarClaveCliente(String cc) throws Exception
     {
         if(cc.length() != 11)
         {
@@ -45,7 +63,7 @@ public class InputReader {
         {
             try
             {
-                System.out.println(message);
+                System.out.print(message + ": ");
                 s = sc.nextLine();
             } catch (Exception e){}
         }
@@ -87,6 +105,7 @@ public class InputReader {
         }
         return cliente;
     }
+
     public Ciudad scanCiudad(String message)
     {
         Ciudad ciudad = null;
@@ -131,6 +150,7 @@ public class InputReader {
 
         return scannedInputs;
     }
+
     public int[] cargarIntsSc(String[] intValues)
     {
         int sL = intValues.length;
