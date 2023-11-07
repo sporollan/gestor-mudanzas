@@ -13,518 +13,53 @@ import lib.lineales.dinamicas.Lista;
 public class MudanzasCompartidas {
     boolean isRunning;
     Scanner sc;
-    ArbolAVL ciudades;
     TablaHash clientes;
     Grafo rutas;
+    ArbolAVL ciudades;
+
+    CiudadesManager ciudadesManager;
+    InputReader inputReader;
+    SolicitudesManager solicitudesManager;
+    RutasManager rutasManager;
+    ClientesManager clientesManager;
 
     public MudanzasCompartidas()
     {
-        sc = new Scanner(System.in);
+        rutas = new Grafo();
         ciudades = new ArbolAVL();
         clientes = new TablaHash();
-        rutas = new Grafo();
-    }
-
-    public void mostrarMenu()
-    {
-        String i = "";
-        while(!i.equals("q"))
-        {
-            System.out.println("Sistema de Mudanzas Compartidas");
-            System.out.println("1. Gestionar Ciudades");
-            System.out.println("2. Gestionar Solicitudes");
-            System.out.println("3. Gestionar Rutas");
-            System.out.println("4. Gestionar Clientes");
-            i = sc.nextLine();
-            if(i.equals("1"))
-                mostrarMenuCiudades();
-            if(i.equals("2"))
-                mostrarMenuSolicitudes();
-            if(i.equals("3"))
-                mostrarMenuRutas();
-            if(i.equals("4"))
-                mostrarMenuClientes();
-        }
-    }
-
-    public void mostrarMenuClientes()
-    {
-        String i = "";
-        while(!i.equals("q"))
-        {
-            System.out.println("Gestionar Clientes");
-            System.out.println("1. Listar");
-            System.out.println("2. Insertar");
-            System.out.println("3. Mostrar");
-            i = sc.nextLine();
-            if(i.equals("1"))
-                System.out.println(clientes);
-            if(i.equals("2"))
-                insertarCliente();
-            if(i.equals("3"))
-                System.out.println(scanCliente());
-        }  
-    }
-
-    public void insertarCliente()
-    {
-        String[] stringValues = {
-            "Nombres", "Apellidos", "Telefono", "Email"
-        };
-        String[] sInputs = new String[stringValues.length+1];
-        String clave;
-        boolean continuar;
-        
-        // cargar clave de cliente
-        clave = scanClaveCliente();
-        continuar = !clave.equals("q");
-
-        // cargar datos de cliente
-        if(continuar)
-        {
-            sInputs = cargarStringsSc(stringValues);
-            continuar = !sInputs[stringValues.length].equals("q");
-        }
-
-        // almacenar los datos en la estructura
-        if(continuar)
-        {
-            if(clientes.insertar(new Cliente(clave, sInputs[0], sInputs[1], sInputs[2], sInputs[3])))
-                System.out.println("Cliente insertado con exito");
-        }
-    }
-
-    public Cliente scanCliente()
-    {
-        Cliente cliente = null;
-        String c = "";
-        while(!c.equals("q") && cliente == null)
-        {
-            c = scanClaveCliente();
-            cliente = (Cliente)this.clientes.obtener(c);
-        }
-        return cliente;
-    }
-
-    public String scanClaveCliente()
-    {
-        String clave = "";
-        boolean valida = false;
-        while(!valida && !clave.equals("q"))
-        {
-            try
-            {
-                System.out.println("Clave Cliente (ej. dni12345678)");
-                clave = sc.nextLine();
-                valida = comprobarClaveCliente(clave);
-            } catch (Exception e){}
-        }
-        return clave;
-    }
-
-    public String[] cargarStringsSc(String[] stringValues)
-    {
-        int sL = stringValues.length;
-        String[] scannedInputs = new String[sL+1];
-        int i = 0;
-        do
-        {
-            scannedInputs[i] = scanString(stringValues[i]);
-            i+=1;
-        } while(!scannedInputs[i-1].equals("q") && i < sL);
-
-        // se almacena el ultimo valor ingresado al final, para leer q
-        scannedInputs[sL] = scannedInputs[i-1];
-
-        return scannedInputs;
-    }
-
-    public String scanString(String message)
-    {
-        String s = "";
-        while(s.equals("") && !s.equals("q"))
-        {
-            try
-            {
-                System.out.println(message);
-                s = sc.nextLine();
-            } catch (Exception e){}
-        }
-        return s;
-    }
-
-    public int[] cargarIntsSc(String[] intValues)
-    {
-        int sL = intValues.length;
-        int[] scannedInputs = new int[sL+1];
-        int i = 0;
-        do
-        {
-            scannedInputs[i] = scanInt(intValues[i]);
-            i+=1;
-        } while(scannedInputs[i-1] != -1 && i < sL);
-
-        // se almacena el ultimo valor ingresado al final, para leer q
-        scannedInputs[sL] = scannedInputs[i-1];
-
-        return scannedInputs;
-    }
-
-    public int scanInt(String message)
-    {
-        int i = -1;
-        String input ="";
-        while(i < 1 && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println(message);
-                input = sc.nextLine();
-                i = Integer.parseInt(input);
-            } catch (Exception e){}
-        }
-        return i;
-    }
-
-    public float scanFloat(String message)
-    {
-        float i = -1;
-        String input ="";
-        while(i < 1 && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println(message);
-                input = sc.nextLine();
-                i = Float.parseFloat(input);
-            } catch (Exception e){}
-        }
-        return i;
-    }
-
-    public void mostrarMenuRutas()
-    {
-        String i = "";
-        while(!i.equals("q"))
-        {
-            System.out.println("Gestionar Rutas");
-            System.out.println("1. Mostrar");
-            System.out.println("2. Insertar");
-            System.out.println("3. Consultar Ruta");
-            System.out.println("4. Encontrar camino por distancia");
-            i = sc.nextLine();
-            if(i.equals("1"))
-                System.out.println(rutas.listarEnProfundidad());
-            if(i.equals("2"))
-                insertarRuta();
-            if(i.equals("3"))
-                consultarRuta();
-            if(i.equals("4"))
-                consultarRutaPorDistancia();
-        }  
-    }
-
-    public void consultarRutaPorDistancia()
-    {
-        int cpo = -1;
-        int cpd = -1;
-        boolean continuar = true;
-
-        cpo = scanCp("Origen(cp)");
-        continuar = cpo != -1;
-
-        if(continuar)
-        {
-            cpd = scanCp("Destino(cp)");
-            continuar = cpd != -1;
-        }
-
-        if(continuar)
-        {
-            Lista rutas = this.rutas.obtenerCaminoPorDistancia(cpo, cpd);
-            Lista ruta;
-            for(int i = 2; i < rutas.longitud()+1; i++)
-            {
-                ruta = (Lista)rutas.recuperar(i);
-                for(int j = 1; j < ruta.longitud(); j++)
-                {
-                    System.out.println(this.ciudades.obtener((Comparable)ruta.recuperar(j)));
-                }
-                System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
-            }
-            System.out.println("Longitud min " + rutas.recuperar(1));
-        }
-    }
-
-    public void consultarRuta()
-    {
-        int cpo = -1;
-        int cpd = -1;
-        boolean continuar = true;
-
-        cpo = scanCp("Origen(cp)");
-        continuar = cpo != -1;
-
-        if(continuar)
-        {
-            cpd = scanCp("Destino(cp)");
-            continuar = cpd != -1;
-        }
-
-        if(continuar)
-        {
-            if(rutas.existeCamino(cpo, cpd))
-            {
-                System.out.println("La ruta existe");
-                System.out.println("Desde " + this.ciudades.obtener(cpo));
-                System.out.println("Hasta " + this.ciudades.obtener(cpd));
-                System.out.println("Distancia " + rutas.obtener(cpo, cpd));
-            }
-            else
-                System.out.println("La ruta no existe");
-        }
-    }
-
-    public int scanCp(String message)
-    {
-        String s = "";
-        int cp = -1;
-        boolean valido = false;
-        while(!valido && !s.equals("q"))
-        {
-            try
-            {
-                System.out.println(message);
-                s = sc.nextLine();
-                if(!s.equals("q"))
-                {
-                    cp = Integer.parseInt(s);
-                    valido = comprobarCp(cp);
-                }
-
-            } catch (Exception e){
-                cp = -1;
-            }
-        }
-        return cp;
-    }
-
-    public void mostrarMenuCiudades()
-    {
-        String i = "";
-        while(!i.equals("q"))
-        {
-            System.out.println("Gestionar Ciudades");
-            System.out.println("1. Mostrar");
-            System.out.println("2. Insertar");
-            i = sc.nextLine();
-            if(i.equals("1"))
-                System.out.println(ciudades.toString());
-            if(i.equals("2"))
-                insertarCiudad();
-        }
-    }
-
-    public void insertarRuta()
-    {
-        int cpo = -1;
-        int cpd = -1;
-        float distancia = -1;
-        boolean continuar = true;
-
-        cpo = scanCp("Origen(cp)");
-        continuar = cpo != -1;
-
-        if(continuar)
-        {
-            cpd = scanCp("Destino(cp)");
-            continuar = cpd != -1;
-        }
-
-        if(continuar)
-        {
-            distancia = scanFloat("Distancia");
-            continuar = distancia != -1;
-        }
-
-        if(continuar)
-        {
-            if(rutas.insertarArco(cpo, cpd, distancia))
-                System.out.println("Insertado con exito");
-        }
+        this.inputReader = new InputReader(clientes, ciudades);
+        this.ciudadesManager = new CiudadesManager(this.inputReader, ciudades, rutas);
+        this.solicitudesManager = new SolicitudesManager(inputReader, ciudades);
+        this.rutasManager = new RutasManager(inputReader, ciudades, rutas);
+        this.clientesManager = new ClientesManager(inputReader, clientes);
 
     }
 
-    public void mostrarMenuSolicitudes()
+    public void gestionarMenu()
     {
-        String i = "";
-        while(!i.equals("q"))
+        String seleccion = "";
+        while(!seleccion.equals("q"))
         {
-            System.out.println("Gestionar Solicitudes");
-            System.out.println("1. Mostrar");
-            System.out.println("2. Insertar");
-            i = sc.nextLine();
-            if(i.equals("1"))
-                mostrarSolicitudes();
-            if(i.equals("2"))
-                insertarSolicitud();
-        }
+            mostrarMenu();
+            seleccion = inputReader.scanString("Selecion:");
+            if(seleccion.equals("1"))
+                ciudadesManager.gestionar();
+            else if(seleccion.equals("2"))
+                solicitudesManager.gestionar();
+            else if(seleccion.equals("3"))
+                rutasManager.gestionar();
+            else if(seleccion.equals("4"))
+                clientesManager.gestionar();        }
     }
 
-    public void insertarCiudad()
+    private void mostrarMenu()
     {
-        int cpo = -1;
-        String[] stringValues = {"Nombre", "Provincia"};
-        String[] sInputs = new String[stringValues.length+1];
-        boolean continuar = true;
-
-        cpo = scanCp("Codigo Postal");
-        continuar = cpo != -1;
-
-        if(continuar)
-        {
-            sInputs = cargarStringsSc(stringValues);
-            continuar = !sInputs[stringValues.length].equals("q");
-        }
-
-        if (continuar && ciudades.insertar(new Ciudad((Comparable)cpo, sInputs[0], sInputs[1])))
-        {
-            System.out.println("Insertado con exito");
-            if (rutas.insertarVertice((Comparable)cpo))
-                System.out.println("Vertice creado con exito");
-        }
-    }
-
-    private boolean comprobarCp(int cp) throws Exception
-    {
-        int m;
-        m = cp / 1000;
-        if(m < 1 || m > 9)
-        {
-            System.out.println("Codigo Postal no valido");
-            throw new Exception();
-        }
-        return true;
-    }
-
-    private boolean comprobarClaveCliente(String cc) throws Exception
-    {
-        if(cc.length() != 11)
-        {
-            System.out.println("Clave Cliente no valida");
-            throw new Exception();
-        }
-        return true;
-    }
-
-    public void insertarSolicitud()
-    {
-        boolean estaPago;
-        String input;
-
-        String[] stringValues = {"Fecha", "Domicilio Retiro", "Domicilio Entrega"};
-        String[] intValues = {"Metros Cubicos", "Bultos"};
-        String[] sInputs = new String[stringValues.length+1];
-        int[] iInputs = new int[intValues.length+1];
-
-        Solicitud solicitud;
-        Ciudad ciudadOrigen, ciudadDestino;
-        Cliente cliente;
-        boolean continuar = true;
-
-        ciudadOrigen = scanCiudad("Origen");
-        continuar = ciudadOrigen != null;
-
-        ciudadDestino = null;
-        if(continuar)
-        {
-            ciudadDestino = scanCiudad("Destino");
-            continuar = ciudadDestino != null;
-        }
-
-        if(continuar)
-        {
-            sInputs = cargarStringsSc(stringValues);
-            continuar = !sInputs[stringValues.length].equals("q");
-        }
-
-        if(continuar)
-        {
-            iInputs = cargarIntsSc(intValues);
-            continuar = !(iInputs[intValues.length] == -1);
-        }
-
-        cliente = null;
-        if(continuar)
-        {
-            cliente = scanCliente();
-            continuar = cliente != null;
-        }
-
-        estaPago = false;
-        if(continuar)
-        {
-            estaPago = false;
-            input = "";
-            while(!(input.equals("y") || input.equals("n") || input.equals("q")))
-            {
-                try
-                {
-                    System.out.println("Esta Pago? y/n");
-                    input = sc.nextLine();
-                    estaPago = input == "y";
-                } catch (Exception e){}
-            }
-            continuar = !input.equals("q");
-        }
-
-        if(continuar)
-        {
-            solicitud = new Solicitud(ciudadDestino, sInputs[0], cliente, iInputs[0], iInputs[1], sInputs[1], sInputs[2], estaPago);
-            if(ciudadOrigen.insertarSolicitud(solicitud))
-                System.out.println("Solicitud creada con exito");
-        }
-    }
-
-    public Ciudad scanCiudad(String message)
-    {
-        Ciudad ciudad = null;
-        int cp = 0;
-        while(cp != -1 && ciudad == null)
-        {
-            cp = scanCp("Codigo Postal " + message);
-            ciudad = (Ciudad)this.ciudades.obtener((Comparable)cp);
-        }
-        return ciudad;
-    }
-
-    public void mostrarSolicitudes()
-    {
-        Ciudad ciudadOrigen, ciudadDestino;
-        Lista solicitudes;
-        boolean continuar;
-
-        ciudadOrigen = scanCiudad("Codigo Postal Origen");
-        continuar = ciudadOrigen != null;
-
-        ciudadDestino = null;
-        if(continuar)
-        {
-            ciudadDestino = scanCiudad("Codigo Postal Destino");
-            continuar = ciudadDestino != null;
-        }
-
-        if(continuar)
-        {
-            solicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
-            System.out.println("Solicitudes entre las ciudades:");
-            System.out.println(ciudadOrigen + " y " + ciudadDestino);
-            System.out.println(solicitudes);
-        }
-        else
-        {
-            System.out.println("Ciudad no encontrada para el codigo dado");
-        }
+        System.out.println("Sistema de Mudanzas Compartidas");
+        System.out.println("1. Gestionar Ciudades");
+        System.out.println("2. Gestionar Solicitudes");
+        System.out.println("3. Gestionar Rutas");
+        System.out.println("4. Gestionar Clientes");
     }
 
     public void cargarArchivo(String path)
@@ -619,6 +154,6 @@ public class MudanzasCompartidas {
     public void run()
     {
         isRunning = true;
-        mostrarMenu();
+        gestionarMenu();
     }
 }
