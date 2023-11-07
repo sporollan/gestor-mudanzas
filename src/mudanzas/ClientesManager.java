@@ -36,7 +36,7 @@ public class ClientesManager {
         System.out.println("3. Mostrar");
     }
 
-    public void cargarDatos()
+    private void cargarDatos()
     {
         String[] stringValues = {
             "Nombres", "Apellidos", "Telefono", "Email"
