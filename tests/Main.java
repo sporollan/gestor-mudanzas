@@ -1,8 +1,8 @@
 package tests;
 
-import tests.lineales.dinamicas.TestLista;
-import tests.conjuntistas.TestArbolAVL;
-import tests.conjuntistas.TestTablaHash;
+import tests.estructuras.conjuntistas.TestArbolAVL;
+import tests.estructuras.conjuntistas.TestTablaHash;
+import tests.estructuras.lineales.dinamicas.TestLista;
 
 public class Main {
 
