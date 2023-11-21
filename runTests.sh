@@ -6,8 +6,8 @@ if [ "$1" = "-v" ]; then
 fi
 
 javac tests/*.java \
-	tests/lineales/dinamicas/TestLista.java lib/lineales/dinamicas/Lista.java lib/lineales/dinamicas/Nodo.java \
-	tests/conjuntistas/*.java \
-	lib/conjuntistas/*.java
+	tests/estructuras/lineales/dinamicas/TestLista.java estructuras/lineales/dinamicas/Lista.java estructuras/lineales/dinamicas/Nodo.java \
+	tests/estructuras/conjuntistas/*.java \
+	estructuras/conjuntistas/*.java
 $flag
 java tests/Main $flag

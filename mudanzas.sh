@@ -1,2 +1,2 @@
-javac src/mudanzas/*.java lib/conjuntistas/*.java lib/lineales/dinamicas/*.java
-java src/mudanzas/Main
+javac mudanzas/*.java lib/conjuntistas/*.java estructuras/lineales/dinamicas/*.java
+java mudanzas/Main
