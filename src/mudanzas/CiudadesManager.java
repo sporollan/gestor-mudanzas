@@ -30,14 +30,34 @@ public class CiudadesManager {
             {
                 cargarDatos();
             }
+            else if("3".equals(seleccion))
+            {
+                mostrarPorPrefijo();
+            }
+        }
+    }
+
+    private void mostrarPorPrefijo()
+    {
+        int cpo = inputReader.scanPrefijo("Prefijo");
+        cpo = cpo*100;
+        int cpf = cpo + 100;
+        Ciudad ciudad;
+
+        for(int i = cpo; i < cpf; i++)
+        {
+            ciudad = (Ciudad)this.ciudades.obtener(i);
+            if(ciudad != null)
+                System.out.println(ciudad);
         }
     }
 
     private void mostrarMenu()
     {
         System.out.println("Gestionar Ciudades");
-        System.out.println("1. Mostrar");
+        System.out.println("1. Mostrar dado un cp");
         System.out.println("2. Insertar");
+        System.out.println("3. Mostrar dado un prefijo");
     }
 
     private void cargarDatos()

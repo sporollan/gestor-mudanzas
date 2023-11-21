@@ -47,6 +47,18 @@ public class InputReader {
         return true;
     }
 
+    public boolean comprobarPrefijo(int cp) throws Exception
+    {
+        int m;
+        m = cp / 10;
+        if(m < 1 || m > 9)
+        {
+            System.out.println("Prefijo no valido");
+            throw new Exception();
+        }
+        return true;
+    }
+
     public boolean comprobarClaveCliente(String cc) throws Exception
     {
         if(cc.length() != 11)
@@ -68,6 +80,30 @@ public class InputReader {
             } catch (Exception e){}
         }
         return s;
+    }
+
+    public int scanPrefijo(String message)
+    {
+        String s = "";
+        int pf = -1;
+        boolean valido = false;
+        while(!valido && !s.equals("q"))
+        {
+            try
+            {
+                System.out.println(message);
+                s = sc.nextLine();
+                if(!s.equals("q"))
+                {
+                    pf = Integer.parseInt(s);
+                    valido = comprobarPrefijo(pf);
+                }
+
+            } catch (Exception e){
+                pf = -1;
+            }
+        }
+        return pf;
     }
 
     public int scanCp(String message)
