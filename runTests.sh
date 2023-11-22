@@ -9,5 +9,7 @@ javac tests/*.java \
 	tests/estructuras/lineales/dinamicas/TestLista.java estructuras/lineales/dinamicas/Lista.java estructuras/lineales/dinamicas/Nodo.java \
 	tests/estructuras/conjuntistas/*.java \
 	estructuras/conjuntistas/*.java
+	estructuras/propositoEspecifico/*.java
+	tests/estructuras/propositoEspecifico/*.java
 $flag
 java tests/Main $flag

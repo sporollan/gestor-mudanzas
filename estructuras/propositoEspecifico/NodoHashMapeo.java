@@ -2,21 +2,21 @@ package estructuras.propositoEspecifico;
 
 // clase utilizada por MapeoAUno
 public class NodoHashMapeo {
-    private Object tipoDominio;
+    private Object dominio;
     private Object rango;
     private NodoHashMapeo enlace;
 
 
-    public NodoHashMapeo(Object tipoDominio, Object rango, NodoHashMapeo enlace) {
-        this.tipoDominio = tipoDominio;
+    public NodoHashMapeo(Object dominio, Object rango, NodoHashMapeo enlace) {
+        this.dominio = dominio;
         this.rango = rango;
         this.enlace = enlace;
     }
-    public Object getTipoDominio() {
-        return tipoDominio;
+    public Object getDominio() {
+        return dominio;
     }
-    public void setTipoDominio(Object tipoDominio) {
-        this.tipoDominio = tipoDominio;
+    public void setDominio(Object dominio) {
+        this.dominio = dominio;
     }
     public Object getRango() {
         return rango;
