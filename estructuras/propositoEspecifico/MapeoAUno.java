@@ -36,9 +36,6 @@ public class MapeoAUno {
         if(pos < 0)
             pos = pos *-1;
         NodoHashMapeo aux = this.tabla[pos];
-        System.out.println("/////");
-        System.out.println(aux.getDominio());
-        System.out.println(dominio);
         while(!aux.equals(null) && !aux.getDominio().equals(dominio))
         {
             aux = aux.getEnlace();
