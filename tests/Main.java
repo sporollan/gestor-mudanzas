@@ -3,6 +3,7 @@ package tests;
 import tests.estructuras.conjuntistas.TestArbolAVL;
 import tests.estructuras.conjuntistas.TestTablaHash;
 import tests.estructuras.lineales.dinamicas.TestLista;
+import tests.estructuras.propositoEspecifico.TestMapeoAMuchos;
 import tests.estructuras.propositoEspecifico.TestMapeoAUno;
 
 public class Main {
@@ -13,6 +14,7 @@ public class Main {
         TestArbolAVL testArbolAVL = new TestArbolAVL();
         TestTablaHash testTablaHash = new TestTablaHash();
         TestMapeoAUno testMapeoAUno = new TestMapeoAUno();
+        TestMapeoAMuchos testMapeoAMuchos = new TestMapeoAMuchos();
         boolean exito;
         boolean v = args.length>0 && args[0].equals("-v") ? true: false;
 
@@ -33,10 +35,17 @@ public class Main {
             System.out.println("Tests MapeoAUno");
             exito = testMapeoAUno.runTests(v);
         }
+        if(exito)
+        {
+            System.out.println("Tests MapeoAMuchos");
+            exito = testMapeoAMuchos.runTests(v);
+        }
 
         if(exito)
         {
             System.out.println("Todos los tests OK");
         }
+
+
     }
 }

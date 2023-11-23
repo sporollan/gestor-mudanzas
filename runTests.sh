@@ -11,5 +11,5 @@ javac tests/*.java \
 	estructuras/conjuntistas/*.java \
 	estructuras/propositoEspecifico/*.java \
 	tests/estructuras/propositoEspecifico/*.java
-$flag
+
 java tests/Main $flag

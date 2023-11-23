@@ -1,31 +1,30 @@
 package tests.estructuras.propositoEspecifico;
 
-import estructuras.propositoEspecifico.MapeoAUno;
+import estructuras.lineales.dinamicas.Lista;
+import estructuras.propositoEspecifico.MapeoAMuchos;
 import tests.Test;
 
-public class TestMapeoAUno extends Test{
+public class TestMapeoAMuchos extends Test{
 
     @Override
     public boolean evaluarCaso(Object[] caso, Object[] indices, Object[] esperados, int casosI, boolean v)
     {
         boolean exito = false;
-        MapeoAUno map = new MapeoAUno();
+        MapeoAMuchos map = new MapeoAMuchos();
         int L = caso.length;
-        map.asociar(caso[0], caso[1]);
-        map.asociar(caso[2], caso[3]);
-        exito = this._assertEquals(map.obtenerValor(caso[0]), caso[1], "TestAsociar", v);
-        if(exito)
-        {
-            exito = this._assertEquals(map.obtenerValor(caso[2]), caso[3], "TestAsociar", v);
-
-        }
+        map.asociar((Comparable)caso[0], caso[1]);
+        map.asociar((Comparable)caso[0], caso[2]);
+        Lista lista = new Lista();
+        lista.insertar(caso[1], 1);
+        lista.insertar(caso[2], 2);
+        this._assertEquals(map.obtenerValor((Comparable)caso[0]).toString(), lista.toString(), "TestAsociar", v);
         return exito;
     }
 
     public boolean runTests(boolean v)
     {
         Comparable[][] casos = {
-            {"DNI35678965", "n1", "PAS21923847", "n2"},
+            {8300, "v1", "v2"},
         };
         Comparable[][] indices = {
             {}
