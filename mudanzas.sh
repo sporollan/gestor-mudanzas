@@ -1,2 +1,6 @@
-javac mudanzas/*.java lib/conjuntistas/*.java estructuras/lineales/dinamicas/*.java
+javac mudanzas/*.java \
+    estructuras/conjuntistas/*.java \
+    estructuras/lineales/dinamicas/*.java \
+    estructuras/grafo/*.java \
+    estructuras/propositoEspecifico/*.java
 java mudanzas/Main
