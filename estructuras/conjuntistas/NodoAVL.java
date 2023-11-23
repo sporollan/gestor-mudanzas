@@ -3,23 +3,23 @@ package estructuras.conjuntistas;
 
 public class NodoAVL
 {
-    Comparable<Object> elem;
+    Comparable elem;
     int altura;
     NodoAVL izquierdo;
     NodoAVL derecho;
 
-    public NodoAVL(Comparable<Object> elem, NodoAVL izquierdo, NodoAVL derecho)
+    public NodoAVL(Comparable elem, NodoAVL izquierdo, NodoAVL derecho)
     {
         this.elem = elem;
         this.izquierdo = izquierdo;
         this.derecho = derecho;
         this.altura = 0;
     }
-    public Comparable<Object> getElem() {
+    public Comparable getElem() {
         return elem;
     }
 
-    public void setElem(Comparable<Object> elem) {
+    public void setElem(Comparable elem) {
         this.elem = elem;
     }
 
