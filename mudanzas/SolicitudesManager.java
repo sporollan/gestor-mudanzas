@@ -118,8 +118,7 @@ public class SolicitudesManager {
         if(continuar)
         {
             solicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
-            System.out.println("Solicitudes entre las ciudades:");
-            System.out.println(ciudadOrigen + " y " + ciudadDestino);
+            System.out.println("Solicitudes desde " + ciudadOrigen + " a " + ciudadDestino);
             System.out.println(solicitudes);
         }
         else

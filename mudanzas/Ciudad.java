@@ -2,13 +2,14 @@ package mudanzas;
 
 import estructuras.conjuntistas.ArbolAVL;
 import estructuras.lineales.dinamicas.Lista;
+import estructuras.propositoEspecifico.MapeoAMuchos;
 
 public class Ciudad implements Comparable{
 
     final Comparable codigo;
     String nombre;
     String provincia;
-    ArbolAVL solicitudes;
+    MapeoAMuchos solicitudes;
     InputReader inputReader;
 
     public Ciudad(Comparable codigo, String nombre, String provincia)
@@ -16,7 +17,7 @@ public class Ciudad implements Comparable{
         this.codigo = codigo;
         this.nombre = nombre;
         this.provincia = provincia;
-        this.solicitudes = new ArbolAVL();
+        this.solicitudes = new MapeoAMuchos();
     }
 
     @Override public String toString()
@@ -48,22 +49,11 @@ public class Ciudad implements Comparable{
     public boolean insertarSolicitud(Solicitud s)
     {
         Comparable codigoDestino = ((Ciudad)((Solicitud)s).getDestino()).getCodigo();
-        Lista solicitudesDestino = (Lista)solicitudes.obtener(codigoDestino);
-        boolean exito = false;
-
-        if(solicitudesDestino != null)
-            exito = solicitudesDestino.insertar(s, 1);
-        else
-        {
-            solicitudesDestino = new Lista();
-            if(solicitudesDestino.insertar(s, 1))
-                exito = solicitudes.insertar((Comparable)solicitudesDestino);
-        }
-        return exito;
+        return this.solicitudes.asociar(codigoDestino, s);
     }
 
     public Lista obtenerSolicitudes(Comparable codigo){
-        return (Lista)this.solicitudes.obtener(codigo);
+        return this.solicitudes.obtenerValor(codigo);
     }
 
     public Comparable getCodigo()
