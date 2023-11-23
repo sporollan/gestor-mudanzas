@@ -1,12 +1,12 @@
 package mudanzas;
 
-import estructuras.conjuntistas.TablaHash;
+import estructuras.propositoEspecifico.MapeoAUno;
 
 public class ClientesManager {
     private InputReader inputReader;
-    private TablaHash clientes;
+    private MapeoAUno clientes;
 
-    public ClientesManager(InputReader inputReader, TablaHash clientes)
+    public ClientesManager(InputReader inputReader, MapeoAUno clientes)
     {
         this.inputReader = inputReader;
         this.clientes = clientes;
@@ -42,12 +42,12 @@ public class ClientesManager {
             "Nombres", "Apellidos", "Telefono", "Email"
         };
         String[] sInputs = new String[stringValues.length+1];
-        String clave;
+        String[] clave;
         boolean continuar;
         
         // cargar clave de cliente
         clave = inputReader.scanClaveCliente();
-        continuar = !clave.equals("q");
+        continuar = !clave[0].equals("q");
 
         // cargar datos de cliente
         if(continuar)
@@ -59,13 +59,13 @@ public class ClientesManager {
         // almacenar los datos en la estructura
         if(continuar)
         {
-            insertar(clave, sInputs[0], sInputs[1], sInputs[2], sInputs[3]);
+            insertar(clave[0], clave[1], sInputs[0], sInputs[1], sInputs[2], sInputs[3]);
         }
     }
 
-    public void insertar(Comparable clave, String nombres, String apellidos, String telefono, String email)
+    public void insertar(String tipo, String num, String nombres, String apellidos, String telefono, String email)
     {
-            if(clientes.insertar(new Cliente(clave, nombres, apellidos, telefono, email)))
+            if(clientes.asociar(tipo+num, new Cliente(tipo, num, nombres, apellidos, telefono, email)))
                 System.out.println("Cliente insertado con exito");
     }
 

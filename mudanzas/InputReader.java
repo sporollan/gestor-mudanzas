@@ -4,14 +4,14 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import estructuras.conjuntistas.ArbolAVL;
-import estructuras.conjuntistas.TablaHash;
+import estructuras.propositoEspecifico.MapeoAUno;
 
 public class InputReader {
     private Scanner sc;
-    private TablaHash clientes;
+    private MapeoAUno clientes;
     private ArbolAVL ciudades;
 
-    public InputReader(TablaHash clientes, ArbolAVL ciudades)
+    public InputReader(MapeoAUno clientes, ArbolAVL ciudades)
     {
         sc = new Scanner(System.in);
         this.clientes = clientes;
@@ -34,8 +34,44 @@ public class InputReader {
             throw new Exception();
         Integer.parseInt(y);
     }
+    public void comprobarTipoDocumento(String s) throws Exception
+    {
+        String[] tiposAceptados = {
+            "PAS",
+            "DNI"
+        };
+        int i = 0;
+        boolean valido = false;
+        while(!valido && i < tiposAceptados.length)
+        {
+            valido = s.equals(tiposAceptados[i]);
+            i += 1;
+        }
+        if(!valido)
+        {
+            throw new Exception();
+        }
 
-    public boolean comprobarCp(int cp) throws Exception
+    }
+    public void comprobarNumeroDocumento(String s) throws Exception
+    {
+        boolean valido = false;
+        int i = Integer.parseInt(s);
+        if(i < 0)
+        {
+            throw new Exception();
+        }
+
+    }
+    public void comprobarClaveCliente(String clave) throws Exception
+    {
+        if(clientes.obtenerValor(clave).equals(null))
+        {
+            throw new Exception();
+        }
+    }
+
+    public void comprobarCp(int cp) throws Exception
     {
         int m;
         m = cp / 1000;
@@ -44,10 +80,9 @@ public class InputReader {
             System.out.println("Codigo Postal no valido");
             throw new Exception();
         }
-        return true;
     }
 
-    public boolean comprobarPrefijo(int cp) throws Exception
+    public void comprobarPrefijo(int cp) throws Exception
     {
         int m;
         m = cp / 10;
@@ -56,18 +91,9 @@ public class InputReader {
             System.out.println("Prefijo no valido");
             throw new Exception();
         }
-        return true;
     }
 
-    public boolean comprobarClaveCliente(String cc) throws Exception
-    {
-        if(cc.length() != 11)
-        {
-            System.out.println("Clave Cliente no valida");
-            throw new Exception();
-        }
-        return true;
-    }
+
     public String scanString(String message)
     {
         String s = "";
@@ -96,11 +122,13 @@ public class InputReader {
                 if(!s.equals("q"))
                 {
                     pf = Integer.parseInt(s);
-                    valido = comprobarPrefijo(pf);
+                    comprobarPrefijo(pf);
+                    valido = true;
                 }
 
             } catch (Exception e){
                 pf = -1;
+                valido = false;
             }
         }
         return pf;
@@ -120,11 +148,13 @@ public class InputReader {
                 if(!s.equals("q"))
                 {
                     cp = Integer.parseInt(s);
-                    valido = comprobarCp(cp);
+                    comprobarCp(cp);
+                    valido = true;
                 }
 
             } catch (Exception e){
                 cp = -1;
+                valido = false;
             }
         }
         return cp;
@@ -133,12 +163,16 @@ public class InputReader {
     public Cliente scanCliente()
     {
         Cliente cliente = null;
-        String c = "";
-        while(!c.equals("q") && cliente == null)
+        String[] c;
+        do
         {
             c = scanClaveCliente();
-            cliente = (Cliente)this.clientes.obtener(c);
-        }
+            cliente = (Cliente)this.clientes.obtenerValor(c[0]+c[1]);
+            if(cliente == null)
+            {
+                System.out.println("No se encuentra cliente especificado");
+            }
+        } while (cliente == null && !c[0].equals("q"));
         return cliente;
     }
 
@@ -154,18 +188,30 @@ public class InputReader {
         return ciudad;
     }
 
-    public String scanClaveCliente()
+
+    public String[] scanClaveCliente()
     {
-        String clave = "";
+        String[] clave = {"", ""};
         boolean valida = false;
-        while(!valida && !clave.equals("q"))
+
+        while(!valida && !clave[0].equals("q"))
         {
             try
             {
-                System.out.println("Clave Cliente (ej. dni12345678)");
-                clave = sc.nextLine();
-                valida = comprobarClaveCliente(clave);
-            } catch (Exception e){}
+                System.out.println("Tipo Documento (ej. DNI)");
+                clave[0] = sc.nextLine();
+                comprobarTipoDocumento(clave[0]);
+                if(!clave[0].equals("q"))
+                {
+                    System.out.println("Numero Documento");
+                    clave[1] = sc.nextLine();
+                    comprobarNumeroDocumento(clave[1]);
+                    valida = true;
+                }
+            } catch (Exception e){
+                System.out.println("Error, formato incorrecto");
+                valida = false;
+            }
         }
         return clave;
     }

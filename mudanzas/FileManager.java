@@ -6,17 +6,17 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import estructuras.conjuntistas.ArbolAVL;
-import estructuras.conjuntistas.TablaHash;
 import estructuras.grafo.Grafo;
+import estructuras.propositoEspecifico.MapeoAUno;
 
 public class FileManager {
-    private TablaHash clientes;
+    private MapeoAUno clientes;
     private ArbolAVL ciudades;
     private Grafo rutas;
     private InputReader inputReader;
     private int[] count;
 
-    public FileManager(InputReader inputReader, TablaHash clientes, ArbolAVL ciudades, Grafo rutas)
+    public FileManager(InputReader inputReader, MapeoAUno clientes, ArbolAVL ciudades, Grafo rutas)
     {
         this.clientes = clientes;
         this.ciudades = ciudades;
@@ -62,16 +62,16 @@ public class FileManager {
 
     private void cargarCliente(StringTokenizer tokenizer)
     {
-        String claveCliente, apellido, nombre, telefono, email;
-        claveCliente = tokenizer.nextToken();
-        claveCliente = claveCliente + tokenizer.nextToken();
+        String tipo, num, apellido, nombre, telefono, email;
+        tipo = tokenizer.nextToken();
+        num = tokenizer.nextToken();
         apellido = tokenizer.nextToken();
         nombre = tokenizer.nextToken();
         telefono = tokenizer.nextToken();
         email = tokenizer.nextToken();
 
-        if(!clientes.insertar(new Cliente(claveCliente, nombre, apellido, telefono, email)))
-            System.out.println("Error insertando cliente " + claveCliente);
+        if(!clientes.asociar(tipo+num, new Cliente(tipo, num, nombre, apellido, telefono, email)))
+            System.out.println("Error insertando cliente " + tipo+num);
         else
             this.count[0] += 1;
     }
@@ -101,7 +101,8 @@ public class FileManager {
     {
         int cpo=-1, cpd=-1;
         String fecha="";
-        String claveCliente="";
+        String tipo="";
+        String num="";
         int metrosCubicos=-1, bultos=-1;
         String dirRetiro="", dirEntrega="";
         Boolean esPago=false;
@@ -118,9 +119,9 @@ public class FileManager {
             fecha = tokenizer.nextToken();
             inputReader.comprobarFecha(fecha);
 
-            claveCliente = tokenizer.nextToken() + tokenizer.nextToken();
-            System.out.println(claveCliente);
-            inputReader.comprobarClaveCliente(claveCliente);
+            tipo = tokenizer.nextToken();
+            num = tokenizer.nextToken();
+            inputReader.comprobarClaveCliente(tipo+num);
 
             metrosCubicos = Integer.parseInt(tokenizer.nextToken());
             bultos = Integer.parseInt(tokenizer.nextToken());
@@ -135,7 +136,7 @@ public class FileManager {
         if(cargaValida)
         {            
             Ciudad ciudadOrigen = (Ciudad)ciudades.obtener(cpo);
-            if(!ciudadOrigen.insertarSolicitud(new Solicitud((Ciudad)ciudades.obtener(cpd), fecha, clientes.obtener(claveCliente), metrosCubicos, bultos, dirRetiro, dirEntrega, esPago)))
+            if(!ciudadOrigen.insertarSolicitud(new Solicitud((Ciudad)ciudades.obtener(cpd), fecha, clientes.obtenerValor(tipo+num), metrosCubicos, bultos, dirRetiro, dirEntrega, esPago)))
                 System.out.println("Error insertando solicitud " + cpo + " " + cpd);
             else
                 this.count[2] += 1;

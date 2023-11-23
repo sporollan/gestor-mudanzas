@@ -14,6 +14,8 @@ public class MapeoAUno {
     public boolean asociar(Object dominio, Object rango)
     {
         int pos = dominio.hashCode() % TAM;
+        if(pos < 0)
+            pos = pos * -1;
         NodoHashMapeo aux = this.tabla[pos];
         boolean encontrado = false;
         while(!encontrado && aux != null)
@@ -36,10 +38,10 @@ public class MapeoAUno {
         if(pos < 0)
             pos = pos *-1;
         NodoHashMapeo aux = this.tabla[pos];
-        while(!aux.equals(null) && !aux.getDominio().equals(dominio))
+        while(aux!=null && !aux.getDominio().equals(dominio))
         {
             aux = aux.getEnlace();
         }
-        return aux.equals(null) ? null : aux.getRango();
+        return aux == null ? null : aux.getRango();
     }
 }

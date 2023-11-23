@@ -1,12 +1,12 @@
 package mudanzas;
 
 import estructuras.conjuntistas.ArbolAVL;
-import estructuras.conjuntistas.TablaHash;
 import estructuras.grafo.Grafo;
+import estructuras.propositoEspecifico.MapeoAUno;
 
 
 public class MudanzasCompartidas {
-    TablaHash clientes;
+    MapeoAUno clientes;
     Grafo rutas;
     ArbolAVL ciudades;
 
@@ -22,7 +22,7 @@ public class MudanzasCompartidas {
     {
         rutas = new Grafo();
         ciudades = new ArbolAVL();
-        clientes = new TablaHash();
+        clientes = new MapeoAUno();
         this.inputReader = new InputReader(clientes, ciudades);
         this.ciudadesManager = new CiudadesManager(this.inputReader, ciudades, rutas);
         this.solicitudesManager = new SolicitudesManager(inputReader, ciudades);
