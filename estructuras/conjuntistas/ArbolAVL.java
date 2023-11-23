@@ -211,13 +211,6 @@ public class ArbolAVL {
         return exito;
     }
 
-    public boolean eliminar(Comparable<Object> elem)
-    {
-        boolean exito = false;
-        NodoAVL derecho, izquierdo;
-        
-        return exito;
-    }
 
     public Lista listar()
     {
@@ -306,6 +299,57 @@ public class ArbolAVL {
         return -1;
     }
 
+    public boolean eliminar(Comparable elem) {
+        this.raiz = eliminarAux(this.raiz, elem);
+        return true;
+    }
+    
+    private NodoAVL eliminarAux(NodoAVL raiz, Comparable elem) {
+        if (raiz == null) {
+            return null;
+        }
+    
+        if (elem.compareTo(raiz.getElem()) < 0) {
+            // buscar por izquierda
+            raiz.setIzquierdo(eliminarAux(raiz.getIzquierdo(), elem));
+        } else if (elem.compareTo(raiz.getElem()) > 0) {
+            // buscar por derecha
+            raiz.setDerecho(eliminarAux(raiz.getDerecho(), elem));
+        } else {
+            // encontrado
+            if (raiz.getIzquierdo() == null || raiz.getDerecho() == null) {
+                // nodo tiene maximo 1 hijo
+                NodoAVL temp = (raiz.getIzquierdo() != null) ? raiz.getIzquierdo() : raiz.getDerecho();
+                if (temp == null) {
+                    // nodo no tiene hijos
+                    raiz = null;
+                } else {
+                    // nodo tiene 1 hijo
+                    raiz = temp;
+                }
+            } else {
+                // nodo tiene 2 hijos
+                NodoAVL successor = getSuccessor(raiz.getDerecho());
+                raiz.setElem(successor.getElem());
+                raiz.setDerecho(eliminarAux(raiz.getDerecho(), successor.getElem()));
+            }
+        }
+    
+        if (raiz != null) {
+            raiz.recalcularAltura();
+            this._comprobarBalance(raiz);
+        }
+        return raiz;
+    }
+    
+    private NodoAVL getSuccessor(NodoAVL nodo) {
+        while (nodo.getIzquierdo() != null) {
+            nodo = nodo.getIzquierdo();
+        }
+        return nodo;
+    }
+    
+    
     // otras operaciones de ABB
 
 }

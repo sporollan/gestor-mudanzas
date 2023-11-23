@@ -17,8 +17,8 @@ public class TestArbolAVL extends Test {
         exito = this._assertEquals(a.toString(), esperados[0], "TestAVLInsertar"+casosI, v);
         if(exito)
         {
-            //a.eliminar(indices[0]);
-            //exito = this._assertEquals(a.toString(), esperados[1], "TestAVLEliminar"+casosI, v);
+            a.eliminar((Comparable)indices[0]);
+            exito = this._assertEquals(a.toString(), esperados[1], "TestAVLEliminar"+casosI, v);
         }
         return exito;
     }
@@ -51,10 +51,10 @@ public class TestArbolAVL extends Test {
             {1},
             {7},
             {4},
-            {},
-            {},
-            {},
-            {}
+            {4},
+            {5},
+            {30},
+            {'m'}
         };
         Object[][] esperados = {
             {"", ""},
@@ -66,10 +66,10 @@ public class TestArbolAVL extends Test {
              "6(1): null, 7(0)\n" +
              "7(0): null, null",
                                      // eliminar 7
-             "5(2): 4(1), 6(1)\n"+   //        5
+             "5(2): 4(1), 6(0)\n"+   //        5
              "4(1): 3(0), null\n"+   //     4      6
              "3(0): null, null\n"+   //   3  
-             "6(1): null, null"
+             "6(0): null, null"
             
         },
             {"2(2): 1(0), 4(1)\n"+   //       2
@@ -78,20 +78,26 @@ public class TestArbolAVL extends Test {
               "3(0): null, null\n"+
               "5(0): null, null",
                                      // eliminar 4
-              "2(2): 1(0), 3(1)\n" + //       2
-              "1(0): null, null\n" + //     1    3
-              "3(1): null, 5(0)"},   //            5
-            {
+              "2(2): 1(0), 5(1)\n" + //       2
+              "1(0): null, null\n" + //     1    5
+              "5(1): 3(0), null\n" + //         3   
+              "3(0): null, null"},
+              {
                 "4(2): 2(1), 5(0)\n" +//      4
                 "2(1): 1(0), 3(0)\n" +//    2   5
                 "1(0): null, null\n" +//   1 3
                 "3(0): null, null\n" +
                 "5(0): null, null",
                                     // eliminar 4
-                "5(2): 2(1), null\n" +//      2
-                "2(1): 1(0), 3(0)\n" +//    1   5 
-                "1(0): null, null\n" +//     3
+                "2(2): 1(0), 5(1)\n" + //
+                "1(0): null, null\n" + //
+                "5(1): 3(0), null\n" + //
                 "3(0): null, null"
+
+                //      2
+                //    1   5 
+                //     3
+
 
             },
             {
@@ -121,18 +127,20 @@ public class TestArbolAVL extends Test {
             },
             {
                 "m(3): g(1), x(2)\n" + //
-                        "g(1): f(0), null\n" + //        m
-                        "f(0): null, null\n" + //    g        x
-                        "x(2): o(1), z(0)\n" + //  f         o z
-                        "o(1): n(0), null\n" + //           n
-                        "n(0): null, null\n" + //
-                        "z(0): null, null",
-                "o(2): g(1), x(1)\n" + //      eliminar m
-                        "g(1): f(0), n(0)\n" + //        o
-                        "f(0): null, null\n" + //    g        x
-                        "n(0): null, null\n" + //  f   n       z
-                        "x(1): null, z(0)\n" + //           
-                        "z(0): null, null"     //
+                "g(1): f(0), null\n" + //        m
+                "f(0): null, null\n" + //    g        x
+                "x(2): o(1), z(0)\n" + //  f         o z
+                "o(1): n(0), null\n" + //           n
+                "n(0): null, null\n" + //
+                "z(0): null, null",
+                                        // eliminar m
+                "n(2): g(1), x(1)\n" + //       n
+                "g(1): f(0), null\n" + //   g       x
+                "f(0): null, null\n" + //  f       o  z
+                "x(1): o(0), z(0)\n" + //
+                "o(0): null, null\n" + //
+                "z(0): null, null"
+ 
             }
         };
         return super.runTests(casos, indices, esperados, v);
