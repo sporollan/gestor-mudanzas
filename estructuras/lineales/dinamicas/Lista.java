@@ -1,6 +1,6 @@
 package estructuras.lineales.dinamicas;
 
-public class Lista implements Comparable{
+public class Lista {
     Nodo cabecera;
     int len;
 
@@ -163,17 +163,5 @@ public class Lista implements Comparable{
         }
 
         return lista + "]";
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return this.cabecera.getElem().hashCode();
-    }
-
-    @Override
-    public int compareTo(Object elem)
-    {
-        return ((Comparable)this.cabecera.getElem()).compareTo((Comparable)elem);
     }
 }
