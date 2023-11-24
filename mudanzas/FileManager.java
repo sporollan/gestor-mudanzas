@@ -5,18 +5,18 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import estructuras.conjuntistas.ArbolAVL;
 import estructuras.grafo.Grafo;
+import estructuras.propositoEspecifico.Diccionario;
 import estructuras.propositoEspecifico.MapeoAUno;
 
 public class FileManager {
     private MapeoAUno clientes;
-    private ArbolAVL ciudades;
+    private Diccionario ciudades;
     private Grafo rutas;
     private InputReader inputReader;
     private int[] count;
 
-    public FileManager(InputReader inputReader, MapeoAUno clientes, ArbolAVL ciudades, Grafo rutas)
+    public FileManager(InputReader inputReader, MapeoAUno clientes, Diccionario ciudades, Grafo rutas)
     {
         this.clientes = clientes;
         this.ciudades = ciudades;
@@ -85,7 +85,7 @@ public class FileManager {
         nombre = tokenizer.nextToken();
         provincia = tokenizer.nextToken();
 
-        if(ciudades.insertar(new Ciudad(codigo, nombre, provincia)))
+        if(ciudades.insertar(codigo, new Ciudad(codigo, nombre, provincia)))
         {
             this.count[1]+=1;
             if(!rutas.insertarVertice(codigo))

@@ -1,7 +1,7 @@
 package mudanzas;
 
-public class Solicitud implements Comparable{
-    Comparable destino;
+public class Solicitud {
+    Ciudad destino;
     String fecha;
     Object cliente;
     int metrosCubicos;
@@ -10,7 +10,7 @@ public class Solicitud implements Comparable{
     String domicilioEntrega;
     boolean estaPago;
 
-    public Solicitud(Comparable destino, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
+    public Solicitud(Ciudad destino, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
     {   
         this.destino = destino;
         this.fecha = fecha;
@@ -22,7 +22,7 @@ public class Solicitud implements Comparable{
         this.estaPago = estaPago;
     }
 
-    public Comparable getDestino()
+    public Ciudad getDestino()
     {
         return this.destino;
     }
@@ -42,11 +42,12 @@ public class Solicitud implements Comparable{
     {
         return destino + ", " + fecha + ", " + cliente;
     }
-
+/*
     @Override
     public int compareTo(Object cp)
     {
         return this.destino.compareTo((Comparable)cp);
     }
+*/
 
 }

@@ -1,14 +1,14 @@
 package mudanzas;
 
-import estructuras.conjuntistas.ArbolAVL;
 import estructuras.grafo.Grafo;
+import estructuras.propositoEspecifico.Diccionario;
 
 public class CiudadesManager {
     private InputReader inputReader;
-    private ArbolAVL ciudades;
+    private Diccionario ciudades;
     private Grafo rutas;
 
-    public CiudadesManager(InputReader inputReader, ArbolAVL ciudades, Grafo rutas)
+    public CiudadesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas)
     {
         this.inputReader = inputReader;
         this.ciudades = ciudades;
@@ -34,6 +34,33 @@ public class CiudadesManager {
             {
                 mostrarPorPrefijo();
             }
+            else if("4".equals(seleccion))
+            {
+                eliminar();
+            }
+            else if("5".equals(seleccion))
+            {
+                modificar();
+            }
+        }
+    }
+
+    private void modificar()
+    {
+        int cp = this.inputReader.scanCp("Codigo Postal");
+        Ciudad c = (Ciudad)this.ciudades.obtener((Comparable)cp);
+    }
+
+    private void eliminar()
+    {
+        int cpo = inputReader.scanCp("Codigo Postal");
+        if(this.ciudades.eliminar((Comparable)cpo))
+        {
+            System.out.println("Eliminado con exito");
+        }
+        else
+        {
+            System.out.println("No se ha encontrado la ciudad");
         }
     }
 
@@ -59,6 +86,7 @@ public class CiudadesManager {
         System.out.println("1. Mostrar Todo");
         System.out.println("2. Insertar");
         System.out.println("3. Mostrar dado un prefijo");
+        System.out.println("4. Eliminar");
     }
 
     private void cargarDatos()
@@ -85,7 +113,7 @@ public class CiudadesManager {
 
     public void insertar(int cpo, String nombre, String provincia)
     {
-        if(ciudades.insertar(new Ciudad((Comparable)cpo, nombre, provincia)))
+        if(ciudades.insertar(cpo, new Ciudad((Comparable)cpo, nombre, provincia)))
         {
             System.out.println("Insertado con exito");
             if (rutas.insertarVertice((Comparable)cpo))

@@ -3,6 +3,7 @@ package tests;
 import tests.estructuras.conjuntistas.TestArbolAVL;
 import tests.estructuras.conjuntistas.TestTablaHash;
 import tests.estructuras.lineales.dinamicas.TestLista;
+import tests.estructuras.propositoEspecifico.TestDiccionario;
 import tests.estructuras.propositoEspecifico.TestMapeoAMuchos;
 import tests.estructuras.propositoEspecifico.TestMapeoAUno;
 
@@ -15,6 +16,7 @@ public class Main {
         TestTablaHash testTablaHash = new TestTablaHash();
         TestMapeoAUno testMapeoAUno = new TestMapeoAUno();
         TestMapeoAMuchos testMapeoAMuchos = new TestMapeoAMuchos();
+        TestDiccionario  testDiccionario = new TestDiccionario();
         boolean exito;
         boolean v = args.length>0 && args[0].equals("-v") ? true: false;
 
@@ -34,6 +36,11 @@ public class Main {
         {
             System.out.println("Tests MapeoAUno");
             exito = testMapeoAUno.runTests(v);
+        }
+        if(exito)
+        {
+            System.out.println("Tests Diccionario");
+            exito = testDiccionario.runTests(v);
         }
         if(exito)
         {

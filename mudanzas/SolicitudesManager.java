@@ -1,13 +1,13 @@
 package mudanzas;
 
-import estructuras.conjuntistas.ArbolAVL;
 import estructuras.lineales.dinamicas.Lista;
+import estructuras.propositoEspecifico.Diccionario;
 
 public class SolicitudesManager {
     InputReader inputReader;
-    ArbolAVL ciudades;
+    Diccionario ciudades;
 
-    public SolicitudesManager(InputReader inputReader, ArbolAVL ciudades)
+    public SolicitudesManager(InputReader inputReader, Diccionario ciudades)
     {
         this.inputReader = inputReader;
         this.ciudades = ciudades;
@@ -92,7 +92,7 @@ public class SolicitudesManager {
         }
     }
 
-    private void insertar(Ciudad ciudadOrigen, Comparable destino, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
+    private void insertar(Ciudad ciudadOrigen, Ciudad destino, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
     {
         Solicitud solicitud = new Solicitud(destino, fecha, cliente, metrosCubicos, bultos, domicilioRetiro, domicilioEntrega, estaPago);
         if(ciudadOrigen.insertarSolicitud(solicitud))

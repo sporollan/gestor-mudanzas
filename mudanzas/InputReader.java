@@ -3,15 +3,15 @@ package mudanzas;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-import estructuras.conjuntistas.ArbolAVL;
+import estructuras.propositoEspecifico.Diccionario;
 import estructuras.propositoEspecifico.MapeoAUno;
 
 public class InputReader {
     private Scanner sc;
     private MapeoAUno clientes;
-    private ArbolAVL ciudades;
+    private Diccionario ciudades;
 
-    public InputReader(MapeoAUno clientes, ArbolAVL ciudades)
+    public InputReader(MapeoAUno clientes, Diccionario ciudades)
     {
         sc = new Scanner(System.in);
         this.clientes = clientes;

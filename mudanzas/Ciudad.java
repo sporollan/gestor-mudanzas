@@ -4,7 +4,7 @@ import estructuras.conjuntistas.ArbolAVL;
 import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.MapeoAMuchos;
 
-public class Ciudad implements Comparable{
+public class Ciudad {
 
     final Comparable codigo;
     String nombre;
@@ -23,27 +23,6 @@ public class Ciudad implements Comparable{
     @Override public String toString()
     {
         return this.codigo + ", " + this.nombre + ", " + this.provincia;
-    }
-
-    @Override
-    public int compareTo(Object n)
-    {
-        int comparacion;
-        try{
-            // caso n es int
-            /*if(("" + n).length()==2)
-            {
-                comparacion = ((Comparable)(Integer.parseInt(codigo+"")/100)).compareTo(n);
-            }
-            else
-            {*/
-            comparacion = codigo.compareTo(n);
-        } catch (Exception e)
-        {
-            // caso n es Ciudad
-            comparacion = codigo.compareTo(((Ciudad)n).getCodigo());
-        }
-        return comparacion;
     }
 
     public boolean insertarSolicitud(Solicitud s)

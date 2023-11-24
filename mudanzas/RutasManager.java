@@ -1,15 +1,15 @@
 package mudanzas;
 
-import estructuras.conjuntistas.ArbolAVL;
 import estructuras.grafo.Grafo;
 import estructuras.lineales.dinamicas.Lista;
+import estructuras.propositoEspecifico.Diccionario;
 
 public class RutasManager {
     private InputReader inputReader;
     private Grafo rutas;
-    private ArbolAVL ciudades;
+    private Diccionario ciudades;
 
-    public RutasManager(InputReader inputReader, ArbolAVL ciudades, Grafo rutas)
+    public RutasManager(InputReader inputReader, Diccionario ciudades, Grafo rutas)
     {
         this.inputReader = inputReader;
         this.rutas = rutas;
