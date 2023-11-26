@@ -183,7 +183,7 @@ public class InputReader {
         while(cp != -1 && ciudad == null)
         {
             cp = scanCp("Codigo Postal " + message);
-            ciudad = (Ciudad)this.ciudades.obtener((Comparable)cp);
+            ciudad = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cp);
         }
         return ciudad;
     }

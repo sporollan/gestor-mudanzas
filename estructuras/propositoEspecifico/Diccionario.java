@@ -8,25 +8,163 @@ public class Diccionario {
     {
         this.raiz = null;
     }
-    private Object obtenerAux(NodoAVLDicc n, Comparable clave)
+    public boolean insertar(Comparable clave, Object dato)
     {
-        Object obtenido = null;
+        boolean exito = false;
+        if(this.raiz == null) 
+        {
+            this.raiz = new NodoAVLDicc(clave, dato, null, null);
+            exito = true;
+        }
+        else
+        {
+            exito = _insertarAux(this.raiz, clave, dato);
+        }
+        if(exito)
+        {
+            this.raiz.recalcularAltura();
+            this._comprobarBalance(this.raiz);
+        }
+        return exito;
+    }
+
+    public boolean eliminar(Comparable clave)
+    {
+        boolean exito = this.raiz!=null;
+        if(exito)
+            exito = eliminarAux(this.raiz, clave, null, false);
+        return exito;
+    }
+
+    public boolean eliminarAux(NodoAVLDicc n, Comparable clave, NodoAVLDicc p, boolean esIzquierdo)
+    {
+        boolean exito = false;
         if(n != null)
         {
-            if(n.getClave().compareTo(clave) == 0)
-                obtenido = n.getDato();
-            else if (n.getClave().compareTo(clave) > 0)
+            // buscar clave
+            if(clave.compareTo(n.getClave())==0)
             {
-                obtenido = obtenerAux(n.getHijoIzquierdo(), clave);
+                // encontrado
+                NodoAVLDicc i, d, reemplazo;
+                i = n.getHijoIzquierdo();
+                d = n.getHijoDerecho();
+                // evaluo cual es el reemplazo
+                if (i == null && d == null)
+                {
+                    // caso 1, el nodo es una hoja
+                    reemplazo = null;
+                }
+                else if(i == null || d == null)
+                {
+                    // caso 2, el nodo tiene un solo hijo
+                    reemplazo = i == null ? d : i;
+                }
+                else
+                {
+                    // caso 3, el nodo tiene 2 hijos
+                    reemplazo = obtenerCandidatoA(n);
+                }
+
+                // evaluo donde insertar el reemplazo
+                NodoAVLDicc encontrado, derecho, izquierdo;
+                if(p == null)
+                {
+                    // inserto en la raiz
+                    if(this.raiz != null && reemplazo != null)
+                    {
+                        izquierdo = this.raiz.getHijoIzquierdo();
+                        derecho = this.raiz.getHijoDerecho();
+                        reemplazo.setHijoIzquierdo(izquierdo);
+                        reemplazo.setHijoDerecho(derecho);
+                    }
+                    this.raiz = reemplazo;
+                }
+                else if(esIzquierdo)
+                {
+                    encontrado = p.getHijoIzquierdo();
+                    derecho = null;
+
+                    if(encontrado!=null)
+                        derecho = encontrado.getHijoDerecho();
+
+                    p.setHijoIzquierdo(reemplazo);
+                    if(reemplazo != null)
+                        p.getHijoIzquierdo().setHijoDerecho(derecho);
+
+                }
+                else
+                {
+                    encontrado = p.getHijoDerecho();
+                    derecho = null;
+
+                    if(encontrado!=null)
+                        derecho = encontrado.getHijoDerecho();
+
+                    p.setHijoDerecho(reemplazo);
+                    if(reemplazo != null)
+                        p.getHijoDerecho().setHijoDerecho(derecho);
+
+                }
+
+                if(this.raiz!=null)
+                {
+                    this.raiz.recalcularAltura();
+                    //System.out.println(this.toString());
+                    this._comprobarBalance(this.raiz);
+                }
+                exito = true;
+            }
+            else if(clave.compareTo(n.getClave()) < 0)
+            {
+                // buscar por izquierda
+                exito = eliminarAux(n.getHijoIzquierdo(), clave, n, true);
             }
             else
             {
-                obtenido = obtenerAux(n.getHijoDerecho(), clave);
+                // buscar por derecha
+                exito = eliminarAux(n.getHijoDerecho(), clave, n, false);
             }
         }
-        return obtenido;
+        return exito;
     }
-    public Object obtener(Comparable clave)
+
+    private NodoAVLDicc obtenerCandidatoA(NodoAVLDicc n)
+    {
+        NodoAVLDicc i = n.getHijoIzquierdo();
+        NodoAVLDicc candidatoA;
+        if(i.getHijoDerecho() == null)
+        {
+            candidatoA = i;
+        }
+        else
+        {
+            candidatoA = obtenerCandidatoAAux(i);
+        }
+        return candidatoA;
+    }
+
+    private NodoAVLDicc obtenerCandidatoAAux(NodoAVLDicc n)
+    {
+        NodoAVLDicc candidatoA;
+        NodoAVLDicc d = n.getHijoDerecho();
+        if(d.getHijoDerecho() == null)
+        {
+            candidatoA = d;
+            n.setHijoDerecho(null);
+        }
+        else
+        {
+            candidatoA = obtenerCandidatoAAux(d);
+        }
+        return candidatoA;
+    }
+
+    public boolean existeClave(Comparable clave)
+    {
+        return false;
+    }
+
+    public Object obtenerInformacion(Comparable clave)
     {
         Object obtenido = null;
         if(this.raiz != null)
@@ -37,18 +175,72 @@ public class Diccionario {
             }
             else if(this.raiz.getClave().compareTo(clave) > 0)
             {
-                obtenido = obtenerAux(this.raiz.getHijoIzquierdo(), clave);
+                obtenido = _obtenerAux(this.raiz.getHijoIzquierdo(), clave);
             }
             else
             {
-                obtenido = obtenerAux(this.raiz.getHijoDerecho(), clave);
+                obtenido = _obtenerAux(this.raiz.getHijoDerecho(), clave);
             }
         }
         return obtenido;
     }
-    public boolean pertenece(Object elem)
+
+    public Lista listarClaves()
+    {
+        return new Lista();
+    }
+
+    public Lista listarDatos()
+    {
+        return new Lista();
+    }
+
+    public boolean esVacio()
     {
         return false;
+    }
+
+    @Override
+    public String toString()
+    {
+        String s = "";
+        NodoAVLDicc n = this.raiz; 
+        NodoAVLDicc i;
+        NodoAVLDicc d;
+        if(n!=null)
+        {
+            s += n.getClave() + "(" + n.getAltura() + "): ";
+            i = this.raiz.getHijoIzquierdo();
+            s += _addElem(i);
+
+            s += ", ";
+
+            d = this.raiz.getHijoDerecho();
+            s += _addElem(d);
+
+            s += this._toStringAux(n.getHijoIzquierdo());
+            s += this._toStringAux(n.getHijoDerecho());
+        }
+        return s;
+    }
+
+    private Object _obtenerAux(NodoAVLDicc n, Comparable clave)
+    {
+        Object obtenido = null;
+        if(n != null)
+        {
+            if(n.getClave().compareTo(clave) == 0)
+                obtenido = n.getDato();
+            else if (n.getClave().compareTo(clave) > 0)
+            {
+                obtenido = _obtenerAux(n.getHijoIzquierdo(), clave);
+            }
+            else
+            {
+                obtenido = _obtenerAux(n.getHijoDerecho(), clave);
+            }
+        }
+        return obtenido;
     }
 
     private void _rotarDerecha(NodoAVLDicc n)
@@ -63,9 +255,7 @@ public class Diccionario {
         n.setHijoIzquierdo(n.getHijoIzquierdo().getHijoIzquierdo());
         naux.setHijoIzquierdo(naux.getHijoDerecho());
         naux.setHijoDerecho(n.getHijoDerecho());
-
         n.setHijoDerecho(naux);
-
     }
 
     private void _rotarIzquierda(NodoAVLDicc n)
@@ -196,52 +386,6 @@ public class Diccionario {
         }
     }
 
-    public boolean insertar(Comparable clave, Object dato)
-    {
-        boolean exito = false;
-        if(this.raiz == null) 
-        {
-            this.raiz = new NodoAVLDicc(clave, dato, null, null);
-            exito = true;
-        }
-        else
-        {
-            exito = _insertarAux(this.raiz, clave, dato);
-        }
-        if(exito)
-        {
-            this.raiz.recalcularAltura();
-            this._comprobarBalance(this.raiz);
-        }
-        return exito;
-    }
-
-
-    public Lista listar()
-    {
-        return new Lista();
-    }
-
-    public Lista listarRango(Object elem1, Object elem2)
-    {
-        return new Lista();
-    }
-
-    public Object minimoElem()
-    {
-        return new Object();
-    }
-
-    public Object maximoElem()
-    {
-        return new Object();
-    }
-
-    public boolean vacio()
-    {
-        return false;
-    }
-
     private String _toStringAux(NodoAVLDicc n)
     {
         String s = "";
@@ -272,90 +416,4 @@ public class Diccionario {
             s += null;
         return s;
     }
-
-    @Override
-    public String toString()
-    {
-        String s = "";
-        NodoAVLDicc n = this.raiz; 
-        NodoAVLDicc i;
-        NodoAVLDicc d;
-        if(n!=null)
-        {
-            s += n.getClave() + "(" + n.getAltura() + "): ";
-            i = this.raiz.getHijoIzquierdo();
-            s += _addElem(i);
-
-            s += ", ";
-
-            d = this.raiz.getHijoDerecho();
-            s += _addElem(d);
-
-            s += this._toStringAux(n.getHijoIzquierdo());
-            s += this._toStringAux(n.getHijoDerecho());
-        }
-        return s;
-    }
-
-    public int getAltura()
-    {
-        if(this.raiz != null)
-            return this.raiz.getAltura();
-        return -1;
-    }
-
-    public boolean eliminar(Comparable elem) {
-        this.raiz = eliminarAux(this.raiz, elem);
-        return true;
-    }
-    
-    private NodoAVLDicc eliminarAux(NodoAVLDicc raiz, Comparable elem) {
-        if (raiz == null) {
-            return null;
-        }
-    
-        if (elem.compareTo(raiz.getClave()) < 0) {
-            // buscar por izquierda
-            raiz.setHijoIzquierdo(eliminarAux(raiz.getHijoIzquierdo(), elem));
-        } else if (elem.compareTo(raiz.getClave()) > 0) {
-            // buscar por derecha
-            raiz.setHijoDerecho(eliminarAux(raiz.getHijoDerecho(), elem));
-        } else {
-            // encontrado
-            if (raiz.getHijoIzquierdo() == null || raiz.getHijoDerecho() == null) {
-                // nodo tiene maximo 1 hijo
-                NodoAVLDicc temp = (raiz.getHijoIzquierdo() != null) ? raiz.getHijoIzquierdo() : raiz.getHijoDerecho();
-                if (temp == null) {
-                    // nodo no tiene hijos
-                    raiz = null;
-                } else {
-                    // nodo tiene 1 hijo
-                    raiz = temp;
-                }
-            } else {
-                // nodo tiene 2 hijos
-                NodoAVLDicc successor = getSuccessor(raiz.getHijoDerecho());
-                raiz.setDato(successor.getDato());
-                raiz.setClave(successor.getClave());
-                raiz.setHijoDerecho(eliminarAux(raiz.getHijoDerecho(), successor.getClave()));
-            }
-        }
-    
-        if (raiz != null) {
-            raiz.recalcularAltura();
-            this._comprobarBalance(raiz);
-        }
-        return raiz;
-    }
-    
-    private NodoAVLDicc getSuccessor(NodoAVLDicc nodo) {
-        while (nodo.getHijoIzquierdo() != null) {
-            nodo = nodo.getHijoIzquierdo();
-        }
-        return nodo;
-    }
-    
-    
-    // otras operaciones de ABB
-
 }

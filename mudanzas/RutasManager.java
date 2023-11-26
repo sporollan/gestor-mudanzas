@@ -66,7 +66,7 @@ public class RutasManager {
                 ruta = (Lista)rutas.recuperar(i);
                 for(int j = 1; j < ruta.longitud(); j++)
                 {
-                    System.out.println(this.ciudades.obtener((Comparable)ruta.recuperar(j)));
+                    System.out.println(this.ciudades.obtenerInformacion((Comparable)ruta.recuperar(j)));
                 }
                 System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
             }
@@ -94,8 +94,8 @@ public class RutasManager {
             if(rutas.existeCamino(cpo, cpd))
             {
                 System.out.println("La ruta existe");
-                System.out.println("Desde " + this.ciudades.obtener(cpo));
-                System.out.println("Hasta " + this.ciudades.obtener(cpd));
+                System.out.println("Desde " + this.ciudades.obtenerInformacion(cpo));
+                System.out.println("Hasta " + this.ciudades.obtenerInformacion(cpd));
                 System.out.println("Distancia " + rutas.obtener(cpo, cpd));
             }
             else

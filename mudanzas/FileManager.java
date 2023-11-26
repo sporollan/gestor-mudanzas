@@ -135,8 +135,8 @@ public class FileManager {
 
         if(cargaValida)
         {            
-            Ciudad ciudadOrigen = (Ciudad)ciudades.obtener(cpo);
-            if(!ciudadOrigen.insertarSolicitud(new Solicitud((Ciudad)ciudades.obtener(cpd), fecha, clientes.obtenerValor(tipo+num), metrosCubicos, bultos, dirRetiro, dirEntrega, esPago)))
+            Ciudad ciudadOrigen = (Ciudad)ciudades.obtenerInformacion(cpo);
+            if(!ciudadOrigen.insertarSolicitud(new Solicitud((Ciudad)(ciudades.obtenerInformacion(cpd)), fecha, clientes.obtenerValor(tipo+num), metrosCubicos, bultos, dirRetiro, dirEntrega, esPago)))
                 System.out.println("Error insertando solicitud " + cpo + " " + cpd);
             else
                 this.count[2] += 1;

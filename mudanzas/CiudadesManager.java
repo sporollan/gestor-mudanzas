@@ -48,7 +48,7 @@ public class CiudadesManager {
     private void modificar()
     {
         int cp = this.inputReader.scanCp("Codigo Postal");
-        Ciudad c = (Ciudad)this.ciudades.obtener((Comparable)cp);
+        Ciudad c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cp);
     }
 
     private void eliminar()
@@ -57,6 +57,7 @@ public class CiudadesManager {
         if(this.ciudades.eliminar((Comparable)cpo))
         {
             System.out.println("Eliminado con exito");
+            //this.rutas.eliminar();
         }
         else
         {
@@ -73,7 +74,7 @@ public class CiudadesManager {
 
         for(int i = cpo; i < cpf; i++)
         {
-            ciudad = (Ciudad)this.ciudades.obtener(i);
+            ciudad = (Ciudad)this.ciudades.obtenerInformacion(i);
             if(ciudad != null)
                 System.out.println(ciudad);
         }
