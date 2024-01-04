@@ -24,6 +24,19 @@ public class Grafo {
         }
         return exito;
     }
+
+    public boolean eliminarVertice()
+    {
+        boolean exito = false;
+        return exito;
+    }
+
+    public boolean eliminarArco(Object origen, Object destino)
+    {
+        boolean exito = false;
+        return exito;
+    }
+
     public Lista listarEnProfundidad()
     {
         Lista visitados = new Lista();
