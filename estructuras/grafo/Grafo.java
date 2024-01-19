@@ -4,7 +4,8 @@ import estructuras.lineales.dinamicas.Lista;
 
 public class Grafo {
     NodoVert inicio;
-    public NodoVert ubicarVertice(Object buscado)
+
+    private NodoVert ubicarVertice(Object buscado)
     {
         NodoVert aux = this.inicio;
         while (aux != null && !aux.getElem().equals(buscado))
@@ -13,6 +14,7 @@ public class Grafo {
         }
         return aux;
     }
+
     public boolean insertarVertice(Object nuevoVertice)
     {
         boolean exito = false;
@@ -25,15 +27,81 @@ public class Grafo {
         return exito;
     }
 
-    public boolean eliminarVertice()
+    public boolean eliminarVertice(Object buscado)
     {
-        boolean exito = false;
+        // se busca y elimina el nodovert buscado
+
+        boolean exito = true;
+        if(inicio == null)
+        {
+            // caso Grafo Vacio
+            System.out.println("caso 1");
+            exito = false;
+        }
+        else if(inicio.getElem().equals(buscado))
+        {
+            // caso eliminar primer NodoVert
+            System.out.println("caso 2");
+            inicio = inicio.getSigVertice();
+        }
+        // caso eliminar nodovert no extremo
+        {
+            System.out.println("caso 3");
+            NodoVert prev = inicio;
+            NodoVert aux = inicio.getSigVertice();
+            while( aux != null && !aux.getElem().equals(buscado) )
+            {
+                prev = aux;
+                aux = aux.getSigVertice();
+            }
+            if(aux != null && aux.getElem().equals(buscado))
+            {
+                prev.setSigVertice(aux.getSigVertice());
+            }
+            else
+            {
+                exito = false;
+            }
+        }
         return exito;
     }
 
     public boolean eliminarArco(Object origen, Object destino)
     {
         boolean exito = false;
+        // busco origen
+        NodoVert aux = inicio;
+        while( aux != null && !aux.getElem().equals(origen) )
+        {
+            aux = aux.getSigVertice();
+        }
+        if(aux != null)
+        {
+            // busco arco destino
+            // caso, primerady es el destino
+            System.out.println("buscando primerady");
+            System.out.println(aux.getPrimerAdy().getVertice().getElem());
+            if(aux.getPrimerAdy().getVertice().getElem().equals(destino))
+            {
+                exito = true;
+                aux.setPrimerAdy(aux.getPrimerAdy().getSigAdyacente());
+            } else {
+                //caso, arco destino no es primerady
+                NodoAdy prevAdy = aux.getPrimerAdy();
+                NodoAdy auxAdy = prevAdy.getSigAdyacente();
+                while(auxAdy != null && !auxAdy.getVertice().getElem().equals(destino))
+                {
+                    System.out.println("Buscando " + auxAdy.getVertice().getElem());
+                    prevAdy = auxAdy;
+                    auxAdy = auxAdy.getSigAdyacente();
+                }
+                if(auxAdy != null && auxAdy.getVertice().getElem().equals(destino))
+                {
+                    prevAdy.setSigAdyacente(auxAdy.getSigAdyacente());
+                    exito = true;
+                }
+            }
+        }
         return exito;
     }
 
@@ -112,6 +180,21 @@ public class Grafo {
                     ady = ady.getSigAdyacente();
                 }
             }
+        }
+        return exito;
+    }
+
+    public boolean existeArco(Object origen, Object destino)
+    {
+        boolean exito;
+        NodoVert aux = this.ubicarVertice(origen);
+        NodoAdy auxAdy = aux.getPrimerAdy();
+
+        exito = auxAdy != null && auxAdy.getVertice().getElem().equals(destino);
+        while(auxAdy != null && !exito)
+        {
+            auxAdy = auxAdy.getSigAdyacente();
+            exito = auxAdy != null && auxAdy.getVertice().getElem().equals(destino);
         }
         return exito;
     }

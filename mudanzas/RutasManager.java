@@ -23,24 +23,62 @@ public class RutasManager {
             mostrarMenu();
             seleccion = inputReader.scanString("Seleccion:");
             if(seleccion.equals("1"))
-                System.out.println(rutas.listarEnProfundidad());
-            else if(seleccion.equals("2"))
                 cargarDatos();
+            else if(seleccion.equals("2"))
+                eliminarArco();
             else if(seleccion.equals("3"))
-                consultarRuta();
+                modificar();
             else if(seleccion.equals("4"))
                 consultarRutaPorDistancia();
         }  
     }
-
     private void mostrarMenu()
     {
             System.out.println("Gestionar Rutas");
-            System.out.println("1. Mostrar");
-            System.out.println("2. Insertar");
-            System.out.println("3. Consultar Ruta");
-            System.out.println("4. Encontrar camino por distancia");
+            System.out.println("1. Cargar");
+            System.out.println("2. Eliminar");
+            System.out.println("3. Modificar");
+            System.out.println("4. Encontrar camino segun distancia");
     }
+    private void modificar()
+    {
+        int origenCP = inputReader.scanCp("CP origen");
+        //System.out.println("Posibles CP destino: ");
+        //System.out.println(rutas.obtenerArcos(origenCP));
+        int destinoCP = inputReader.scanCp("CP destino");
+        if(rutas.existeArco(origenCP, destinoCP))
+        {
+            int nuevaDistancia = inputReader.scanInt("Nueva distancia");
+            if(rutas.eliminarArco(origenCP, destinoCP))
+                if(rutas.insertarArco(origenCP, destinoCP, nuevaDistancia))
+                    System.out.println("Modificado con exito");
+
+        }
+    }
+
+    private void eliminarVertice()
+    {
+
+        int ciudadCP = inputReader.scanCp("CP");
+        if(rutas.eliminarVertice(ciudadCP))
+            System.out.println("Eliminado con exito");
+        else
+            System.out.println("No se pudo eliminar");
+
+    }
+
+    private void eliminarArco()
+    {
+        int origenCP = inputReader.scanCp("CP origen");
+        int destinoCP = inputReader.scanCp("CP destino");
+
+        if(rutas.eliminarArco(origenCP, destinoCP))
+            System.out.println("Eliminado con exito");
+        else
+            System.out.println("No se pudo eliminar");
+    }
+
+
 
     public void consultarRutaPorDistancia()
     {
