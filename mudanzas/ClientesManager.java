@@ -38,7 +38,6 @@ public class ClientesManager {
             System.out.println(c.getTipo() + c.getNum());
             if(inputReader.scanBool("Eliminar? s/n"))
             {
-                System.out.println(c.getTipo() + c.getNum());
                 if(clientes.desasociar(c.getTipo() + c.getNum()))
                 {
                     System.out.println("Eliminado con exito");
@@ -49,7 +48,24 @@ public class ClientesManager {
 
     private void modificar()
     {
-
+        Cliente c = inputReader.scanCliente();
+        if(c != null)
+        {
+            System.out.println("Cliente:");
+            System.out.println(c.getNombres() + " " + c.getApellidos());
+            System.out.println(c.getTipo() + c.getNum());
+            if(inputReader.scanBool("Modificar? s/n"))
+            {
+                if(inputReader.scanBool("Nombres: " + c.getNombres() + " Modificar? s/n"))
+                    c.setNombres(inputReader.scanString("Nombres"));
+                if(inputReader.scanBool("Apellidos: " + c.getApellidos() + " Modificar? s/n"))
+                    c.setApellidos(inputReader.scanString("Apellidos"));
+                if(inputReader.scanBool("Telefono: " + c.getTelefono() + " Modificar? s/n"))
+                    c.setTelefono(inputReader.scanString("Telefono"));
+                if(inputReader.scanBool("Email: " + c.getEmail() + " Modificar? s/n"))
+                    c.setEmail(inputReader.scanString("Email"));
+            }
+        }
     }
 
     private void mostrarMenu()
