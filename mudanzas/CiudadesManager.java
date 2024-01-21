@@ -14,7 +14,14 @@ public class CiudadesManager {
         this.ciudades = ciudades;
         this.rutas = rutas;
     }
-
+    private void mostrarMenu()
+    {
+        System.out.println("Gestionar Ciudades");
+        System.out.println("1. Insertar");
+        System.out.println("2. Eliminar");
+        System.out.println("3. Modificar");
+        System.out.println("4. Mostrar por prefijo");
+    }
     public void gestionar()
     {
         String seleccion = "";
@@ -23,25 +30,13 @@ public class CiudadesManager {
             mostrarMenu();
             seleccion = inputReader.scanString("Seleccion");
             if("1".equals(seleccion))
-            {
-                System.out.println(ciudades);
-            }
-            else if("2".equals(seleccion))
-            {
                 cargarDatos();
-            }
-            else if("3".equals(seleccion))
-            {
-                mostrarPorPrefijo();
-            }
-            else if("4".equals(seleccion))
-            {
+            else if("2".equals(seleccion))
                 eliminar();
-            }
-            else if("5".equals(seleccion))
-            {
+            else if("3".equals(seleccion))
                 modificar();
-            }
+            else if("4".equals(seleccion))
+                mostrarPorPrefijo();
         }
     }
 
@@ -49,6 +44,16 @@ public class CiudadesManager {
     {
         int cp = this.inputReader.scanCp("Codigo Postal");
         Ciudad c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cp);
+        System.out.println("Modificando " + c.getNombre() + " CP: " + c.getCodigo());
+        String[] strNames = {"Nombre", "Provincia"};
+        String[] strInputs = inputReader.cargarStringsSc(strNames);
+        if(!strInputs[strNames.length].equals("q"))
+        {
+            c.setNombre(strInputs[0]);
+            c.setProvincia(strInputs[1]);
+            System.out.println("Modificado con exito");
+        }
+        
     }
 
     private void eliminar()
@@ -81,14 +86,7 @@ public class CiudadesManager {
     }
 
 
-    private void mostrarMenu()
-    {
-        System.out.println("Gestionar Ciudades");
-        System.out.println("1. Mostrar Todo");
-        System.out.println("2. Insertar");
-        System.out.println("3. Mostrar dado un prefijo");
-        System.out.println("4. Eliminar");
-    }
+
 
     private void cargarDatos()
     {
@@ -108,7 +106,6 @@ public class CiudadesManager {
 
         if (continuar)
         {
-            
             //insertar(cpo, strInputs[0], strInputs[1]);
             insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1]));
         }
