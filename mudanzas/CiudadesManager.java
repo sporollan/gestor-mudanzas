@@ -107,7 +107,7 @@ public class CiudadesManager {
         if (continuar)
         {
             //insertar(cpo, strInputs[0], strInputs[1]);
-            insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1]));
+            insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1], inputReader));
         }
     }
 

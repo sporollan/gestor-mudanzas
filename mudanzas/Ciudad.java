@@ -12,12 +12,37 @@ public class Ciudad {
     MapeoAMuchos solicitudes;
     InputReader inputReader;
 
-    public Ciudad(Comparable codigo, String nombre, String provincia)
+    public Ciudad(Comparable codigo, String nombre, String provincia, InputReader inputReader)
     {
         this.codigo = codigo;
         this.nombre = nombre;
         this.provincia = provincia;
         this.solicitudes = new MapeoAMuchos();
+        this.inputReader = inputReader;
+    }
+
+    public boolean eliminarSolicitudes(Ciudad ciudadDestino)
+    {
+        boolean exito = false;
+        Lista listaSolicitudes = solicitudes.obtenerValor(ciudadDestino.getCodigo());
+        Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+        int i = 1;
+        while(s != null)
+        {
+            System.out.println(s.getFecha());
+            System.out.println(((Cliente)s.getCliente()).getNombres());
+            if(inputReader.scanBool("Eliminar? s/n"))
+            {
+                if(listaSolicitudes.eliminar(i))
+                    System.out.println("Eliminado con exito");
+            }
+            else
+            {
+                i+=1;
+            }
+            s = (Solicitud)listaSolicitudes.recuperar(i);
+        }
+        return exito;
     }
 
     @Override public String toString()
@@ -31,8 +56,8 @@ public class Ciudad {
         return this.solicitudes.asociar(codigoDestino, s);
     }
 
-    public Lista obtenerSolicitudes(Comparable codigo){
-        return this.solicitudes.obtenerValor(codigo);
+    public Lista obtenerSolicitudes(Comparable codigoDestino){
+        return this.solicitudes.obtenerValor(codigoDestino);
     }
 
     public Comparable getCodigo()
