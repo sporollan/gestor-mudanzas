@@ -93,8 +93,8 @@ public class CiudadesManager {
     private void cargarDatos()
     {
         int cpo = -1;
-        String[] stringValues = {"Nombre", "Provincia"};
-        String[] sInputs = new String[stringValues.length+1];
+        String[] strNames = {"Nombre", "Provincia"};
+        String[] strInputs = new String[strNames.length+1];
         boolean continuar = true;
 
         cpo = inputReader.scanCp("Codigo Postal");
@@ -102,22 +102,25 @@ public class CiudadesManager {
 
         if(continuar)
         {
-            sInputs = inputReader.cargarStringsSc(stringValues);
-            continuar = !sInputs[stringValues.length].equals("q");
+            strInputs = inputReader.cargarStringsSc(strNames);
+            continuar = !strInputs[strNames.length].equals("q");
         }
 
         if (continuar)
         {
-            insertar(cpo, sInputs[0], sInputs[1]);
+            
+            //insertar(cpo, strInputs[0], strInputs[1]);
+            insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1]));
         }
     }
 
-    public void insertar(int cpo, String nombre, String provincia)
+    //public void insertar(int cpo, String nombre, String provincia)
+    public void insertar(Ciudad ciudad)
     {
-        if(ciudades.insertar(cpo, new Ciudad((Comparable)cpo, nombre, provincia)))
+        if(ciudades.insertar(ciudad.getCodigo(), ciudad))
         {
             System.out.println("Insertado con exito");
-            if (rutas.insertarVertice((Comparable)cpo))
+            if (rutas.insertarVertice(ciudad.getCodigo()))
                 System.out.println("Vertice creado con exito");
         }
     }
