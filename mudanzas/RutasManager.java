@@ -21,7 +21,7 @@ public class RutasManager {
         while(!seleccion.equals("q"))
         {
             mostrarMenu();
-            seleccion = inputReader.scanString("Seleccion:");
+            seleccion = inputReader.scanString("Seleccion");
             if(seleccion.equals("1"))
                 cargarDatos();
             else if(seleccion.equals("2"))

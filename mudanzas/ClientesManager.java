@@ -18,22 +18,46 @@ public class ClientesManager {
         while(!seleccion.equals("q"))
         {
             mostrarMenu();
-            seleccion = inputReader.scanString("Seleccion:");
+            seleccion = inputReader.scanString("Seleccion");
             if(seleccion.equals("1"))
-                System.out.println(clientes);
-            if(seleccion.equals("2"))
                 cargarDatos();
+            if(seleccion.equals("2"))
+                eliminar();
             if(seleccion.equals("3"))
-                System.out.println(inputReader.scanCliente());
+                modificar();
         }  
+    }
+
+    private void eliminar()
+    {
+        Cliente c = inputReader.scanCliente();
+        if(c != null)
+        {
+            System.out.println("Cliente:");
+            System.out.println(c.getNombres() + " " + c.getApellidos());
+            System.out.println(c.getTipo() + c.getNum());
+            if(inputReader.scanBool("Eliminar? s/n"))
+            {
+                System.out.println(c.getTipo() + c.getNum());
+                if(clientes.desasociar(c.getTipo() + c.getNum()))
+                {
+                    System.out.println("Eliminado con exito");
+                }
+            }
+        }
+    }
+
+    private void modificar()
+    {
+
     }
 
     private void mostrarMenu()
     {
         System.out.println("Gestionar Clientes");
-        System.out.println("1. Listar");
-        System.out.println("2. Insertar");
-        System.out.println("3. Mostrar");
+        System.out.println("1. Insertar");
+        System.out.println("2. Eliminar");
+        System.out.println("3. Modificar");
     }
 
     private void cargarDatos()
@@ -59,14 +83,8 @@ public class ClientesManager {
         // almacenar los datos en la estructura
         if(continuar)
         {
-            insertar(clave[0], clave[1], sInputs[0], sInputs[1], sInputs[2], sInputs[3]);
+            if(clientes.asociar((clave[0] + clave[1]), new Cliente(clave[0], clave[1], sInputs[0], sInputs[1], sInputs[2], sInputs[3])))
+                System.out.println("Cliente insertado con exito");
         }
     }
-
-    public void insertar(String tipo, String num, String nombres, String apellidos, String telefono, String email)
-    {
-            if(clientes.asociar(tipo+num, new Cliente(tipo, num, nombres, apellidos, telefono, email)))
-                System.out.println("Cliente insertado con exito");
-    }
-
 }

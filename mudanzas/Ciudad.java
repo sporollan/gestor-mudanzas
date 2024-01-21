@@ -31,7 +31,7 @@ public class Ciudad {
         {
             System.out.println(s.getFecha());
             System.out.println(((Cliente)s.getCliente()).getNombres());
-            if(inputReader.scanBool("Eliminar? s/n"))
+            if(inputReader.scanBool("Modificar? s/n"))
             {
                 if(listaSolicitudes.eliminar(i))
                     System.out.println("Eliminado con exito");

@@ -32,6 +32,48 @@ public class MapeoAUno {
         return !encontrado;
     }
 
+    public boolean desasociar(Object dominio)
+    {
+        // calculo el valor de la posicion
+        int pos = dominio.hashCode() % TAM;
+        if(pos < 0)
+            pos = pos * -1;
+        NodoHashMapeo aux = this.tabla[pos];
+        boolean encontrado = false;
+        // busco el nodo del dominio
+        if(aux != null)
+        {
+            if(aux.getDominio().equals(dominio))
+            {
+                // caso el primer nodo es el buscado
+                this.tabla[pos] = aux.getEnlace();
+                encontrado = true;
+            }
+            else
+            {
+                // caso recorro los demas nodos
+                NodoHashMapeo prev = aux;
+                aux = aux.getEnlace();
+                while(aux != null && !encontrado)
+                {
+                    if(aux.getDominio().equals(dominio))
+                    {
+                        // eliminar nodo
+                        prev.setEnlace(aux.getEnlace());
+                        encontrado = true;
+                    }
+                    else
+                    {
+                        // continuar recorriendo
+                        prev = aux;
+                        aux = aux.getEnlace();
+                    }   
+                }
+            }
+        }
+        return encontrado;
+    }
+
     public Object obtenerValor(Object dominio)
     {
         int pos = dominio.hashCode() % TAM;
