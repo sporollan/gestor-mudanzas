@@ -85,7 +85,7 @@ public class FileManager {
         nombre = tokenizer.nextToken();
         provincia = tokenizer.nextToken();
 
-        if(ciudades.insertar(codigo, new Ciudad(codigo, nombre, provincia)))
+        if(ciudades.insertar(codigo, new Ciudad(codigo, nombre, provincia, inputReader)))
         {
             this.count[1]+=1;
             if(!rutas.insertarVertice(codigo))
