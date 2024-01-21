@@ -216,6 +216,18 @@ public class InputReader {
         return clave;
     }
 
+    public boolean scanBool(String name)
+    {
+        boolean b = false;
+        String input = "";
+        while(!(input.equals("s") || input.equals("n") || input.equals("q")))
+        {
+            input = scanString(name);
+            b = (input.equals("s"));
+        }
+        return b;
+    }
+
     public String[] cargarStringsSc(String[] stringValues)
     {
         int sL = stringValues.length;
