@@ -1,7 +1,7 @@
 package mudanzas;
 
 public class Solicitud {
-    Ciudad destino;
+    final Ciudad destino;
     String fecha;
     Object cliente;
     int metrosCubicos;
@@ -42,6 +42,63 @@ public class Solicitud {
     {
         return destino + ", " + fecha + ", " + cliente;
     }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public Object getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Object cliente) {
+        this.cliente = cliente;
+    }
+
+    public int getMetrosCubicos() {
+        return metrosCubicos;
+    }
+
+    public void setMetrosCubicos(int metrosCubicos) {
+        this.metrosCubicos = metrosCubicos;
+    }
+
+    public int getBultos() {
+        return bultos;
+    }
+
+    public void setBultos(int bultos) {
+        this.bultos = bultos;
+    }
+
+    public String getDomicilioRetiro() {
+        return domicilioRetiro;
+    }
+
+    public void setDomicilioRetiro(String domicilioRetiro) {
+        this.domicilioRetiro = domicilioRetiro;
+    }
+
+    public String getDomicilioEntrega() {
+        return domicilioEntrega;
+    }
+
+    public void setDomicilioEntrega(String domicilioEntrega) {
+        this.domicilioEntrega = domicilioEntrega;
+    }
+
+    public boolean isEstaPago() {
+        return estaPago;
+    }
+
+    public void setEstaPago(boolean estaPago) {
+        this.estaPago = estaPago;
+    }
+
 /*
     @Override
     public int compareTo(Object cp)

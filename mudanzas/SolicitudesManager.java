@@ -12,6 +12,13 @@ public class SolicitudesManager {
         this.inputReader = inputReader;
         this.ciudades = ciudades;
     }
+    private void mostrarMenu()
+    {
+        System.out.println("Gestionar Solicitudes");
+        System.out.println("1. Insertar");
+        System.out.println("2. Eliminar");
+        System.out.println("3. Modificar");
+    }
     public void gestionar()
     {
         String seleccion = "";
@@ -20,26 +27,95 @@ public class SolicitudesManager {
             mostrarMenu();
             seleccion = inputReader.scanString("Seleccion:");
             if(seleccion.equals("1"))
-                mostrarSolicitudes();
-            if(seleccion.equals("2"))
                 cargarDatos();
+            else if(seleccion.equals("2"))
+                eliminar();
+            else if(seleccion.equals("3"))
+                modificar();
+            
         }
     }
-    private void mostrarMenu()
+
+    private void eliminar()
     {
-        System.out.println("Gestionar Solicitudes");
-        System.out.println("1. Mostrar");
-        System.out.println("2. Insertar");
+        Ciudad ciudadOrigen = inputReader.scanCiudad("Origen");
+        Ciudad ciudadDestino = null;
+        if(ciudadOrigen != null)
+        {
+            ciudadDestino = inputReader.scanCiudad("Destino");
+        }
+        
+        Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
+        Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+        int i = 1;
+        while(s != null)
+        {
+            System.out.println(s.getFecha());
+            System.out.println(((Cliente)s.getCliente()).getNombres());
+            if(inputReader.scanBool("Eliminar? s/n"))
+            {
+                if(listaSolicitudes.eliminar(i))
+                    System.out.println("Eliminado con exito");
+            }
+            else
+            {
+                i+=1;
+            }
+            s = (Solicitud)listaSolicitudes.recuperar(i);
+        }
     }
-    public void cargarDatos()
+
+    private void modificar()
+    {
+        Ciudad ciudadOrigen = inputReader.scanCiudad("Origen");
+        Ciudad ciudadDestino = null;
+        if(ciudadOrigen != null)
+        {
+            ciudadDestino = inputReader.scanCiudad("Destino");
+        }
+        
+        Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
+        Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+        int i = 1;
+        while(s != null)
+        {
+            System.out.println(s.getFecha());
+            System.out.println(((Cliente)s.getCliente()).getNombres());
+            if(inputReader.scanBool("Modificar? s/n"))
+            {
+                if(inputReader.scanBool("Modificar fecha? s/n"))
+                    s.setFecha(inputReader.scanFecha());
+
+                if(inputReader.scanBool("Domicilio Retiro: " + s.getDomicilioRetiro() + " Modificar? s/n"))
+                    s.setDomicilioRetiro(inputReader.scanString("Domicilio Retiro"));
+
+                if(inputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar? s/n"))
+                    s.setDomicilioEntrega(inputReader.scanString("Domicilio Retiro"));
+
+                if(inputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar? s/n"))
+                    s.setMetrosCubicos(inputReader.scanInt("Metros Cubicos"));
+                
+                if(inputReader.scanBool("Bultos: " + s.getBultos() + " Modificar? s/n"))
+                    s.setBultos(inputReader.scanInt("Bultos"));
+
+                s.setEstaPago(inputReader.scanBool("Esta pago?"));
+
+                if(inputReader.scanBool("Cliente: " + ((Cliente)s.getCliente()).getNombres() + " Modificar? s/n"))
+                    s.setCliente(inputReader.scanCliente());
+            }
+            i+=1;
+            s = (Solicitud)listaSolicitudes.recuperar(i);
+        }
+    }
+
+    private void cargarDatos()
     {
         boolean estaPago;
-        String input;
-        String[] stringValues = {"Fecha", "Domicilio Retiro", "Domicilio Entrega"};
-        String[] intValues = {"Metros Cubicos", "Bultos"};
-        String[] sInputs = new String[stringValues.length+1];
-        int[] iInputs = new int[intValues.length+1];
-        Solicitud solicitud;
+        String fecha="";
+        String[] strNames = {"Domicilio Retiro", "Domicilio Entrega"};
+        String[] intNames = {"Metros Cubicos", "Bultos"};
+        String[] strInputs = new String[strNames.length+1];
+        int[] intInputs = new int[intNames.length+1];
         Ciudad ciudadOrigen, ciudadDestino;
         Cliente cliente;
         boolean continuar = true;
@@ -56,14 +132,20 @@ public class SolicitudesManager {
 
         if(continuar)
         {
-            sInputs = inputReader.cargarStringsSc(stringValues);
-            continuar = !sInputs[stringValues.length].equals("q");
+            fecha = inputReader.scanFecha();
+            continuar = !fecha.equals("q");
         }
 
         if(continuar)
         {
-            iInputs = inputReader.cargarIntsSc(intValues);
-            continuar = !(iInputs[intValues.length] == -1);
+            strInputs = inputReader.cargarStringsSc(strNames);
+            continuar = !strInputs[strNames.length].equals("q");
+        }
+
+        if(continuar)
+        {
+            intInputs = inputReader.cargarIntsSc(intNames);
+            continuar = !(intInputs[intNames.length] == -1);
         }
 
         cliente = null;
@@ -76,6 +158,7 @@ public class SolicitudesManager {
         estaPago = false;
         if(continuar)
         {
+            /*
             estaPago = false;
             input = "";
             while(!(input.equals("y") || input.equals("n") || input.equals("q")))
@@ -84,19 +167,16 @@ public class SolicitudesManager {
                 estaPago = input == "y";
             }
             continuar = !input.equals("q");
+            */
+            estaPago = inputReader.scanBool("Esta Pago? s/n");
         }
 
         if(continuar)
         {
-            insertar(ciudadOrigen, ciudadDestino, sInputs[0], cliente, iInputs[0], iInputs[1], sInputs[1], sInputs[2], estaPago);
+            Solicitud solicitud = new Solicitud(ciudadDestino, fecha, cliente, intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
+            if(ciudadOrigen.insertarSolicitud(solicitud))
+                System.out.println("Solicitud creada con exito");
         }
-    }
-
-    private void insertar(Ciudad ciudadOrigen, Ciudad destino, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
-    {
-        Solicitud solicitud = new Solicitud(destino, fecha, cliente, metrosCubicos, bultos, domicilioRetiro, domicilioEntrega, estaPago);
-        if(ciudadOrigen.insertarSolicitud(solicitud))
-            System.out.println("Solicitud creada con exito");
     }
 
     public void mostrarSolicitudes()

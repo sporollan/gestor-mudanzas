@@ -228,6 +228,24 @@ public class InputReader {
         return b;
     }
 
+    public String scanFecha()
+    {
+        String s = "";
+        while(s.equals("") && !s.equals("q"))
+        {
+            try
+            {
+                System.out.print("Fecha: ");
+                s = sc.nextLine();
+                if(!s.equals("q"))
+                    comprobarFecha(s);
+            } catch (Exception e){
+                s = "";
+            }
+        }
+        return s;
+    }
+
     public String[] cargarStringsSc(String[] stringValues)
     {
         int sL = stringValues.length;

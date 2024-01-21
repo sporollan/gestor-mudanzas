@@ -21,6 +21,30 @@ public class Ciudad {
         this.inputReader = inputReader;
     }
 
+    public boolean modificarSolicitudes(Ciudad ciudadDestino)
+    {
+        boolean exito = false;
+        Lista listaSolicitudes = solicitudes.obtenerValor(ciudadDestino.getCodigo());
+        Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+        int i = 1;
+        while(s != null)
+        {
+            System.out.println(s.getFecha());
+            System.out.println(((Cliente)s.getCliente()).getNombres());
+            if(inputReader.scanBool("Eliminar? s/n"))
+            {
+                if(listaSolicitudes.eliminar(i))
+                    System.out.println("Eliminado con exito");
+            }
+            else
+            {
+                i+=1;
+            }
+            s = (Solicitud)listaSolicitudes.recuperar(i);
+        }
+        return exito;
+    }
+
     public boolean eliminarSolicitudes(Ciudad ciudadDestino)
     {
         boolean exito = false;
