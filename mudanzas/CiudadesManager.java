@@ -62,7 +62,8 @@ public class CiudadesManager {
         if(this.ciudades.eliminar((Comparable)cpo))
         {
             System.out.println("Eliminado con exito");
-            //this.rutas.eliminar();
+            // eliminar rutas
+            // eliminar vertice
         }
         else
         {
