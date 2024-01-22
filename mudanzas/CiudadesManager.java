@@ -21,7 +21,7 @@ public class CiudadesManager {
         System.out.println("2. Eliminar");
         System.out.println("3. Modificar");
         System.out.println("4. Mostrar Datos Ciudad");
-        System.out.println("5. Mostrar por prefijo");
+        System.out.println("5. Mostrar por Prefijo");
     }
     public void gestionar()
     {
@@ -38,6 +38,8 @@ public class CiudadesManager {
                 modificar();
             else if("4".equals(seleccion))
                 mostrarDatosCiudad();
+            else if("5".equals(seleccion))
+                mostrarPorPrefijo();
         }
     }
 
@@ -67,7 +69,7 @@ public class CiudadesManager {
             c.setNombre(strInputs[0]);
             c.setProvincia(strInputs[1]);
             System.out.println("Modificado con exito");
-        }
+        }   
         
     }
 
