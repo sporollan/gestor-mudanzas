@@ -20,7 +20,8 @@ public class CiudadesManager {
         System.out.println("1. Insertar");
         System.out.println("2. Eliminar");
         System.out.println("3. Modificar");
-        System.out.println("4. Mostrar por prefijo");
+        System.out.println("4. Mostrar Datos Ciudad");
+        System.out.println("5. Mostrar por Prefijo");
     }
     public void gestionar()
     {
@@ -36,7 +37,23 @@ public class CiudadesManager {
             else if("3".equals(seleccion))
                 modificar();
             else if("4".equals(seleccion))
+                mostrarDatosCiudad();
+            else if("5".equals(seleccion))
                 mostrarPorPrefijo();
+        }
+    }
+
+    private void mostrarDatosCiudad()
+    {
+        Ciudad c = ((Ciudad)ciudades.obtenerInformacion(inputReader.scanCp("CP")));
+        if( c != null)
+        {
+            System.out.println();
+            System.out.println(c.getCodigo());
+            System.out.println("Nombre");
+            System.out.println(c.getNombre());
+            System.out.println("Provincia");
+            System.out.println(c.getProvincia());
         }
     }
 
@@ -52,7 +69,7 @@ public class CiudadesManager {
             c.setNombre(strInputs[0]);
             c.setProvincia(strInputs[1]);
             System.out.println("Modificado con exito");
-        }
+        }   
         
     }
 

@@ -11,6 +11,15 @@ public class ClientesManager {
         this.inputReader = inputReader;
         this.clientes = clientes;
     }
+    
+    private void mostrarMenu()
+    {
+        System.out.println("Gestionar Clientes");
+        System.out.println("1. Insertar");
+        System.out.println("2. Eliminar");
+        System.out.println("3. Modificar");
+        System.out.println("4. Mostrar");
+    }
 
     public void gestionar()
     {
@@ -21,11 +30,31 @@ public class ClientesManager {
             seleccion = inputReader.scanString("Seleccion");
             if(seleccion.equals("1"))
                 cargarDatos();
-            if(seleccion.equals("2"))
+            else if(seleccion.equals("2"))
                 eliminar();
-            if(seleccion.equals("3"))
+            else if(seleccion.equals("3"))
                 modificar();
+            else if(seleccion.equals("4"))
+                mostrar();
         }  
+    }
+
+    private void mostrar()
+    {
+        Cliente c = inputReader.scanCliente();
+        if(c != null)
+        {
+            System.out.println("Cliente");
+            System.out.println(c.getTipo() + c.getNum());
+            System.out.println("Nombres");
+            System.out.println(c.getNombres());
+            System.out.println("Apellidos");
+            System.out.println(c.getApellidos());
+            System.out.println("Email");
+            System.out.println(c.getEmail());
+            System.out.println("Telefono");
+            System.out.println(c.getTelefono());
+        }
     }
 
     private void eliminar()
@@ -68,13 +97,7 @@ public class ClientesManager {
         }
     }
 
-    private void mostrarMenu()
-    {
-        System.out.println("Gestionar Clientes");
-        System.out.println("1. Insertar");
-        System.out.println("2. Eliminar");
-        System.out.println("3. Modificar");
-    }
+
 
     private void cargarDatos()
     {
