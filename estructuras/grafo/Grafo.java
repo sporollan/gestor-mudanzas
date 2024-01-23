@@ -294,16 +294,16 @@ public class Grafo {
         if(auxO != null && auxD != null)
         {
             Lista visitados = new Lista();
-            caminos = obtenerCaminoPorDistanciaAux(auxO, 0, destino, visitados, caminos);
+            caminos = obtenerCaminoPorDistanciaAux(auxO, 0, auxD, visitados, caminos);
         }
         return caminos;
     }
 
-    public Lista obtenerCaminoPorDistanciaAux(NodoVert n, float distancia, Object dest, Lista vis, Lista caminos)
+    public Lista obtenerCaminoPorDistanciaAux(NodoVert n, float distancia, NodoVert dest, Lista vis, Lista caminos)
     {
         if(n != null)
         {
-            if(!n.getElem().equals(dest))
+            if(!n.equals(dest))
             {
                 vis.insertar(n.getElem(), vis.longitud() + 1);
                 NodoAdy ady = n.getPrimerAdy();
@@ -353,18 +353,18 @@ public class Grafo {
         if(auxO != null && auxD != null)
         {
             Lista visitados = new Lista();
-            caminos = obtenerCaminoPorCiudadesAux(auxO, 0, destino, visitados, caminos);
+            caminos = obtenerCaminoPorCiudadesAux(auxO, 0, auxD, visitados, caminos);
         }
         return caminos;    
     }
 
 
-    public Lista obtenerCaminoPorCiudadesAux(NodoVert n, int cantCiudades, Object dest, Lista vis, Lista caminos)
+    public Lista obtenerCaminoPorCiudadesAux(NodoVert n, int cantCiudades, NodoVert dest, Lista vis, Lista caminos)
     {
         if(n != null)
         {
 
-            if(!n.getElem().equals(dest))
+            if(!n.equals(dest))
             {
                 // si el nodo actual no es el destino
                 // inserto el nodo en los visitados
@@ -405,6 +405,87 @@ public class Grafo {
                 {
                     caminos.eliminar(1);
                     caminos.insertar(cantCiudades, 1);
+                }
+            }
+        }
+        return caminos;
+    }
+
+    public Lista obtenerCaminoPasandoPorCiudad(Object origen, Object destino, Object c)
+    {
+        NodoVert auxO = null;
+        NodoVert auxD = null;
+        NodoVert auxC = null;
+        NodoVert aux = this.inicio;
+        Lista caminos = new Lista();
+        caminos.insertar(Float.MAX_VALUE, 1);
+
+        // busco origen, destino y c
+        while((auxO == null || auxD == null || auxC == null) && aux != null)
+        {
+            if (aux.getElem().equals(origen)) auxO=aux;
+            if (aux.getElem().equals(destino)) auxD=aux;
+            if (aux.getElem().equals(c)) auxC=aux;
+            aux = aux.getSigVertice();
+        }
+
+        // busco el camino
+        if(auxO != null && auxD != null && auxC != null)
+        {
+            Lista visitados = new Lista();
+            caminos = obtenerCaminoPasandoPorCiudadAux(auxO, 0, auxD, auxC,  visitados, caminos, false);
+        }
+        return caminos;    
+    }
+
+
+    public Lista obtenerCaminoPasandoPorCiudadAux(NodoVert n, float distancia, NodoVert dest,NodoVert c, 
+                                                Lista vis, Lista caminos, boolean pasoPorC)
+    {
+        if(n != null)
+        {   
+            if(!pasoPorC)
+                pasoPorC = n.equals(c);
+            if(!n.equals(dest))
+            {
+                // si el nodo actual no es el destino
+                // inserto el nodo en los visitados
+                vis.insertar(n.getElem(), vis.longitud() + 1);
+
+                // recorro los caminos
+                NodoAdy ady = n.getPrimerAdy();
+                while (ady != null)
+                {
+                    // si el camino existe
+                    // calculo la distancia total recorrida hasta el momento
+
+                    // compruebo si vale la pena seguir recorriendo (no fue visitado ni supera la distancia maxima)
+                    if(vis.localizar(ady.getVertice().getElem()) < 0)
+                    { 
+                        // clono visitados, cada camino almacena sus propios visitados
+                        Lista v = vis.clone();
+
+                        // recorro el camino hacia el proximo vertice
+                        obtenerCaminoPasandoPorCiudadAux(ady.getVertice(), distancia+(float)ady.getEtiqueta(), dest, c, v, caminos, pasoPorC);
+                    }
+                    // continuo recorriendo el proximo camino
+                    ady = ady.getSigAdyacente();
+                }
+            }else if(pasoPorC)
+            {
+                // si el nodo actual es el destino
+                // inserto el vertobtenerCaminoPorCiudadesice en visitados
+                vis.insertar(n.getElem(), vis.longitud()+1);
+                vis.insertar(distancia, vis.longitud()+1);
+                
+                // inserto visitados en caminos
+                caminos.insertar(vis, caminos.longitud()+1);
+
+                // calculo la nueva distancia maxima
+                if(distancia < (float)caminos.recuperar(1))
+                {
+                    caminos.eliminar(1);
+                    caminos.insertar(distancia, 1);
                 }
             }
         }

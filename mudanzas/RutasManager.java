@@ -15,6 +15,16 @@ public class RutasManager {
         this.rutas = rutas;
         this.ciudades = ciudades;
     }
+    private void mostrarMenu()
+    {
+            System.out.println("Gestionar Rutas");
+            System.out.println("1. Cargar");
+            System.out.println("2. Eliminar");
+            System.out.println("3. Modificar");
+            System.out.println("4. Camino por menor distancia");
+            System.out.println("5. Camino por menos ciudades");
+            System.out.println("6. Camino pasando por Ciudad");
+    }
     public void gestionar()
     {
         String seleccion = "";
@@ -32,7 +42,48 @@ public class RutasManager {
                 caminoPorMenorDistancia();
             else if(seleccion.equals("5"))
                 caminoPorMenosCiudades();
+            else if(seleccion.equals("6"))
+                caminoPasandoPorCiudad();
         }  
+    }
+
+    private void caminoPasandoPorCiudad()
+    {
+        int cpo = -1;
+        int cpd = -1;
+        int cpc = -1;
+        boolean continuar = true;
+
+        cpo = inputReader.scanCp("Origen(cp)");
+        continuar = cpo != -1;
+
+        if(continuar)
+        {
+            cpd = inputReader.scanCp("Destino(cp)");
+            continuar = cpd != -1;
+        }
+
+        if(continuar)
+        {
+            cpc = inputReader.scanCp("Pasando por(cp)");
+            continuar = cpc != -1;
+        }
+
+        if(continuar)
+        {
+            Lista rutas = this.rutas.obtenerCaminoPasandoPorCiudad(cpo, cpd, cpc);
+            Lista ruta;
+            for(int i = 2; i < rutas.longitud()+1; i++)
+            {
+                ruta = (Lista)rutas.recuperar(i);
+                for(int j = 1; j < ruta.longitud(); j++)
+                {
+                    System.out.println(this.ciudades.obtenerInformacion((Comparable)ruta.recuperar(j)));
+                }
+                System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
+            }
+            System.out.println("Longitud min " + rutas.recuperar(1));
+        }
     }
 
     private void caminoPorMenosCiudades()
@@ -66,15 +117,7 @@ public class RutasManager {
             System.out.println("Longitud min " + rutas.recuperar(1));
         }
     }
-    private void mostrarMenu()
-    {
-            System.out.println("Gestionar Rutas");
-            System.out.println("1. Cargar");
-            System.out.println("2. Eliminar");
-            System.out.println("3. Modificar");
-            System.out.println("4. Camino por menor distancia");
-            System.out.println("5. Camino por menos ciudades");
-    }
+
     private void modificar()
     {
         int origenCP = inputReader.scanCp("CP origen");
