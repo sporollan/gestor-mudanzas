@@ -491,4 +491,65 @@ public class Grafo {
         }
         return caminos;
     }
+
+    public Lista obtenerCaminoPorKMMaximos(Object origen, Object destino, float maximo)
+    {
+        NodoVert auxO = null;
+        NodoVert auxD = null;
+        NodoVert aux = this.inicio;
+        Lista caminos = new Lista();
+        caminos.insertar(maximo, 1);
+
+        while((auxO == null || auxD == null) && aux != null)
+        {
+            if (aux.getElem().equals(origen)) auxO=aux;
+            if (aux.getElem().equals(destino)) auxD=aux;
+            aux = aux.getSigVertice();
+        }
+
+        if(auxO != null && auxD != null)
+        {
+            Lista visitados = new Lista();
+            caminos = obtenerCaminoPorDistanciaAux(auxO, 0, auxD, visitados, caminos);
+        }
+        return caminos;
+    }
+
+    public Lista obtenerCaminoPorKMMaximos(NodoVert n, float distancia, NodoVert dest, Lista vis, Lista caminos)
+    {
+        if(n != null)
+        {
+            if(!n.equals(dest))
+            {
+                vis.insertar(n.getElem(), vis.longitud() + 1);
+                NodoAdy ady = n.getPrimerAdy();
+                float newDistancia;
+                while (ady != null)
+                {
+                    newDistancia = (float)ady.getEtiqueta() + distancia;
+                    if(vis.localizar(ady.getVertice().getElem()) < 0 && newDistancia < (float)caminos.recuperar(1))
+                    { 
+                        Lista v = vis.clone();
+                        obtenerCaminoPorDistanciaAux(ady.getVertice(), distancia + (float)ady.getEtiqueta(), dest, v, caminos);
+                    }
+                    ady = ady.getSigAdyacente();
+                }
+            }else
+            {
+                vis.insertar(n.getElem(), vis.longitud()+1);
+                vis.insertar(distancia, vis.longitud()+1);
+                caminos.insertar(vis, caminos.longitud()+1);
+                if(distancia < (float)caminos.recuperar(1))
+                {
+                    caminos.eliminar(1);
+                    caminos.insertar(distancia, 1);
+                }
+            }
+        }
+        return caminos;
+    }
+
+
+
+
 }

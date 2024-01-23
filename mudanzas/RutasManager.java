@@ -21,9 +21,10 @@ public class RutasManager {
             System.out.println("1. Cargar");
             System.out.println("2. Eliminar");
             System.out.println("3. Modificar");
-            System.out.println("4. Camino por menor distancia");
-            System.out.println("5. Camino por menos ciudades");
+            System.out.println("4. Camino por menor Distancia");
+            System.out.println("5. Camino por menos Ciudades");
             System.out.println("6. Camino pasando por Ciudad");
+            System.out.println("7. Camino por Distancia Maxima");
     }
     public void gestionar()
     {
@@ -44,7 +45,48 @@ public class RutasManager {
                 caminoPorMenosCiudades();
             else if(seleccion.equals("6"))
                 caminoPasandoPorCiudad();
+            else if(seleccion.equals("7"))
+                caminoPorKMMaximos();
         }  
+    }
+
+    private void caminoPorKMMaximos()
+    {
+        int cpo = -1;
+        int cpd = -1;
+        float maximo = -1;
+        boolean continuar = true;
+
+        cpo = inputReader.scanCp("Origen(cp)");
+        continuar = cpo != -1;
+
+        if(continuar)
+        {
+            cpd = inputReader.scanCp("Destino(cp)");
+            continuar = cpd != -1;
+        }
+
+        if(continuar)
+        {
+            maximo = inputReader.scanFloat("Longitud Maxima (KM)");
+            continuar = maximo != -1;
+        }
+
+        if(continuar)
+        {
+            Lista rutas = this.rutas.obtenerCaminoPorKMMaximos(cpo, cpd, maximo);
+            Lista ruta;
+            for(int i = 2; i < rutas.longitud()+1; i++)
+            {
+                ruta = (Lista)rutas.recuperar(i);
+                for(int j = 1; j < ruta.longitud(); j++)
+                {
+                    System.out.println(this.ciudades.obtenerInformacion((Comparable)ruta.recuperar(j)));
+                }
+                System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
+            }
+            System.out.println("Longitud min " + rutas.recuperar(1));
+        }
     }
 
     private void caminoPasandoPorCiudad()
