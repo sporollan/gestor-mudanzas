@@ -282,7 +282,7 @@ public class Grafo {
         NodoVert auxD = null;
         NodoVert aux = this.inicio;
         Lista caminos = new Lista();
-        caminos.insertar((float)999999, 1);
+        caminos.insertar(Float.MAX_VALUE, 1);
 
         while((auxO == null || auxD == null) && aux != null)
         {
@@ -314,7 +314,6 @@ public class Grafo {
                     if(vis.localizar(ady.getVertice().getElem()) < 0 && newDistancia < (float)caminos.recuperar(1))
                     { 
                         Lista v = vis.clone();
-                        System.out.println(n.getElem() + " " + ady.getVertice().getElem() + " " + ady.getEtiqueta());
                         obtenerCaminoPorDistanciaAux(ady.getVertice(), distancia + (float)ady.getEtiqueta(), dest, v, caminos);
                     }
                     ady = ady.getSigAdyacente();
@@ -340,8 +339,9 @@ public class Grafo {
         NodoVert auxD = null;
         NodoVert aux = this.inicio;
         Lista caminos = new Lista();
-        caminos.insertar((float)10000, 1);
+        caminos.insertar(Integer.MAX_VALUE, 1);
 
+        // busco origen y destino
         while((auxO == null || auxD == null) && aux != null)
         {
             if (aux.getElem().equals(origen)) auxO=aux;
@@ -349,6 +349,7 @@ public class Grafo {
             aux = aux.getSigVertice();
         }
 
+        // busco el camino
         if(auxO != null && auxD != null)
         {
             Lista visitados = new Lista();
@@ -357,35 +358,53 @@ public class Grafo {
         return caminos;    
     }
 
-    public Lista obtenerCaminoPorCiudadesAux(NodoVert n, float distancia, Object dest, Lista vis, Lista caminos)
+
+    public Lista obtenerCaminoPorCiudadesAux(NodoVert n, int cantCiudades, Object dest, Lista vis, Lista caminos)
     {
         if(n != null)
         {
+
             if(!n.getElem().equals(dest))
             {
+                // si el nodo actual no es el destino
+                // inserto el nodo en los visitados
                 vis.insertar(n.getElem(), vis.longitud() + 1);
+
+                // recorro los caminos
                 NodoAdy ady = n.getPrimerAdy();
-                float newDistancia;
+                cantCiudades+=1;
                 while (ady != null)
                 {
-                    newDistancia = (float)ady.getEtiqueta() + distancia;
-                    if(vis.localizar(ady.getVertice().getElem()) < 0 && newDistancia < (float)caminos.recuperar(1))
+                    // si el camino existe
+                    // calculo la distancia total recorrida hasta el momento
+
+                    // compruebo si vale la pena seguir recorriendo (no fue visitado ni supera la distancia maxima)
+                    if(vis.localizar(ady.getVertice().getElem()) < 0 && cantCiudades < (int)caminos.recuperar(1))
                     { 
+                        // clono visitados, cada camino almacena sus propios visitados
                         Lista v = vis.clone();
-                        System.out.println(n.getElem() + " " + ady.getVertice().getElem() + " " + ady.getEtiqueta());
-                        obtenerCaminoPorCiudadesAux(ady.getVertice(), distancia + (float)ady.getEtiqueta(), dest, v, caminos);
+
+                        // recorro el camino hacia el proximo vertice
+                        obtenerCaminoPorCiudadesAux(ady.getVertice(), cantCiudades, dest, v, caminos);
                     }
+                    // continuo recorriendo el proximo camino
                     ady = ady.getSigAdyacente();
                 }
             }else
             {
+                // si el nodo actual es el destino
+                // inserto el vertice en visitados
                 vis.insertar(n.getElem(), vis.longitud()+1);
-                vis.insertar(distancia, vis.longitud()+1);
+                vis.insertar(cantCiudades, vis.longitud()+1);
+                
+                // inserto visitados en caminos
                 caminos.insertar(vis, caminos.longitud()+1);
-                if(distancia < (float)caminos.recuperar(1))
+
+                // calculo la nueva distancia maxima
+                if(cantCiudades < (int)caminos.recuperar(1))
                 {
                     caminos.eliminar(1);
-                    caminos.insertar(distancia, 1);
+                    caminos.insertar(cantCiudades, 1);
                 }
             }
         }
