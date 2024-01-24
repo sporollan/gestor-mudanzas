@@ -160,6 +160,21 @@ public class InputReader {
         return cp;
     }
 
+    public int[] scanCodigos(String[] names)
+    {
+        // devuelve un array con codigos postales
+        int[] codigos = new int[names.length];
+        codigos[names.length-1] = -1;
+        int i = 0;
+        boolean continuar;
+        do{
+            codigos[i] = scanCp(names[i]);
+            continuar = codigos[i] != -1;
+            i = i+1;
+        } while (continuar && i < names.length);
+        return codigos;
+    }
+
     public Cliente scanCliente()
     {
         Cliente cliente = null;
