@@ -3,14 +3,14 @@ package mudanzas;
 public class Solicitud {
     final Ciudad destino;
     String fecha;
-    Object cliente;
+    Cliente cliente;
     int metrosCubicos;
     int bultos;
     String domicilioRetiro;
     String domicilioEntrega;
     boolean estaPago;
 
-    public Solicitud(Ciudad destino, String fecha, Object cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
+    public Solicitud(Ciudad destino, String fecha, Cliente cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
     {   
         this.destino = destino;
         this.fecha = fecha;
@@ -51,11 +51,11 @@ public class Solicitud {
         this.fecha = fecha;
     }
 
-    public Object getCliente() {
+    public Cliente getCliente() {
         return cliente;
     }
 
-    public void setCliente(Object cliente) {
+    public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 

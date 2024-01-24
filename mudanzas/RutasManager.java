@@ -200,4 +200,5 @@ public class RutasManager {
         if(rutas.insertarArco(cpo, cpd, distancia))
             System.out.println("Ruta insertada con exito");
     }
+
 }

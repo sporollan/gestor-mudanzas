@@ -18,6 +18,7 @@ public class SolicitudesManager {
         System.out.println("1. Insertar");
         System.out.println("2. Eliminar");
         System.out.println("3. Modificar");
+        System.out.println("4. Mostrar Pedidos entre Ciudades");
     }
     public void gestionar()
     {
@@ -25,14 +26,49 @@ public class SolicitudesManager {
         while(!seleccion.equals("q"))
         {
             mostrarMenu();
-            seleccion = inputReader.scanString("Seleccion:");
+            seleccion = inputReader.scanString("Seleccion");
             if(seleccion.equals("1"))
                 cargarDatos();
             else if(seleccion.equals("2"))
                 eliminar();
             else if(seleccion.equals("3"))
                 modificar();
+            else if(seleccion.equals("4"))
+                mostrarPedidosEntreCiudades();
             
+        }
+    }
+
+    private void mostrarPedidosEntreCiudades()
+    {
+        String[] names = {"Origen(cp)", "Destino(cp)"};
+        int[] codigos = inputReader.scanCodigos(names);
+        Ciudad c = (Ciudad)ciudades.obtenerInformacion(codigos[0]);
+        Lista pedidos=null;
+        if(c != null)
+        {
+            pedidos = c.obtenerSolicitudes(codigos[1]);
+        }
+        if(pedidos != null)
+        {
+            System.out.println("Pedidos entre " + c.getNombre() + 
+                                " y " + 
+                                ((Ciudad)ciudades.obtenerInformacion(codigos[1])).getNombre());
+            
+            Solicitud pedido;
+            Cliente cliente;
+            int metrosCubicos = 0;
+            for(int i = 1; i <= pedidos.longitud(); i++)
+            {
+                pedido = (Solicitud)pedidos.recuperar(i);
+                System.out.println("Pedido " + i);
+                cliente = pedido.getCliente();
+                System.out.println(cliente.getNombres() + " " + cliente.getApellidos());
+                System.out.println("Bultos "+pedido.getBultos());
+                System.out.println("Metros cubicos "+pedido.getMetrosCubicos());
+                metrosCubicos = metrosCubicos + pedido.getMetrosCubicos();
+            }
+            System.out.println("Espacio necesario para transportar: " + metrosCubicos + " metros cubicos");
         }
     }
 

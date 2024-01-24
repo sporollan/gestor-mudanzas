@@ -136,10 +136,17 @@ public class FileManager {
         if(cargaValida)
         {            
             Ciudad ciudadOrigen = (Ciudad)ciudades.obtenerInformacion(cpo);
-            if(!ciudadOrigen.insertarSolicitud(new Solicitud((Ciudad)(ciudades.obtenerInformacion(cpd)), fecha, clientes.obtenerValor(tipo+num), metrosCubicos, bultos, dirRetiro, dirEntrega, esPago)))
+            if(!ciudadOrigen.insertarSolicitud(new Solicitud(
+                (Ciudad)(ciudades.obtenerInformacion(cpd)), fecha, 
+                (Cliente)clientes.obtenerValor(tipo+num), metrosCubicos, 
+                bultos, dirRetiro, dirEntrega, esPago)))
+            {
                 System.out.println("Error insertando solicitud " + cpo + " " + cpd);
+            }
             else
+            {
                 this.count[2] += 1;
+            }
         }
     }
 
