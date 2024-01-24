@@ -296,7 +296,7 @@ public class Grafo {
             Lista visitados = new Lista();
             caminos = obtenerCaminoPorDistanciaAux(auxO, 0, auxD, visitados, caminos);
         }
-        return caminos;
+        return (Lista)caminos.recuperar(caminos.longitud());
     }
 
     public Lista obtenerCaminoPorDistanciaAux(NodoVert n, float distancia, NodoVert dest, Lista vis, Lista caminos)
@@ -355,7 +355,7 @@ public class Grafo {
             Lista visitados = new Lista();
             caminos = obtenerCaminoPorCiudadesAux(auxO, 0, auxD, visitados, caminos);
         }
-        return caminos;    
+        return (Lista)caminos.recuperar(caminos.longitud());
     }
 
 
@@ -512,7 +512,7 @@ public class Grafo {
             Lista visitados = new Lista();
             caminos = obtenerCaminoPorDistanciaAux(auxO, 0, auxD, visitados, caminos);
         }
-        return caminos;
+        return (Lista)caminos.recuperar(caminos.longitud());
     }
 
     public Lista obtenerCaminoPorKMMaximos(NodoVert n, float distancia, NodoVert dest, Lista vis, Lista caminos)

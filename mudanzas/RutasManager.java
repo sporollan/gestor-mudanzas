@@ -52,11 +52,11 @@ public class RutasManager {
 
     private void mostrarCaminoKMMaximos()
     {
-
         float maximo = -1;
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
         boolean continuar = codigos[codigos.length-1] != -1;
+        Lista camino = null;
 
         if(continuar)
         {
@@ -66,19 +66,10 @@ public class RutasManager {
 
         if(continuar)
         {
-            Lista rutas = this.rutas.obtenerCaminoPorKMMaximos(codigos[0], codigos[1], maximo);
-            Lista ruta;
-            for(int i = 2; i < rutas.longitud()+1; i++)
-            {
-                ruta = (Lista)rutas.recuperar(i);
-                for(int j = 1; j < ruta.longitud(); j++)
-                {
-                    System.out.println(this.ciudades.obtenerInformacion((Comparable)ruta.recuperar(j)));
-                }
-                System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
-            }
-            System.out.println("Longitud min " + rutas.recuperar(1));
+            camino = this.rutas.obtenerCaminoPorKMMaximos(codigos[0], codigos[1], maximo);
         }
+
+        mostrarCamino(camino);
     }
 
     private void mostrarCaminoPasandoPorCiudad()
@@ -88,18 +79,14 @@ public class RutasManager {
 
         if(codigos[names.length-1] != -1)
         {
-            Lista rutas = this.rutas.obtenerCaminoPasandoPorCiudad(codigos[0], codigos[1], codigos[2]);
-            Lista ruta;
-            for(int i = 2; i < rutas.longitud()+1; i++)
+            Lista caminos = this.rutas.obtenerCaminoPasandoPorCiudad(codigos[0], codigos[1], codigos[2]);
+            Lista camino;
+            for(int i = 2; i < caminos.longitud()+1; i++)
             {
-                ruta = (Lista)rutas.recuperar(i);
-                for(int j = 1; j < ruta.longitud(); j++)
-                {
-                    System.out.println(this.ciudades.obtenerInformacion((Comparable)ruta.recuperar(j)));
-                }
-                System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
+                camino = (Lista)caminos.recuperar(i);
+                mostrarCamino(camino);
             }
-            System.out.println("Longitud min " + rutas.recuperar(1));
+            System.out.println("Longitud min " + caminos.recuperar(1));
         }
     }
 
@@ -107,22 +94,14 @@ public class RutasManager {
     {
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
+        Lista camino = null;
 
         if(codigos[codigos.length-1]!=-1)
         {
-            Lista rutas = this.rutas.obtenerCaminoPorCiudades(codigos[0], codigos[1]);
-            Lista ruta;
-            for(int i = 2; i < rutas.longitud()+1; i++)
-            {
-                ruta = (Lista)rutas.recuperar(i);
-                for(int j = 1; j < ruta.longitud(); j++)
-                {
-                    System.out.println(this.ciudades.obtenerInformacion((Comparable)ruta.recuperar(j)));
-                }
-                System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
-            }
-            System.out.println("Longitud min " + rutas.recuperar(1));
+            camino = this.rutas.obtenerCaminoPorCiudades(codigos[0], codigos[1]);
         }
+
+        mostrarCamino(camino);
     }
 
     private void modificar()
@@ -139,17 +118,6 @@ public class RutasManager {
         }
     }
 
-    private void eliminarVertice()
-    {
-
-        int ciudadCP = inputReader.scanCp("CP");
-        if(rutas.eliminarVertice(ciudadCP))
-            System.out.println("Eliminado con exito");
-        else
-            System.out.println("No se pudo eliminar");
-
-    }
-
     private void eliminarArco()
     {
         int origenCP = inputReader.scanCp("CP origen");
@@ -161,32 +129,33 @@ public class RutasManager {
             System.out.println("No se pudo eliminar");
     }
 
-
-
-    public void mostrarCaminoMenorDistancia()
+    public Lista obtenerCaminoMenorDistancia()
     {
-
+        Lista camino=null;
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
-
         if(codigos[codigos.length-1]!=-1)
+            camino = this.rutas.obtenerCaminoPorDistancia(codigos[0], codigos[1]);
+        return camino;
+    }
+
+    public void mostrarCamino(Lista camino)
+    {
+        if(camino != null)
         {
-            Lista rutas = this.rutas.obtenerCaminoPorDistancia(codigos[0], codigos[1]);
-            Lista ruta;
-            for(int i = 2; i < rutas.longitud()+1; i++)
+            for(int i = 1; i < camino.longitud(); i++)
             {
-                ruta = (Lista)rutas.recuperar(i);
-                for(int j = 1; j < ruta.longitud(); j++)
-                {
-                    System.out.println(this.ciudades.obtenerInformacion((Comparable)ruta.recuperar(j)));
-                }
-                System.out.println("Longitud: " + ruta.recuperar(ruta.longitud()));
+                System.out.println(this.ciudades.obtenerInformacion((Comparable)camino.recuperar(i)));
             }
-            System.out.println("Longitud min " + rutas.recuperar(1));
+            System.out.println("Longitud: " + camino.recuperar(camino.longitud()));
         }
     }
 
-
+    public void mostrarCaminoMenorDistancia()
+    {
+        Lista camino = obtenerCaminoMenorDistancia();
+        mostrarCamino(camino);
+    }
 
     public void consultarRuta()
     {
