@@ -16,6 +16,7 @@ public class MudanzasCompartidas {
     RutasManager rutasManager;
     ClientesManager clientesManager;
     FileManager fileManager;
+    ViajesManager viajesManager;
 
 
     public MudanzasCompartidas()
@@ -29,6 +30,7 @@ public class MudanzasCompartidas {
         this.rutasManager = new RutasManager(inputReader, ciudades, rutas);
         this.clientesManager = new ClientesManager(inputReader, clientes);
         this.fileManager = new FileManager(inputReader, clientes, ciudades, rutas);
+        this.viajesManager = new ViajesManager(inputReader, ciudades, rutas);
     }
 
     public void gestionar()
@@ -45,7 +47,10 @@ public class MudanzasCompartidas {
             else if(seleccion.equals("3"))
                 rutasManager.gestionar();
             else if(seleccion.equals("4"))
-                clientesManager.gestionar();        }
+                clientesManager.gestionar();
+            else if(seleccion.equals("5"))
+                viajesManager.gestionar();
+        }
     }
 
     private void mostrarMenu()
@@ -55,9 +60,8 @@ public class MudanzasCompartidas {
         System.out.println("2. Gestionar Solicitudes");
         System.out.println("3. Gestionar Rutas");
         System.out.println("4. Gestionar Clientes");
+        System.out.println("5. Gestionar Viajes");
     }
-
-
 
     public void run()
     {
