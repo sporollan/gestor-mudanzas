@@ -23,7 +23,8 @@ public class ViajesManager {
             System.out.println("2. Camino por menos Ciudades");
             System.out.println("3. Camino pasando por Ciudad");
             System.out.println("4. Camino por Distancia Maxima");
-            System.out.println("5. Comprobar Pedidos Intermedios");
+            System.out.println("5. Listar Posibles Pedidos Intermedios");
+            System.out.println("6. Verificar Camino Perfecto");
     }
     public void gestionar()
     {
@@ -42,12 +43,28 @@ public class ViajesManager {
                 mostrarCaminoKMMaximos();
             else if(seleccion.equals("5"))
                 mostrarPedidosIntermedios();
+            else if(seleccion.equals("6"))
+                verificarCaminoPerfecto();
         }  
     }
-    private void mostrarCaminoMenorDistancia()
+
+    private void verificarCaminoPerfecto()
     {
         Lista camino = obtenerCaminoMenorDistancia();
         mostrarCamino(camino);
+
+    }
+    private void mostrarCaminoMenorDistancia()
+    {
+        int capacidad = -1;
+        Lista camino = obtenerCaminoMenorDistancia();
+        mostrarCamino(camino);
+        if(camino != null)
+            capacidad = inputReader.scanInt("Capacidad del camion");
+        if(capacidad!=-1)
+        {
+    
+        }
     }
 
     private void mostrarCamino(Lista camino)
