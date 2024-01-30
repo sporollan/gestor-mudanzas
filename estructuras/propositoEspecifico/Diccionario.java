@@ -18,12 +18,12 @@ public class Diccionario {
         }
         else
         {
-            exito = _insertarAux(this.raiz, clave, dato);
+            exito = insertarAux(this.raiz, clave, dato);
         }
         if(exito)
         {
             this.raiz.recalcularAltura();
-            this._comprobarBalance(this.raiz);
+            this.comprobarBalance(this.raiz);
         }
         return exito;
     }
@@ -36,7 +36,7 @@ public class Diccionario {
         return exito;
     }
 
-    public boolean eliminarAux(NodoAVLDicc n, Comparable clave, NodoAVLDicc p, boolean esIzquierdo)
+    private boolean eliminarAux(NodoAVLDicc n, Comparable clave, NodoAVLDicc p, boolean esIzquierdo)
     {
         boolean exito = false;
         if(n != null)
@@ -110,7 +110,7 @@ public class Diccionario {
                 {
                     this.raiz.recalcularAltura();
                     //System.out.println(this.toString());
-                    this._comprobarBalance(this.raiz);
+                    this.comprobarBalance(this.raiz);
                 }
                 exito = true;
             }
@@ -175,11 +175,11 @@ public class Diccionario {
             }
             else if(this.raiz.getClave().compareTo(clave) > 0)
             {
-                obtenido = _obtenerAux(this.raiz.getHijoIzquierdo(), clave);
+                obtenido = obtenerAux(this.raiz.getHijoIzquierdo(), clave);
             }
             else
             {
-                obtenido = _obtenerAux(this.raiz.getHijoDerecho(), clave);
+                obtenido = obtenerAux(this.raiz.getHijoDerecho(), clave);
             }
         }
         return obtenido;
@@ -211,20 +211,20 @@ public class Diccionario {
         {
             s += n.getClave() + "(" + n.getAltura() + "): ";
             i = this.raiz.getHijoIzquierdo();
-            s += _addElem(i);
+            s += addElem(i);
 
             s += ", ";
 
             d = this.raiz.getHijoDerecho();
-            s += _addElem(d);
+            s += addElem(d);
 
-            s += this._toStringAux(n.getHijoIzquierdo());
-            s += this._toStringAux(n.getHijoDerecho());
+            s += this.toStringAux(n.getHijoIzquierdo());
+            s += this.toStringAux(n.getHijoDerecho());
         }
         return s;
     }
 
-    private Object _obtenerAux(NodoAVLDicc n, Comparable clave)
+    private Object obtenerAux(NodoAVLDicc n, Comparable clave)
     {
         Object obtenido = null;
         if(n != null)
@@ -233,17 +233,17 @@ public class Diccionario {
                 obtenido = n.getDato();
             else if (n.getClave().compareTo(clave) > 0)
             {
-                obtenido = _obtenerAux(n.getHijoIzquierdo(), clave);
+                obtenido = obtenerAux(n.getHijoIzquierdo(), clave);
             }
             else
             {
-                obtenido = _obtenerAux(n.getHijoDerecho(), clave);
+                obtenido = obtenerAux(n.getHijoDerecho(), clave);
             }
         }
         return obtenido;
     }
 
-    private void _rotarDerecha(NodoAVLDicc n)
+    private void rotarDerecha(NodoAVLDicc n)
     {
         NodoAVLDicc naux = n.getHijoIzquierdo();
         Object aux = n.getDato();
@@ -258,7 +258,7 @@ public class Diccionario {
         n.setHijoDerecho(naux);
     }
 
-    private void _rotarIzquierda(NodoAVLDicc n)
+    private void rotarIzquierda(NodoAVLDicc n)
     {
         NodoAVLDicc naux = n.getHijoDerecho();
         Object aux = n.getDato();
@@ -274,7 +274,7 @@ public class Diccionario {
     }
 
     
-    private boolean _insertarAux(NodoAVLDicc n, Comparable clave, Object dato)
+    private boolean insertarAux(NodoAVLDicc n, Comparable clave, Object dato)
     {
         boolean exito = true;
         if (n.getClave().compareTo(clave) == 0)
@@ -286,7 +286,7 @@ public class Diccionario {
             // elem es menor que n.getDato()
             if(n.getHijoIzquierdo() != null)
             {
-                exito = _insertarAux(n.getHijoIzquierdo(), clave, dato);
+                exito = insertarAux(n.getHijoIzquierdo(), clave, dato);
             }
             else
             {
@@ -299,7 +299,7 @@ public class Diccionario {
             // es mayor
             if(n.getHijoDerecho() != null)
             {
-                exito = _insertarAux(n.getHijoDerecho(), clave, dato);
+                exito = insertarAux(n.getHijoDerecho(), clave, dato);
             } 
             else
             {
@@ -308,11 +308,11 @@ public class Diccionario {
             }
         }
         n.recalcularAltura();
-        this._comprobarBalance(n);
+        this.comprobarBalance(n);
         return exito;
     }
 
-    private int _getBalance(NodoAVLDicc n)
+    private int getBalance(NodoAVLDicc n)
     {
         int b = 0;
         int ai = -1;
@@ -329,7 +329,7 @@ public class Diccionario {
         return b;
     }
 
-    private void _comprobarBalance(NodoAVLDicc n)
+    private void comprobarBalance(NodoAVLDicc n)
     {
         int b, bh;
         NodoAVLDicc nh = null;
@@ -338,7 +338,7 @@ public class Diccionario {
 
         if(n != null)
         {
-            b = this._getBalance(n);
+            b = this.getBalance(n);
             if(n.getHijoIzquierdo() != null)
                 ai = n.getHijoIzquierdo().getAltura();
             if(n.getHijoDerecho() != null)
@@ -349,20 +349,20 @@ public class Diccionario {
                 nh = n.getHijoDerecho();
             if(nh != null)
             {
-                bh = this._getBalance(nh);
+                bh = this.getBalance(nh);
                 if(b == 2)
                 {
                     if(bh == 1 || bh == 0)
                     {
                         // simple a derecha
-                        this._rotarDerecha(n);
+                        this.rotarDerecha(n);
                         this.raiz.recalcularAltura();
                     }
                     else if(bh == -1)
                     {
                         // doble izquierda-derecha
-                        this._rotarIzquierda(nh);
-                        this._rotarDerecha(n);
+                        this.rotarIzquierda(nh);
+                        this.rotarDerecha(n);
                         this.raiz.recalcularAltura();
                     }
                 }
@@ -371,14 +371,14 @@ public class Diccionario {
                     if(bh == 0 || bh == -1)
                     {
                         // simple a izquierda
-                        this._rotarIzquierda(n);
+                        this.rotarIzquierda(n);
                         this.raiz.recalcularAltura();
                     }
                     else if(bh == 1)
                     {
                         // doble derecha-izquierda
-                        this._rotarDerecha(nh);
-                        this._rotarIzquierda(n);
+                        this.rotarDerecha(nh);
+                        this.rotarIzquierda(n);
                         this.raiz.recalcularAltura();
                     }
                 }
@@ -386,7 +386,7 @@ public class Diccionario {
         }
     }
 
-    private String _toStringAux(NodoAVLDicc n)
+    private String toStringAux(NodoAVLDicc n)
     {
         String s = "";
         if(n != null)
@@ -394,18 +394,18 @@ public class Diccionario {
             s += "\n";
             s += n.getClave() + "(" + n.getAltura() + ")";
             s += ": ";
-            s += _addElem(n.getHijoIzquierdo());
+            s += addElem(n.getHijoIzquierdo());
             s += ", ";
-            s += _addElem(n.getHijoDerecho());
+            s += addElem(n.getHijoDerecho());
 
-            s += this._toStringAux(n.getHijoIzquierdo());
-            s += this._toStringAux(n.getHijoDerecho());
+            s += this.toStringAux(n.getHijoIzquierdo());
+            s += this.toStringAux(n.getHijoDerecho());
         }
         return s;
 
     }
 
-    private String _addElem(NodoAVLDicc n)
+    private String addElem(NodoAVLDicc n)
     {
         String s = "";
         if(n != null)
