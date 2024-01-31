@@ -56,15 +56,8 @@ public class ViajesManager {
     }
     private void mostrarCaminoMenorDistancia()
     {
-        int capacidad = -1;
         Lista camino = obtenerCaminoMenorDistancia();
         mostrarCamino(camino);
-        if(camino != null)
-            capacidad = inputReader.scanInt("Capacidad del camion");
-        if(capacidad!=-1)
-        {
-    
-        }
     }
 
     private void mostrarCamino(Lista camino)
@@ -87,7 +80,88 @@ public class ViajesManager {
             camino = this.rutas.obtenerCaminoPorDistancia(codigos[0], codigos[1]);
         return camino;
     }
+
     private void mostrarPedidosIntermedios()
+    {
+        int capacidad = -1;
+        Lista camino = obtenerCaminoMenorDistancia();
+        if(camino != null)
+        {
+            capacidad = inputReader.scanInt("Capacidad del Camion");
+        }
+
+        if(capacidad != -1)
+        {
+            Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
+            Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
+            mostrarCamino(camino);
+            mostrarPesoTotalPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
+
+            MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
+            Lista descargas;
+            Solicitud descarga;
+            int disponible = capacidad;
+            Ciudad ciudadOrigen;
+            for(int indexOrigen = 1; indexOrigen < camino.longitud(); indexOrigen++)
+            {
+                // recorro partiendo de cada ciudad
+                // compruebo si hay pedidos que se puedan descargar
+                ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
+
+                descargas = pedidosEnCamion.obtenerValor((Comparable)camino.recuperar(indexOrigen));
+                if(descargas != null)
+                {
+                    for(int i = 1; i <= descargas.longitud(); i++)
+                    {
+                        // recorro descargando cada solicitud que llega al destino
+                        descarga = (Solicitud)descargas.recuperar(i);
+                        System.out.println("Descargando " + descarga.getMetrosCubicos());
+                        disponible = disponible + descarga.getMetrosCubicos();
+                    }
+                    System.out.println("Nuevo Disponible " + disponible);
+                }
+
+                Lista pedidosParaEnviar = null;
+                for(int indexDestino = indexOrigen+1; indexDestino < camino.longitud(); indexDestino++)
+                {
+                    // recorro hacia cada destino
+                    // compruebo si hay espacio disponible para enviar pedidos
+                    pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
+                    if(pedidosParaEnviar!=null)
+                    {
+                        Solicitud pedidoParaEnviar = null;
+
+                        for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
+                        {
+                            // recorro agregando todos los pedidos segun el espacio disponible
+                            pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
+                            if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
+                            {
+                                disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
+                                pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
+                            }
+                        }
+                    }
+                }
+            }
+            System.out.println(disponible);
+        }
+
+    }
+
+    private void mostrarPesoTotalPedidos(Lista pedidos)
+    {
+        int pesoPedidos=0;
+        Solicitud pedido; 
+        for(int i = 1; i < pedidos.longitud()+1; i++)
+        {
+            pedido = (Solicitud)pedidos.recuperar(i);
+            pesoPedidos = pesoPedidos + pedido.getMetrosCubicos();
+        }
+        System.out.println("Pedidos " + pesoPedidos + " metros cubicos");
+    }
+
+    private void mostrarPedidosIntermedios1()
     {
         int capacidad=-1;
         Lista camino = obtenerCaminoMenorDistancia();
@@ -113,7 +187,7 @@ public class ViajesManager {
         System.out.println("Pedidos " + pesoPedidos + " metros cubicos");
 
         Ciudad o,d;
-        Lista p;
+        Lista pedidosLista;
         Lista sol = new Lista();
         int disp = capacidad - pesoPedidos;
         Solicitud s;
@@ -124,8 +198,9 @@ public class ViajesManager {
         Lista descarga;
         for(int j = 2; j < camino.longitud()-1;j++)
         {
-            p = o.obtenerSolicitudes((Comparable)camino.recuperar(j));
-            descarga = destinos.obtenerValor((Comparable)camino.recuperar(1));
+            Comparable cpDestino = (Comparable) camino.recuperar(j);
+            pedidosLista = o.obtenerSolicitudes(cpDestino);
+            descarga = destinos.obtenerValor((Comparable)camino.recuperar(j));
             if(descarga != null)
             {
                 System.out.println("Descargando");
@@ -140,11 +215,11 @@ public class ViajesManager {
                 disp = disp + aCargar;
                 System.out.println("Nuevo Disponible " + disp);
             }
-            if(p != null)
+            if(pedidosLista != null)
             {
-                for(int k = 1; k < p.longitud()+1;k++)
+                for(int k = 1; k < pedidosLista.longitud()+1;k++)
                 {
-                    s = (Solicitud)p.recuperar(k);
+                    s = (Solicitud)pedidosLista.recuperar(k);
 
                     
                     System.out.println(o.getCodigo() +" a "+ s.getDestino());
@@ -168,8 +243,8 @@ public class ViajesManager {
             o = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(i));
             for(int j = i+1; j < camino.longitud();j++)
             {
-                p = o.obtenerSolicitudes((Comparable)camino.recuperar(j));
-                descarga = destinos.obtenerValor((Comparable)camino.recuperar(i));
+                pedidosLista = o.obtenerSolicitudes((Comparable)camino.recuperar(j));
+                descarga = destinos.obtenerValor((Comparable)camino.recuperar(j));
                 if(descarga != null)
                 {
                     System.out.println("Descargando");
@@ -184,11 +259,11 @@ public class ViajesManager {
                     disp = disp + aCargar;
                     System.out.println("Nuevo Disponible " + disp);
                 }
-                if(p != null)
+                if(pedidosLista != null)
                 {
-                    for(int k = 1; k < p.longitud()+1;k++)
+                    for(int k = 1; k < pedidosLista.longitud()+1;k++)
                     {
-                        s = (Solicitud)p.recuperar(k);
+                        s = (Solicitud)pedidosLista.recuperar(k);
 
 
 
