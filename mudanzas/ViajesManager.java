@@ -81,6 +81,24 @@ public class ViajesManager {
         return camino;
     }
 
+    private void obtenerSolicitudesIntermedias()
+    {
+        
+    }
+
+    private int obtenerEspacioPedidos(Lista pedidos)
+    {
+        int espacio = 0;
+        Solicitud pedido;
+        for(int i = 1; i <= pedidos.longitud(); i++)
+        {
+            // recorro descargando cada solicitud que llega al destino
+            pedido = (Solicitud)pedidos.recuperar(i);
+            espacio = espacio + pedido.getMetrosCubicos();
+        }
+        return espacio;
+    }
+
     private void mostrarPedidosIntermedios()
     {
         int capacidad = -1;
@@ -94,13 +112,14 @@ public class ViajesManager {
         {
             Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
             Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
+            Lista solicitudesIntermedias = new Lista();
             mostrarCamino(camino);
-            mostrarPesoTotalPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
+
+            int disponible = capacidad - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
 
             MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
             Lista descargas;
             Solicitud descarga;
-            int disponible = capacidad;
             Ciudad ciudadOrigen;
             for(int indexOrigen = 1; indexOrigen < camino.longitud(); indexOrigen++)
             {
@@ -111,14 +130,7 @@ public class ViajesManager {
                 descargas = pedidosEnCamion.obtenerValor((Comparable)camino.recuperar(indexOrigen));
                 if(descargas != null)
                 {
-                    for(int i = 1; i <= descargas.longitud(); i++)
-                    {
-                        // recorro descargando cada solicitud que llega al destino
-                        descarga = (Solicitud)descargas.recuperar(i);
-                        System.out.println("Descargando " + descarga.getMetrosCubicos());
-                        disponible = disponible + descarga.getMetrosCubicos();
-                    }
-                    System.out.println("Nuevo Disponible " + disponible);
+                    disponible = disponible + obtenerEspacioPedidos(descargas);
                 }
 
                 Lista pedidosParaEnviar = null;
@@ -126,176 +138,46 @@ public class ViajesManager {
                 {
                     // recorro hacia cada destino
                     // compruebo si hay espacio disponible para enviar pedidos
-                    pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
-                    if(pedidosParaEnviar!=null)
-                    {
-                        Solicitud pedidoParaEnviar = null;
 
-                        for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
+                    // el envio desde origen a destino tiene prioridad
+                    if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
+                    {
+                        pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
+                        if(pedidosParaEnviar!=null)
                         {
-                            // recorro agregando todos los pedidos segun el espacio disponible
-                            pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
-                            if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
+                            Solicitud pedidoParaEnviar = null;
+
+                            for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
                             {
-                                disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
-                                pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
+                                // recorro agregando todos los pedidos segun el espacio disponible
+                                pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
+                                if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
+                                {
+                                    Lista solicitudIntermedia = new Lista();
+                                    solicitudIntermedia.insertar(ciudadOrigen.getCodigo(), 1);
+                                    solicitudIntermedia.insertar(pedidoParaEnviar, 2);
+                                    solicitudesIntermedias.insertar(solicitudIntermedia, solicitudesIntermedias.longitud()+1);
+
+                                    disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
+                                    pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
+                                }
                             }
                         }
                     }
                 }
             }
-            System.out.println(disponible);
+
+            System.out.println("Posibles solicitudes intermedias");
+            Lista solicitudIntermedia;
+            for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
+            {
+                solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
+                System.out.println(solicitudIntermedia.toString());
+            }
         }
 
     }
 
-    private void mostrarPesoTotalPedidos(Lista pedidos)
-    {
-        int pesoPedidos=0;
-        Solicitud pedido; 
-        for(int i = 1; i < pedidos.longitud()+1; i++)
-        {
-            pedido = (Solicitud)pedidos.recuperar(i);
-            pesoPedidos = pesoPedidos + pedido.getMetrosCubicos();
-        }
-        System.out.println("Pedidos " + pesoPedidos + " metros cubicos");
-    }
-
-    private void mostrarPedidosIntermedios1()
-    {
-        int capacidad=-1;
-        Lista camino = obtenerCaminoMenorDistancia();
-        if(camino != null)
-            capacidad = inputReader.scanInt("Capacidad del Camion");
-
-        Ciudad c;
-        Ciudad origen;
-        origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
-        Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
-
-        mostrarCamino(camino);
-
-        Lista pedidos = origen.obtenerSolicitudes(destino.getCodigo());
-
-        int pesoPedidos=0;
-        Solicitud pedido; 
-        for(int i = 1; i < pedidos.longitud()+1; i++)
-        {
-            pedido = (Solicitud)pedidos.recuperar(i);
-            pesoPedidos = pesoPedidos + pedido.getMetrosCubicos();
-        }
-        System.out.println("Pedidos " + pesoPedidos + " metros cubicos");
-
-        Ciudad o,d;
-        Lista pedidosLista;
-        Lista sol = new Lista();
-        int disp = capacidad - pesoPedidos;
-        Solicitud s;
-        System.out.println("Disponible " + disp);
-
-        o = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
-        MapeoAMuchos destinos = new MapeoAMuchos();
-        Lista descarga;
-        for(int j = 2; j < camino.longitud()-1;j++)
-        {
-            Comparable cpDestino = (Comparable) camino.recuperar(j);
-            pedidosLista = o.obtenerSolicitudes(cpDestino);
-            descarga = destinos.obtenerValor((Comparable)camino.recuperar(j));
-            if(descarga != null)
-            {
-                System.out.println("Descargando");
-                int aCargar = 0;
-                for(int w = 1; w <= descarga.longitud(); w++)
-                {
-
-                    aCargar = aCargar + ((Solicitud)descarga.recuperar(w)).getMetrosCubicos();
-                }
-                System.out.println("Disponible " + disp);
-                System.out.println("Descargando " + aCargar);
-                disp = disp + aCargar;
-                System.out.println("Nuevo Disponible " + disp);
-            }
-            if(pedidosLista != null)
-            {
-                for(int k = 1; k < pedidosLista.longitud()+1;k++)
-                {
-                    s = (Solicitud)pedidosLista.recuperar(k);
-
-                    
-                    System.out.println(o.getCodigo() +" a "+ s.getDestino());
-                    System.out.println("Requiere " + s.getMetrosCubicos());
-                    System.out.println(disp + " disponible");
-                    if(disp - s.getMetrosCubicos() >= 0)
-                    {
-                        System.out.println("Insertando");
-                        disp = disp - s.getMetrosCubicos();
-                        sol.insertar(s, sol.longitud()+1);
-                        System.out.println("Asociando " + s.getDestino().getCodigo());
-                        destinos.asociar(s.getDestino().getCodigo(), s);
-                    }
-                    else
-                        System.out.println("No insertando");
-                }
-            }
-        }
-        for(int i = 2; i < camino.longitud(); i++)
-        {
-            o = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(i));
-            for(int j = i+1; j < camino.longitud();j++)
-            {
-                pedidosLista = o.obtenerSolicitudes((Comparable)camino.recuperar(j));
-                descarga = destinos.obtenerValor((Comparable)camino.recuperar(j));
-                if(descarga != null)
-                {
-                    System.out.println("Descargando");
-                    int aCargar = 0;
-                    for(int w = 1; w <= descarga.longitud(); w++)
-                    {
-
-                        aCargar = aCargar + ((Solicitud)descarga.recuperar(w)).getMetrosCubicos();
-                    }
-                    System.out.println("Disponible " + disp);
-                    System.out.println("Descargando " + aCargar);
-                    disp = disp + aCargar;
-                    System.out.println("Nuevo Disponible " + disp);
-                }
-                if(pedidosLista != null)
-                {
-                    for(int k = 1; k < pedidosLista.longitud()+1;k++)
-                    {
-                        s = (Solicitud)pedidosLista.recuperar(k);
-
-
-
-                        System.out.println(o.getCodigo() +" a "+ s.getDestino());
-                        System.out.println("Requiere " + s.getMetrosCubicos());
-                        System.out.println(disp + " disponible");
-                        if(disp - s.getMetrosCubicos() >= 0)
-                        {
-                            disp = disp - s.getMetrosCubicos();
-                            sol.insertar(s, sol.longitud()+1);
-                            destinos.asociar(s.getDestino().getCodigo(), s);
-                        }
-                        else
-                            System.out.println("No insertando");
-                    }
-                }
-                else
-                {
-                }
-            }
-        }
-        System.out.println("Solicitudes que podrian incluirse");
-        Solicitud s1;
-        for(int i = 1; i < sol.longitud()+1; i++)
-        {
-            s1 = (Solicitud)sol.recuperar(i);
-            System.out.println(s1.getDestino() +" "+ s1.getCliente().getNombres() +" "+
-                                s1.getFecha() +" "+ s1.getBultos() +" "+ s1.getMetrosCubicos());
-        }
-        
-        
-    }
     private void mostrarCaminoKMMaximos()
     {
         float maximo = -1;
