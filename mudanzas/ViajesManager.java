@@ -50,6 +50,7 @@ public class ViajesManager {
 
     private void verificarCaminoPerfecto()
     {
+        // un camino perfecto es 8300 5620
         {
             int capacidad = -1;
             Lista camino = obtenerCaminoMenorDistancia();
