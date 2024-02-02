@@ -50,9 +50,114 @@ public class ViajesManager {
 
     private void verificarCaminoPerfecto()
     {
-        Lista camino = obtenerCaminoMenorDistancia();
-        mostrarCamino(camino);
+        {
+            int capacidad = -1;
+            Lista camino = obtenerCaminoMenorDistancia();
+            if(camino != null)
+            {
+                capacidad = inputReader.scanInt("Capacidad del Camion");
+            }
+    
+            if(capacidad != -1)
+            {
+                Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
+                Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
+                Lista solicitudesIntermedias = new Lista();
+                mostrarCamino(camino);
+    
+                // primero se cargan los pedidos de origen a fin
+                int disponible = capacidad;
+                if(origen.obtenerSolicitudes(destino.getCodigo())!=null)
+                    disponible = disponible - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
+    
+                MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
+                Lista descargas;
+                Solicitud descarga;
+                Ciudad ciudadOrigen;
+                int indexOrigen = 1;
+                boolean caminoPerfecto = true;
+                while(indexOrigen < camino.longitud() && caminoPerfecto)
+                {
+                    // recorro partiendo de cada ciudad
+                    // compruebo si hay pedidos que se puedan descargar
+                    ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
+    
+                    descargas = pedidosEnCamion.obtenerValor((Comparable)camino.recuperar(indexOrigen));
+                    if(descargas != null)
+                    {
+                        disponible = disponible + obtenerEspacioPedidos(descargas);
+                    }
+    
+                    Lista pedidosParaEnviar = null;
+                    boolean haySolicitudSaliente = false;
+                    int indexDestino = indexOrigen+1;
+                    while(indexDestino < camino.longitud())
+                    {
 
+                        // recorro hacia cada destino
+
+                        // compruebo si hay espacio disponible para enviar pedidos
+                        // el envio desde origen a destino tiene prioridad
+                        if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
+                        {
+                            pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
+                            if(pedidosParaEnviar!=null)
+                            {
+                                // compruebo flag de camino perfecto
+                                if(!haySolicitudSaliente)
+                                {
+                                    haySolicitudSaliente = true;
+                                }
+
+                                Solicitud pedidoParaEnviar = null;
+    
+                                for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
+                                {
+                                    // recorro agregando todos los pedidos segun el espacio disponible
+                                    pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
+                                    if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
+                                    {
+                                        Lista solicitudIntermedia = new Lista();
+                                        solicitudIntermedia.insertar(ciudadOrigen.getCodigo(), 1);
+                                        solicitudIntermedia.insertar(pedidoParaEnviar, 2);
+                                        solicitudesIntermedias.insertar(solicitudIntermedia, solicitudesIntermedias.longitud()+1);
+    
+                                        disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
+                                        pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if(!haySolicitudSaliente)
+                                haySolicitudSaliente = (ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(camino.longitud()-1))!=null);
+                        }
+                        indexDestino = indexDestino + 1;
+                    }
+                    if(indexOrigen != camino.longitud()-1)
+                        caminoPerfecto = haySolicitudSaliente;
+                    indexOrigen = indexOrigen + 1;
+                }
+    
+                if(caminoPerfecto)
+                {
+                    System.out.println("Es un camino perfecto");
+                    System.out.println("Posibles solicitudes intermedias");
+                    Lista solicitudIntermedia;
+                    for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
+                    {
+                        solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
+                        System.out.println(solicitudIntermedia.toString());
+                    }
+                }
+                else
+                {
+                    System.out.println("No es un camino perfecto");
+                }
+            }
+    
+        }
     }
     private void mostrarCaminoMenorDistancia()
     {
