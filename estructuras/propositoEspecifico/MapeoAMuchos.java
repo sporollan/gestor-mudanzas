@@ -5,10 +5,27 @@ import estructuras.lineales.dinamicas.Lista;
 public class MapeoAMuchos {
     private NodoAVLMapeoM raiz;
 
+
+
     public MapeoAMuchos()
     {
         this.raiz = null;
     }
+    public String toString()
+    {
+        return toStringAux(raiz, "");
+    }
+    private String toStringAux(NodoAVLMapeoM aux, String s)
+    {
+        if(aux != null)
+        {
+            s = s + aux.getDominio() + aux.getRango() + "\n";
+            s = toStringAux(aux.getIzquierdo(), s);
+            s = toStringAux(aux.getDerecho(), s);
+        }
+        return s;
+    }
+
     private int _getBalance(NodoAVLMapeoM n)
     {
         int b = 0;

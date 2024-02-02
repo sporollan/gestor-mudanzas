@@ -39,6 +39,11 @@ public class RutasManager {
         }  
     }
 
+    public void mostrarEstructura()
+    {
+        System.out.println(rutas.toString());
+    }
+
     private void modificar()
     {
         String[] names = {"Origen(cp)", "Destino(cp)"};

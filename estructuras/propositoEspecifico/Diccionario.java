@@ -192,7 +192,18 @@ public class Diccionario {
 
     public Lista listarDatos()
     {
-        return new Lista();
+        Lista datos = new Lista();
+        listarDatosAux(datos, raiz);
+        return datos;
+    }
+    private void listarDatosAux(Lista datos, NodoAVLDicc aux)
+    {
+        if(aux != null)
+        {
+            datos.insertar(aux.getDato(), datos.longitud()+1);
+            listarDatosAux(datos, aux.getHijoIzquierdo());
+            listarDatosAux(datos, aux.getHijoIzquierdo());
+        }
     }
 
     public boolean esVacio()

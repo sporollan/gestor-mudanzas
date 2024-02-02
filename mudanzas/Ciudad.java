@@ -21,6 +21,11 @@ public class Ciudad {
         this.inputReader = inputReader;
     }
 
+    public void mostrarEstructuraSolicitudes()
+    {
+        System.out.println(solicitudes.toString());
+    }
+
     public boolean modificarSolicitudes(Ciudad ciudadDestino)
     {
         boolean exito = false;

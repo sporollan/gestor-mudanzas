@@ -549,6 +549,25 @@ public class Grafo {
         return caminos;
     }
 
+    public String toString()
+    {
+        String s = "";
+        NodoVert vert = inicio;
+        NodoAdy ady;
+        while(vert != null)
+        {
+            s = s + "\n" + "(" + vert.getElem() + ")";
+            ady = vert.getPrimerAdy();
+            while(ady != null)
+            {
+                s = s + ", " + ady.getVertice().getElem() + ": " + ady.getEtiqueta();
+                ady = ady.getSigAdyacente();
+            }
+            vert = vert.getSigVertice();
+        }
+        return s;
+    }
+
 
 
 

@@ -23,6 +23,11 @@ public class CiudadesManager {
         System.out.println("4. Mostrar Datos Ciudad");
         System.out.println("5. Mostrar por Prefijo");
     }
+
+    public void mostrarEstructura()
+    {
+        System.out.println(ciudades.toString());
+    }
     public void gestionar()
     {
         String seleccion = "";

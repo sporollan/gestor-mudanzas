@@ -11,6 +11,22 @@ public class MapeoAUno {
         this.cant = 0;
     }
 
+    public String toString()
+    {
+        String s = "";
+        NodoHashMapeo aux;
+        for(int i = 0; i < TAM; i++)
+        {
+            aux = tabla[i];
+            while(aux != null)
+            {
+                s = s + "\n" +aux.getDominio() + ": " + aux.getRango();
+                aux = aux.getEnlace();
+            }
+        }
+        return s;
+    }
+
     public boolean asociar(Object dominio, Object rango)
     {
         int pos = dominio.hashCode() % TAM;

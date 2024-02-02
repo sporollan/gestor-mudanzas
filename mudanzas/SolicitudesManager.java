@@ -215,6 +215,18 @@ public class SolicitudesManager {
         }
     }
 
+    public void mostrarEstructura()
+    {
+        Lista listaCiudades = ciudades.listarDatos();
+        Ciudad c;
+        for(int i = 1; i <= listaCiudades.longitud(); i++)
+        {
+            c = (Ciudad)listaCiudades.recuperar(i);
+            System.out.println("Solicitudes de " + c.getNombre() + " " + c.getCodigo());
+            c.mostrarEstructuraSolicitudes();
+        }
+    }
+
     public void mostrarSolicitudes()
     {
         Ciudad ciudadOrigen, ciudadDestino;

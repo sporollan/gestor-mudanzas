@@ -50,6 +50,8 @@ public class MudanzasCompartidas {
                 clientesManager.gestionar();
             else if(seleccion.equals("5"))
                 viajesManager.gestionar();
+            else if(seleccion.equals("6"))
+                mostrarSistema();
         }
     }
 
@@ -61,6 +63,19 @@ public class MudanzasCompartidas {
         System.out.println("3. Gestionar Rutas");
         System.out.println("4. Gestionar Clientes");
         System.out.println("5. Gestionar Viajes");
+        System.out.println("6. Mostrar Sistema");
+    }
+
+    private void mostrarSistema()
+    {
+        System.out.println("Ciudades");
+        ciudadesManager.mostrarEstructura();
+        System.out.println("Solicitudes");
+        solicitudesManager.mostrarEstructura();
+        System.out.println("Rutas");
+        rutasManager.mostrarEstructura();
+        System.out.println("Clientes");
+        clientesManager.mostrarEstructura();
     }
 
     public void run()

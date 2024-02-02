@@ -21,6 +21,7 @@ public class ClientesManager {
         System.out.println("4. Mostrar");
     }
 
+
     public void gestionar()
     {
         String seleccion = "";
@@ -37,6 +38,11 @@ public class ClientesManager {
             else if(seleccion.equals("4"))
                 mostrar();
         }  
+    }
+
+    public void mostrarEstructura()
+    {
+        System.out.println(clientes.toString());
     }
 
     private void mostrar()
