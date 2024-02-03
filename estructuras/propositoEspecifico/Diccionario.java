@@ -161,7 +161,28 @@ public class Diccionario {
 
     public boolean existeClave(Comparable clave)
     {
-        return false;
+        return existeClaveAux(raiz, clave);
+    }
+
+    private boolean existeClaveAux(NodoAVLDicc aux, Comparable clave)
+    {
+        boolean existe = false;
+        if(aux != null)
+        {
+            if(aux.getClave().compareTo(clave) == 0)
+            {
+                existe = true;
+            }
+            else
+            {
+                existe = existeClaveAux(aux.getHijoIzquierdo(), clave);
+                if(!existe)
+                {
+                    existe = existeClaveAux(aux.getHijoDerecho(), clave);
+                }
+            }
+        }
+        return existe;
     }
 
     public Object obtenerInformacion(Comparable clave)
@@ -202,7 +223,7 @@ public class Diccionario {
         {
             datos.insertar(aux.getDato(), datos.longitud()+1);
             listarDatosAux(datos, aux.getHijoIzquierdo());
-            listarDatosAux(datos, aux.getHijoIzquierdo());
+            listarDatosAux(datos, aux.getHijoDerecho());
         }
     }
 
