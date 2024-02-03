@@ -210,9 +210,23 @@ public class SolicitudesManager {
         if(continuar)
         {
             Solicitud solicitud = new Solicitud(ciudadDestino, fecha, cliente, intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
-            if(ciudadOrigen.insertarSolicitud(solicitud))
-                System.out.println("Solicitud creada con exito");
+            if(insertar(ciudadOrigen, solicitud))
+            {
+                System.out.println("Solicitud insertada con exito");
+            }
+            else
+            {
+                System.out.println("Error insertando solicitud");
+            }
         }
+    }
+
+    public boolean insertar(Ciudad ciudadOrigen, Solicitud solicitud)
+    {
+        boolean exito = false;
+        if(!ciudadOrigen.existeSolicitud(solicitud))
+            exito = ciudadOrigen.insertarSolicitud(solicitud);
+        return exito;
     }
 
     public void mostrarEstructura()

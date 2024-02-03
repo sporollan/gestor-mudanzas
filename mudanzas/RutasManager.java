@@ -103,14 +103,23 @@ public class RutasManager {
 
         if(continuar)
         {
-            insertar(codigos[0], codigos[1], distancia);
+            if(insertar(codigos[0], codigos[1], distancia))
+            {
+                System.out.println("Ruta insertada con exito");
+            }
+            else
+            {
+                System.out.println("Error insertando ruta");
+            }
         }
     }
 
-    private void insertar(int cpo, int cpd, float distancia)
+    public boolean insertar(int cpo, int cpd, float distancia)
     {
-        if(rutas.insertarArco(cpo, cpd, distancia))
-            System.out.println("Ruta insertada con exito");
+        boolean exito = false;
+        if(!rutas.existeArco(cpo, cpd))
+            exito = rutas.insertarArco(cpo, cpd, distancia);
+        return exito;
     }
 
 }

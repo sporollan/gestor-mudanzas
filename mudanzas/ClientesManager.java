@@ -128,8 +128,21 @@ public class ClientesManager {
         // almacenar los datos en la estructura
         if(continuar)
         {
-            if(clientes.asociar((clave[0] + clave[1]), new Cliente(clave[0], clave[1], sInputs[0], sInputs[1], sInputs[2], sInputs[3])))
+            Cliente c = new Cliente(clave[0], clave[1], sInputs[0], sInputs[1], sInputs[2], sInputs[3]);
+            if(insertar(c))
                 System.out.println("Cliente insertado con exito");
+            else
+                System.out.println("Error insertando cliente");
         }
+    }
+
+    public boolean insertar(Cliente c)
+    {
+        boolean exito = false;
+        if(!clientes.existeClave(c.getTipo()+c.getNum()))
+        {
+            exito = clientes.asociar(c.getTipo()+c.getNum(), c);
+        }
+        return exito;
     }
 }

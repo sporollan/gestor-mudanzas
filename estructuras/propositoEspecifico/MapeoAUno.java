@@ -11,6 +11,24 @@ public class MapeoAUno {
         this.cant = 0;
     }
 
+    public boolean existeClave(Object clave)
+    {
+        NodoHashMapeo aux;
+        boolean existe = false;
+        int i = 0;
+        while(i < TAM && !existe)
+        {
+            aux = tabla[i];
+            while(aux != null && !existe)
+            {
+                existe = aux.getDominio().equals(clave);
+                aux = aux.getEnlace();
+            }
+            i = i + 1;
+        }
+        return existe;
+    }
+
     public String toString()
     {
         String s = "";

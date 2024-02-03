@@ -130,18 +130,32 @@ public class CiudadesManager {
         if (continuar)
         {
             //insertar(cpo, strInputs[0], strInputs[1]);
-            insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1], inputReader));
+
+            if(insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1], inputReader)))
+            {
+                System.out.println("Ciudad insertada con exito");
+            }
+            else
+            {
+                System.out.println("Error insertando ciudad");
+            }
+
         }
     }
 
     //public void insertar(int cpo, String nombre, String provincia)
-    public void insertar(Ciudad ciudad)
+    public boolean insertar(Ciudad ciudad)
     {
-        if(ciudades.insertar(ciudad.getCodigo(), ciudad))
+        boolean exito = false;
+        if(!ciudades.existeClave(ciudad.getCodigo()))
         {
-            System.out.println("Insertado con exito");
-            if (rutas.insertarVertice(ciudad.getCodigo()))
-                System.out.println("Vertice creado con exito");
+            if(ciudades.insertar(ciudad.getCodigo(), ciudad))
+            {
+                exito = true;
+                if (!rutas.insertarVertice(ciudad.getCodigo()))
+                    System.out.println("Error creando vertice para ciudad " + ciudad.getCodigo());
+            }
         }
+        return exito;
     }
 }

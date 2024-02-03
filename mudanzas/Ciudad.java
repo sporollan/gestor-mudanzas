@@ -89,6 +89,17 @@ public class Ciudad {
         return this.solicitudes.obtenerValor(codigoDestino);
     }
 
+    public boolean existeSolicitud(Solicitud s)
+    {
+        boolean existe = false;
+        Lista solicitudesLista = solicitudes.obtenerValor(s.getDestino().getCodigo());
+        if(solicitudesLista != null && solicitudesLista.localizar(s) != -1)
+        {
+            existe = true;
+        }
+        return existe;
+    }
+
     public Comparable getCodigo()
     {
         return this.codigo;

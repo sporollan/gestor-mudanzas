@@ -11,16 +11,24 @@ import estructuras.propositoEspecifico.MapeoAUno;
 
 public class FileManager {
     private MapeoAUno clientes;
+    private ClientesManager clientesManager;
     private Diccionario ciudades;
+    private CiudadesManager ciudadesManager;
+    private SolicitudesManager solicitudesManager;
     private Grafo rutas;
+    private RutasManager rutasManager;
     private InputReader inputReader;
     private int[] count;
 
-    public FileManager(InputReader inputReader, MapeoAUno clientes, Diccionario ciudades, Grafo rutas)
+    public FileManager(InputReader inputReader, MapeoAUno clientes, ClientesManager clientesManager, Diccionario ciudades, CiudadesManager ciudadesManager, SolicitudesManager solicitudesManager, Grafo rutas, RutasManager rutasManager)
     {
         this.clientes = clientes;
+        this.clientesManager = clientesManager;
         this.ciudades = ciudades;
+        this.ciudadesManager = ciudadesManager;
+        this.solicitudesManager = solicitudesManager;
         this.rutas = rutas;
+        this.rutasManager = rutasManager;
         this.inputReader = inputReader;
         this.inicializarConteo();
     }
@@ -69,8 +77,8 @@ public class FileManager {
         nombre = tokenizer.nextToken();
         telefono = tokenizer.nextToken();
         email = tokenizer.nextToken();
-
-        if(!clientes.asociar(tipo+num, new Cliente(tipo, num, nombre, apellido, telefono, email)))
+        Cliente c = new Cliente(tipo, num, nombre, apellido, telefono, email);
+        if(!clientesManager.insertar(c))
             System.out.println("Error insertando cliente " + tipo+num);
         else
             this.count[0] += 1;
@@ -85,16 +93,12 @@ public class FileManager {
         nombre = tokenizer.nextToken();
         provincia = tokenizer.nextToken();
 
-        if(ciudades.insertar(codigo, new Ciudad(codigo, nombre, provincia, inputReader)))
+        Ciudad c = new Ciudad(codigo, nombre, provincia, inputReader);
+        if(ciudadesManager.insertar(c))
         {
             this.count[1]+=1;
-            if(!rutas.insertarVertice(codigo))
-                System.out.println("Error creando vertice " + codigo);
         }
-        else
-        {
-            System.out.println("Error insertando ciudad " + codigo);
-        }
+
     }
 
     private void cargarSolicitud(StringTokenizer tokenizer)
@@ -136,10 +140,12 @@ public class FileManager {
         if(cargaValida)
         {            
             Ciudad ciudadOrigen = (Ciudad)ciudades.obtenerInformacion(cpo);
-            if(!ciudadOrigen.insertarSolicitud(new Solicitud(
+            Solicitud solicitud = new Solicitud(
                 (Ciudad)(ciudades.obtenerInformacion(cpd)), fecha, 
                 (Cliente)clientes.obtenerValor(tipo+num), metrosCubicos, 
-                bultos, dirRetiro, dirEntrega, esPago)))
+                bultos, dirRetiro, dirEntrega, esPago);
+
+            if(!solicitudesManager.insertar(ciudadOrigen, solicitud))
             {
                 System.out.println("Error insertando solicitud " + cpo + " " + cpd);
             }
@@ -152,13 +158,13 @@ public class FileManager {
 
     private void cargarRuta(StringTokenizer tokenizer)
     {
-        Comparable cpo, cpd;
+        int cpo, cpd;
         float distancia;
         cpo = Integer.parseInt(tokenizer.nextToken());
         cpd = Integer.parseInt(tokenizer.nextToken());
         distancia = Float.parseFloat(tokenizer.nextToken());
 
-        if(!rutas.insertarArco(cpo, cpd, distancia))
+        if(!rutasManager.insertar(cpo, cpd, distancia))
             System.out.println("Error insertando ruta " + cpo + " " + cpd);
         else
             this.count[3] += 1;
