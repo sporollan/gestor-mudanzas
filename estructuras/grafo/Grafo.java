@@ -186,15 +186,14 @@ public class Grafo {
 
     public boolean existeArco(Object origen, Object destino)
     {
-        boolean exito;
+        boolean exito = false;
         NodoVert aux = this.ubicarVertice(origen);
         NodoAdy auxAdy = aux.getPrimerAdy();
 
-        exito = auxAdy != null && auxAdy.getVertice().getElem().equals(destino);
         while(auxAdy != null && !exito)
         {
+            exito = auxAdy.getVertice().getElem().equals(destino);
             auxAdy = auxAdy.getSigAdyacente();
-            exito = auxAdy != null && auxAdy.getVertice().getElem().equals(destino);
         }
         return exito;
     }
@@ -583,7 +582,7 @@ public class Grafo {
             {
                 arco.insertar(ady.getVertice().getElem(), 2);
                 arco.insertar(ady.getEtiqueta(), 3);
-                s.insertar(arco, s.longitud()+1);
+                s.insertar(arco.clone(), s.longitud()+1);
                 ady = ady.getSigAdyacente();
             }
             vert = vert.getSigVertice();
