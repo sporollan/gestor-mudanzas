@@ -80,7 +80,9 @@ public class MudanzasCompartidas {
 
     public void run()
     {
-        fileManager.cargarArchivo("files/inicial.txt");
+        fileManager.leerArchivo("files/inicial.txt");
+        fileManager.leerArchivo("files/estructuras.log");
         gestionar();
+        fileManager.escribirArchivo("files/estructuras.log");
     }
 }

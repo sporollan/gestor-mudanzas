@@ -568,6 +568,29 @@ public class Grafo {
         return s;
     }
 
+    public Lista listarDatos()
+    {
+        Lista s = new Lista();
+        Lista arco;
+        NodoVert vert = inicio;
+        NodoAdy ady;
+        while(vert != null)
+        {
+            arco = new Lista();
+            arco.insertar(vert.getElem(), 1);
+            ady = vert.getPrimerAdy();
+            while(ady != null)
+            {
+                arco.insertar(ady.getVertice().getElem(), 2);
+                arco.insertar(ady.getEtiqueta(), 3);
+                s.insertar(arco, s.longitud()+1);
+                ady = ady.getSigAdyacente();
+            }
+            vert = vert.getSigVertice();
+        }
+        return s;
+    }
+
 
 
 

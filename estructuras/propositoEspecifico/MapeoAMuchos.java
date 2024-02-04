@@ -5,12 +5,27 @@ import estructuras.lineales.dinamicas.Lista;
 public class MapeoAMuchos {
     private NodoAVLMapeoM raiz;
 
-
-
     public MapeoAMuchos()
     {
         this.raiz = null;
     }
+
+    public Lista listarDatos()
+    {
+        Lista datos = new Lista();
+        listarDatosAux(raiz, datos);
+        return datos;
+    }
+    private void listarDatosAux(NodoAVLMapeoM aux, Lista datos)
+    {
+        if(aux != null)
+        {
+            datos.insertar(aux.getRango(), datos.longitud()+1);
+            listarDatosAux(aux.getIzquierdo(), datos);
+            listarDatosAux(aux.getDerecho(), datos);
+        }
+    }
+
     public String toString()
     {
         return toStringAux(raiz, "");

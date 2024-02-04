@@ -1,11 +1,14 @@
 package mudanzas;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import estructuras.grafo.Grafo;
+import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
 import estructuras.propositoEspecifico.MapeoAUno;
 
@@ -38,22 +41,118 @@ public class FileManager {
         this.count = new int[4];
     }
 
-    public void cargarArchivo(String path)
+    public void leerArchivo(String path)
     {
         try {
             File file = new File(path);
             Scanner myReader = new Scanner(file);
             while (myReader.hasNextLine()) {
+                // recorro todo el archivo linea por linea
+                // almacenando su contenido
                 String data = myReader.nextLine();
                 cargar(data);
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("An error occurred.");
+            System.out.println("Error");
             e.printStackTrace();
         }
         mostrarConteo();
         inicializarConteo();
+    }
+
+    public void escribirArchivo(String path)
+    {
+        try {
+            FileWriter file = new FileWriter(path);
+            BufferedWriter out = new BufferedWriter(file);
+            System.out.println("Escribiendo");
+            escribirClientes(out);
+            escribirCiudades(out);
+            escribirRutas(out);
+            escribirSolicitudes(out);
+            out.close();
+        } catch (Exception e) {
+            System.out.println("Error");
+            e.printStackTrace();
+        }
+    }
+
+    public void escribirCiudades(BufferedWriter out) throws Exception
+    {
+        Lista ciudadesLista = this.ciudades.listarDatos();
+        Ciudad c;
+        String s;
+        for(int i = 1; i <= ciudadesLista.longitud(); i++)
+        {
+            c = (Ciudad)ciudadesLista.recuperar(i);
+            s = "C;" + c.getCodigo() + ";" + c.getNombre() + ";" + 
+                c.getProvincia();
+            out.write(s);
+            out.newLine();
+        }
+    }
+
+    public void escribirClientes(BufferedWriter out) throws Exception
+    {
+        Lista clientesLista = this.clientes.listarDatos();
+        Cliente c;
+        String s;
+        for(int i = 1; i <= clientesLista.longitud(); i++)
+        {
+            c = (Cliente)clientesLista.recuperar(i);
+            s = "P;" + c.getTipo() + ";" + c.getNum() + ";" + 
+                c.getApellidos() + ";" + c.getNombres() + ";" +
+                c.getTelefono() + ";" + c.getEmail();
+            out.write(s);
+            out.newLine();
+        }
+    }
+
+    public void escribirRutas(BufferedWriter out) throws Exception
+    {
+        Lista rutasLista = this.rutas.listarDatos();
+        Lista r;
+        String s;
+        for(int i = 1; i <= rutasLista.longitud(); i++)
+        {
+            r = (Lista)rutasLista.recuperar(i);
+            s = "R;" + r.recuperar(1) + ";" + r.recuperar(2) + ";" + 
+                r.recuperar(3);
+            out.write(s);
+            out.newLine();
+        }
+    }
+    public void escribirSolicitudes(BufferedWriter out) throws Exception
+    {
+        Lista ciudadesLista = this.ciudades.listarDatos();
+        Ciudad c;
+        String s;
+        for(int ciudadIndex = 1; ciudadIndex <= ciudadesLista.longitud(); ciudadIndex++)
+        {
+            c = (Ciudad)ciudadesLista.recuperar(ciudadIndex);
+            Lista solicitudesTotalLista = c.listarSolicitudes();
+            Lista solicitudesLista;
+            Solicitud sol;
+            Cliente cl;
+            for(int solTotalIndex = 1; solTotalIndex <= solicitudesTotalLista.longitud(); solTotalIndex++)
+            {
+                solicitudesLista = (Lista)(solicitudesTotalLista.recuperar(solTotalIndex));
+                for(int solIndex = 1; solIndex<=solicitudesLista.longitud(); solIndex++)
+                {
+                    sol = (Solicitud)solicitudesLista.recuperar(solIndex);
+                    cl = sol.getCliente();
+                    s = "S;" + c.getCodigo() + ";" + sol.getDestino().getCodigo() + ";" + 
+                    sol.getFecha() + ";" + cl.getTipo() + ";" +
+                    cl.getNum() + ";" + sol.getMetrosCubicos() + ";" +
+                    sol.getBultos() + ";" + sol.getDomicilioRetiro() + ";" +
+                    sol.getDomicilioEntrega() + ";" + (sol.isEstaPago()?"T":"F");
+
+                    out.write(s);
+                    out.newLine();
+                }
+            }
+        }
     }
 
     private void mostrarConteo()
@@ -114,6 +213,8 @@ public class FileManager {
 
         try
         {
+            // leo todos los datos
+            // si no hay error se considera la carga valida
             cpo = Integer.parseInt(tokenizer.nextToken());
             inputReader.comprobarCp(cpo);
 
@@ -138,7 +239,8 @@ public class FileManager {
         }
 
         if(cargaValida)
-        {            
+        {
+            // si la carga es valida se inserta en su estructura
             Ciudad ciudadOrigen = (Ciudad)ciudades.obtenerInformacion(cpo);
             Solicitud solicitud = new Solicitud(
                 (Ciudad)(ciudades.obtenerInformacion(cpd)), fecha, 
@@ -170,26 +272,35 @@ public class FileManager {
             this.count[3] += 1;
     }
 
-    public void cargar(String data)
+    public void cargar(String line)
     {
-        StringTokenizer tokenizer = new StringTokenizer(data, ";");
-        String tipo = tokenizer.nextToken();
-        
-        if(tipo.equals("P"))
+        // cada linea se separa segun ; y se carga segun la primer letra
+        StringTokenizer tokenizer = new StringTokenizer(line, ";");
+        if(tokenizer.hasMoreTokens())
         {
-            cargarCliente(tokenizer);
-        }
-        else if (tipo.equals("C"))
-        {
-            cargarCiudad(tokenizer);
-        }
-        else if (tipo.equals("S"))
-        {
-            cargarSolicitud(tokenizer);
-        }
-        else if (tipo.equals("R"))
-        {
-            cargarRuta(tokenizer);
+            String tipo = tokenizer.nextToken();
+            try
+            {
+                if(tipo.equals("P"))
+                {
+                    cargarCliente(tokenizer);
+                }
+                else if (tipo.equals("C"))
+                {
+                    cargarCiudad(tokenizer);
+                }
+                else if (tipo.equals("S"))
+                {
+                    cargarSolicitud(tokenizer);
+                }
+                else if (tipo.equals("R"))
+                {
+                    cargarRuta(tokenizer);
+                }
+            } catch (Exception e)
+            {
+                System.out.println("Error cargando " + tipo);
+            }
         }
     }
 }

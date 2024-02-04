@@ -21,6 +21,11 @@ public class Ciudad {
         this.inputReader = inputReader;
     }
 
+    public Lista listarSolicitudes()
+    {
+        return this.solicitudes.listarDatos();
+    }
+
     public void mostrarEstructuraSolicitudes()
     {
         System.out.println(solicitudes.toString());
@@ -93,10 +98,11 @@ public class Ciudad {
     {
         boolean existe = false;
         Lista solicitudesLista = solicitudes.obtenerValor(s.getDestino().getCodigo());
-        if(solicitudesLista != null && solicitudesLista.localizar(s) != -1)
+        if(!solicitudesLista.esVacia() && solicitudesLista.localizar(s) != -1)
         {
             existe = true;
         }
+        System.out.println(existe);
         return existe;
     }
 

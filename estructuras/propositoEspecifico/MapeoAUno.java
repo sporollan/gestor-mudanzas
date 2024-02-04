@@ -1,5 +1,7 @@
 package estructuras.propositoEspecifico;
 
+import estructuras.lineales.dinamicas.Lista;
+
 public class MapeoAUno {
     private static int TAM = 20;
     private NodoHashMapeo[] tabla;
@@ -119,5 +121,21 @@ public class MapeoAUno {
             aux = aux.getEnlace();
         }
         return aux == null ? null : aux.getRango();
+    }
+
+    public Lista listarDatos()
+    {
+        Lista datos = new Lista();
+        NodoHashMapeo aux;
+        for(int i = 0; i < TAM; i++)
+        {
+            aux = tabla[i];
+            while(aux != null)
+            {
+                datos.insertar(aux.getRango(), datos.longitud()+1);
+                aux = aux.getEnlace();
+            }
+        }
+        return datos;
     }
 }
