@@ -98,11 +98,10 @@ public class Ciudad {
     {
         boolean existe = false;
         Lista solicitudesLista = solicitudes.obtenerValor(s.getDestino().getCodigo());
-        if(!solicitudesLista.esVacia() && solicitudesLista.localizar(s) != -1)
+        if(solicitudesLista!=null)
         {
-            existe = true;
+            existe = solicitudesLista.localizar(s)!=-1;
         }
-        System.out.println(existe);
         return existe;
     }
 

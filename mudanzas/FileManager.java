@@ -177,10 +177,14 @@ public class FileManager {
         telefono = tokenizer.nextToken();
         email = tokenizer.nextToken();
         Cliente c = new Cliente(tipo, num, nombre, apellido, telefono, email);
-        if(!clientesManager.insertar(c))
-            System.out.println("Error insertando cliente " + tipo+num);
-        else
+        if(clientesManager.insertar(c))
+        {
             this.count[0] += 1;
+        }
+        else
+        {
+            // System.out.println("Error insertando cliente " + tipo+num);
+        }
     }
 
     private void cargarCiudad(StringTokenizer tokenizer)
@@ -226,6 +230,7 @@ public class FileManager {
 
             tipo = tokenizer.nextToken();
             num = tokenizer.nextToken();
+            // comprobarclavecliente tira error si no existe el cliente
             inputReader.comprobarClaveCliente(tipo+num);
 
             metrosCubicos = Integer.parseInt(tokenizer.nextToken());
@@ -247,13 +252,13 @@ public class FileManager {
                 (Cliente)clientes.obtenerValor(tipo+num), metrosCubicos, 
                 bultos, dirRetiro, dirEntrega, esPago);
 
-            if(!solicitudesManager.insertar(ciudadOrigen, solicitud))
+            if(solicitudesManager.insertar(ciudadOrigen, solicitud))
             {
-                System.out.println("Error insertando solicitud " + cpo + " " + cpd);
+                this.count[2] += 1;
             }
             else
             {
-                this.count[2] += 1;
+                //System.out.println("Error insertando solicitud " + cpo + " " + cpd);
             }
         }
     }
@@ -266,10 +271,14 @@ public class FileManager {
         cpd = Integer.parseInt(tokenizer.nextToken());
         distancia = Float.parseFloat(tokenizer.nextToken());
 
-        if(!rutasManager.insertar(cpo, cpd, distancia))
-            System.out.println("Error insertando ruta " + cpo + " " + cpd);
-        else
+        if(rutasManager.insertar(cpo, cpd, distancia))
+        {
             this.count[3] += 1;
+        }
+        else
+        {
+            //System.out.println("Error insertando ruta " + cpo + " " + cpd);
+        }
     }
 
     public void cargar(String line)

@@ -27,6 +27,21 @@ public class Solicitud {
         return this.destino;
     }
 
+
+    @Override
+    public boolean equals(Object s)
+    {
+        Solicitud sol = (Solicitud) s;
+        return (
+            sol.destino.equals(destino) &&
+            sol.fecha.equals(fecha) &&
+            sol.domicilioEntrega.equals(domicilioEntrega) &&
+            sol.domicilioRetiro.equals(domicilioRetiro)
+        );
+
+    }
+
+
     public int hashCode()
     {
         String c = "";
@@ -38,6 +53,7 @@ public class Solicitud {
         return h;
     }
 
+    @Override
     public String toString()
     {
         return destino + ", " + fecha + ", " + cliente;

@@ -225,7 +225,9 @@ public class SolicitudesManager {
     {
         boolean exito = false;
         if(!ciudadOrigen.existeSolicitud(solicitud))
+        {   
             exito = ciudadOrigen.insertarSolicitud(solicitud);
+        }
         return exito;
     }
 
