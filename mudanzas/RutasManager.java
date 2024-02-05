@@ -10,7 +10,7 @@ public class RutasManager {
     private Grafo rutas;
     private Diccionario ciudades;
 
-    public RutasManager(InputReader inputReader, Diccionario ciudades, Grafo rutas)
+    public RutasManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.rutas = rutas;

@@ -7,7 +7,7 @@ public class SolicitudesManager {
     InputReader inputReader;
     Diccionario ciudades;
 
-    public SolicitudesManager(InputReader inputReader, Diccionario ciudades)
+    public SolicitudesManager(InputReader inputReader, Diccionario ciudades, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.ciudades = ciudades;

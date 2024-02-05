@@ -16,6 +16,7 @@ public class MudanzasCompartidas {
     RutasManager rutasManager;
     ClientesManager clientesManager;
     FileManager fileManager;
+    LogOperacionesManager logOperacionesManager;
     ViajesManager viajesManager;
 
 
@@ -24,11 +25,12 @@ public class MudanzasCompartidas {
         rutas = new Grafo();
         ciudades = new Diccionario();
         clientes = new MapeoAUno();
+        this.logOperacionesManager = new LogOperacionesManager("files/operaciones.log");
         this.inputReader = new InputReader(clientes, ciudades);
-        this.ciudadesManager = new CiudadesManager(this.inputReader, ciudades, rutas);
-        this.solicitudesManager = new SolicitudesManager(inputReader, ciudades);
-        this.rutasManager = new RutasManager(inputReader, ciudades, rutas);
-        this.clientesManager = new ClientesManager(inputReader, clientes);
+        this.ciudadesManager = new CiudadesManager(this.inputReader, ciudades, rutas, logOperacionesManager);
+        this.solicitudesManager = new SolicitudesManager(inputReader, ciudades, logOperacionesManager);
+        this.rutasManager = new RutasManager(inputReader, ciudades, rutas, logOperacionesManager);
+        this.clientesManager = new ClientesManager(inputReader, clientes, logOperacionesManager);
         this.fileManager = new FileManager(inputReader, clientes, clientesManager, ciudades, ciudadesManager, solicitudesManager, rutas, rutasManager);
         this.viajesManager = new ViajesManager(inputReader, ciudades, rutas);
     }

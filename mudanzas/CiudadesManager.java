@@ -8,7 +8,7 @@ public class CiudadesManager {
     private Diccionario ciudades;
     private Grafo rutas;
 
-    public CiudadesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas)
+    public CiudadesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.ciudades = ciudades;

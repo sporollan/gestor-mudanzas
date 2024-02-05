@@ -5,13 +5,13 @@ import estructuras.propositoEspecifico.MapeoAUno;
 public class ClientesManager {
     private InputReader inputReader;
     private MapeoAUno clientes;
-    private FileManager fileManager;
+    private LogOperacionesManager logOperacionesManager;
 
-    public ClientesManager(InputReader inputReader, MapeoAUno clientes, FileManager fileManager)
+    public ClientesManager(InputReader inputReader, MapeoAUno clientes, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.clientes = clientes;
-        this.fileManager = fileManager;
+        this.logOperacionesManager = logOperacionesManager;
     }
     
     private void mostrarMenu()
@@ -78,6 +78,7 @@ public class ClientesManager {
                 if(clientes.desasociar(c.getTipo() + c.getNum()))
                 {
                     System.out.println("Eliminado con exito");
+                    logOperacionesManager.escribirEliminacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
                 }
             }
         }
@@ -101,6 +102,7 @@ public class ClientesManager {
                     c.setTelefono(inputReader.scanString("Telefono"));
                 if(inputReader.scanBool("Email: " + c.getEmail() + " Modificar? s/n"))
                     c.setEmail(inputReader.scanString("Email"));
+                logOperacionesManager.escribirModificacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
             }
         }
     }
@@ -144,6 +146,10 @@ public class ClientesManager {
         if(!clientes.existeClave(c.getTipo()+c.getNum()))
         {
             exito = clientes.asociar(c.getTipo()+c.getNum(), c);
+        }
+        if(exito)
+        {
+            logOperacionesManager.escribirInsercion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
         }
         return exito;
     }
