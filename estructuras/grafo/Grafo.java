@@ -35,18 +35,15 @@ public class Grafo {
         if(inicio == null)
         {
             // caso Grafo Vacio
-            System.out.println("caso 1");
             exito = false;
         }
         else if(inicio.getElem().equals(buscado))
         {
             // caso eliminar primer NodoVert
-            System.out.println("caso 2");
             inicio = inicio.getSigVertice();
         }
         // caso eliminar nodovert no extremo
         {
-            System.out.println("caso 3");
             NodoVert prev = inicio;
             NodoVert aux = inicio.getSigVertice();
             while( aux != null && !aux.getElem().equals(buscado) )
@@ -77,12 +74,14 @@ public class Grafo {
         }
         if(aux != null)
         {
-            // busco arco destino
-            // caso, primerady es el destino
-            System.out.println("buscando primerady");
-            System.out.println(aux.getPrimerAdy().getVertice().getElem());
+            NodoVert aux2=null;
+
+            // busco para la ruta de ida, de paso busco aux2 el vertice destino
             if(aux.getPrimerAdy().getVertice().getElem().equals(destino))
             {
+                // busco arco destino
+                // caso, primerady es el destino
+                aux2 = aux.getPrimerAdy().getVertice();
                 exito = true;
                 aux.setPrimerAdy(aux.getPrimerAdy().getSigAdyacente());
             } else {
@@ -91,11 +90,34 @@ public class Grafo {
                 NodoAdy auxAdy = prevAdy.getSigAdyacente();
                 while(auxAdy != null && !auxAdy.getVertice().getElem().equals(destino))
                 {
-                    System.out.println("Buscando " + auxAdy.getVertice().getElem());
                     prevAdy = auxAdy;
                     auxAdy = auxAdy.getSigAdyacente();
                 }
                 if(auxAdy != null && auxAdy.getVertice().getElem().equals(destino))
+                {
+                    aux2 = auxAdy.getVertice();
+                    prevAdy.setSigAdyacente(auxAdy.getSigAdyacente());
+                    exito = true;
+                }
+            }
+
+            // repito para la ruta de vuelta
+            if(aux2.getPrimerAdy().getVertice().getElem().equals(origen))
+            {
+                // busco arco destino
+                // caso, primerady es el destino
+                exito = true;
+                aux2.setPrimerAdy(aux2.getPrimerAdy().getSigAdyacente());
+            } else {
+                //caso, arco destino no es primerady
+                NodoAdy prevAdy = aux2.getPrimerAdy();
+                NodoAdy auxAdy = prevAdy.getSigAdyacente();
+                while(auxAdy != null && !auxAdy.getVertice().getElem().equals(origen))
+                {
+                    prevAdy = auxAdy;
+                    auxAdy = auxAdy.getSigAdyacente();
+                }
+                if(auxAdy != null && auxAdy.getVertice().getElem().equals(origen))
                 {
                     prevAdy.setSigAdyacente(auxAdy.getSigAdyacente());
                     exito = true;

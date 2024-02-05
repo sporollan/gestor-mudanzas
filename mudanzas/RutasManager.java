@@ -9,12 +9,14 @@ public class RutasManager {
     private InputReader inputReader;
     private Grafo rutas;
     private Diccionario ciudades;
+    private LogOperacionesManager logOperacionesManager;
 
     public RutasManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.rutas = rutas;
         this.ciudades = ciudades;
+        this.logOperacionesManager = logOperacionesManager;
     }
     private void mostrarMenu()
     {
@@ -53,20 +55,30 @@ public class RutasManager {
             float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
             if(rutas.eliminarArco(codigos[0], codigos[1]))
                 if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
+                {
                     System.out.println("Modificado con exito");
-
+                    logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                }
         }
     }
 
     private void eliminarArco()
     {
         int origenCP = inputReader.scanCp("CP origen");
-        int destinoCP = inputReader.scanCp("CP destino");
+        int destinoCP = -1;
+        if(origenCP != -1)
+            destinoCP = inputReader.scanCp("CP destino");
 
-        if(rutas.eliminarArco(origenCP, destinoCP))
-            System.out.println("Eliminado con exito");
-        else
-            System.out.println("No se pudo eliminar");
+        if(destinoCP != -1)
+        {
+            if(rutas.eliminarArco(origenCP, destinoCP))
+            {
+                System.out.println("Eliminado con exito");
+                logOperacionesManager.escribirEliminacion("la ruta entre " + origenCP + " y " + destinoCP + " de distancia ");
+            }
+            else
+                System.out.println("No se pudo eliminar");
+        }
     }
 
     private void consultarRuta()
@@ -106,6 +118,7 @@ public class RutasManager {
             if(insertar(codigos[0], codigos[1], distancia))
             {
                 System.out.println("Ruta insertada con exito");
+                logOperacionesManager.escribirInsercion("la ruta entre " + codigos[0] + " y " +codigos[1]);
             }
             else
             {

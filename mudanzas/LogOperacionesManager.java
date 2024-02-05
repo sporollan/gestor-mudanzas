@@ -13,7 +13,7 @@ public class LogOperacionesManager {
     public LogOperacionesManager(String path)
     {
         this.path = path;
-        crearArchivo(path);
+        //crearArchivo(path);
     }
 
     private void crearArchivo(String path)

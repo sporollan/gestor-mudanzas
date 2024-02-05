@@ -6,11 +6,13 @@ import estructuras.propositoEspecifico.Diccionario;
 public class SolicitudesManager {
     InputReader inputReader;
     Diccionario ciudades;
+    LogOperacionesManager logOperacionesManager;
 
     public SolicitudesManager(InputReader inputReader, Diccionario ciudades, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.ciudades = ciudades;
+        this.logOperacionesManager = logOperacionesManager;
     }
     private void mostrarMenu()
     {
@@ -81,23 +83,31 @@ public class SolicitudesManager {
             ciudadDestino = inputReader.scanCiudad("Destino");
         }
         
-        Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
-        Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
-        int i = 1;
-        while(s != null)
+        if(ciudadDestino != null)
         {
-            System.out.println(s.getFecha());
-            System.out.println(((Cliente)s.getCliente()).getNombres());
-            if(inputReader.scanBool("Eliminar? s/n"))
+            Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
+            Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+            int i = 1;
+            while(s != null)
             {
-                if(listaSolicitudes.eliminar(i))
-                    System.out.println("Eliminado con exito");
+                System.out.println(s.getFecha());
+                System.out.println(((Cliente)s.getCliente()).getNombres());
+                System.out.println(s.getMetrosCubicos() +" metros cubicos");
+                if(inputReader.scanBool("Eliminar? s/n"))
+                {
+                    if(listaSolicitudes.eliminar(i))
+                    {
+                        System.out.println("Eliminado con exito");
+                        logOperacionesManager.escribirEliminacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
+                        s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
+                    }
+                }
+                else
+                {
+                    i+=1;
+                }
+                s = (Solicitud)listaSolicitudes.recuperar(i);
             }
-            else
-            {
-                i+=1;
-            }
-            s = (Solicitud)listaSolicitudes.recuperar(i);
         }
     }
 
@@ -138,6 +148,8 @@ public class SolicitudesManager {
 
                 if(inputReader.scanBool("Cliente: " + ((Cliente)s.getCliente()).getNombres() + " Modificar? s/n"))
                     s.setCliente(inputReader.scanCliente());
+                logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
+                s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
             }
             i+=1;
             s = (Solicitud)listaSolicitudes.recuperar(i);
@@ -213,6 +225,8 @@ public class SolicitudesManager {
             if(insertar(ciudadOrigen, solicitud))
             {
                 System.out.println("Solicitud insertada con exito");
+                logOperacionesManager.escribirInsercion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
+                solicitud.getDestino().getCodigo() + " " + solicitud.getMetrosCubicos() + " metros cubicos");
             }
             else
             {

@@ -7,12 +7,14 @@ public class CiudadesManager {
     private InputReader inputReader;
     private Diccionario ciudades;
     private Grafo rutas;
+    private LogOperacionesManager logOperacionesManager;
 
     public CiudadesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.ciudades = ciudades;
         this.rutas = rutas;
+        this.logOperacionesManager = logOperacionesManager;
     }
     private void mostrarMenu()
     {
@@ -74,6 +76,7 @@ public class CiudadesManager {
             c.setNombre(strInputs[0]);
             c.setProvincia(strInputs[1]);
             System.out.println("Modificado con exito");
+            this.logOperacionesManager.escribirModificacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia());
         }   
         
     }
@@ -81,15 +84,20 @@ public class CiudadesManager {
     private void eliminar()
     {
         int cpo = inputReader.scanCp("Codigo Postal");
-        if(this.ciudades.eliminar((Comparable)cpo))
+        if(cpo != -1)
         {
-            System.out.println("Eliminado con exito");
-            // eliminar rutas
-            // eliminar vertice
-        }
-        else
-        {
-            System.out.println("No se ha encontrado la ciudad");
+            Ciudad c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cpo);
+            if(this.ciudades.eliminar((Comparable)cpo))
+            {
+                System.out.println("Eliminado con exito");
+                logOperacionesManager.escribirEliminacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia());
+                // eliminar rutas
+                // eliminar vertice
+            }
+            else
+            {
+                System.out.println("No se ha encontrado la ciudad");
+            }
         }
     }
 
@@ -134,6 +142,7 @@ public class CiudadesManager {
             if(insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1], inputReader)))
             {
                 System.out.println("Ciudad insertada con exito");
+                logOperacionesManager.escribirInsercion("la ciudad " + cpo + ": " + strInputs[0] +", "+ strInputs[1]);
             }
             else
             {
