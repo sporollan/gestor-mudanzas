@@ -1,6 +1,7 @@
 package mudanzas;
 
 import estructuras.grafo.Grafo;
+import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
 
 public class CiudadesManager {
@@ -83,16 +84,47 @@ public class CiudadesManager {
 
     private void eliminar()
     {
+        //  Eliminar una ciudad consiste en eliminar la ciudad,
+        //  luego todas las rutas que la incluyan,
+        //  y finalmente el vertice del grafo.
         int cpo = inputReader.scanCp("Codigo Postal");
         if(cpo != -1)
         {
             Ciudad c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cpo);
+            Lista destinos = rutas.listarArcos(cpo);
             if(this.ciudades.eliminar((Comparable)cpo))
             {
                 System.out.println("Eliminado con exito");
                 logOperacionesManager.escribirEliminacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia());
-                // eliminar rutas
-                // eliminar vertice
+
+                // elimino todas las rutas que incluyan esta ciudad
+                String str;
+                for(int i = 1; i <= destinos.longitud(); i++)
+                {
+                    int cpd = (int)destinos.recuperar(i);
+                    str = "la ruta entre " + cpo + " y " + cpd;
+                    if(rutas.eliminarArco(cpo, cpd))
+                    {
+                        System.out.println("Se elimino " + str);
+                        logOperacionesManager.escribirEliminacion(str);
+                    }
+                    else
+                    {
+                        System.out.println("Error eliminando "+str);
+                    }
+                }
+
+                // elimino el vertice
+                if(rutas.eliminarVertice(cpo))
+                {
+                    str = "el vertice " + cpo;
+                    System.out.println("Se elimino " + str);
+                    logOperacionesManager.escribirEliminacion(str);
+                }
+                else
+                {
+                    System.out.println("Error eliminando vertice");
+                }
             }
             else
             {
