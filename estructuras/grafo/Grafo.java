@@ -612,6 +612,21 @@ public class Grafo {
         return s;
     }
 
+    public Lista listarArcos(Object origen)
+    {
+        Lista destinos = new Lista();
+        NodoVert aux = this.ubicarVertice(origen);
+        if(aux != null)
+        {
+            NodoAdy ady = aux.getPrimerAdy();
+            while(ady != null)
+            {
+                destinos.insertar(ady.getVertice().getElem(), destinos.longitud()+1);
+                ady = ady.getSigAdyacente();
+            }
+        }
+        return destinos;
+    }
 
 
 
