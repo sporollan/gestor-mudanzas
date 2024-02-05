@@ -6,6 +6,8 @@ import java.util.StringTokenizer;
 import estructuras.propositoEspecifico.Diccionario;
 import estructuras.propositoEspecifico.MapeoAUno;
 
+// clase donde se maneja el input y se comprueba la validez de los datos
+
 public class InputReader {
     private Scanner sc;
     private MapeoAUno clientes;

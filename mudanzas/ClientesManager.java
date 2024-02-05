@@ -5,11 +5,13 @@ import estructuras.propositoEspecifico.MapeoAUno;
 public class ClientesManager {
     private InputReader inputReader;
     private MapeoAUno clientes;
+    private FileManager fileManager;
 
-    public ClientesManager(InputReader inputReader, MapeoAUno clientes)
+    public ClientesManager(InputReader inputReader, MapeoAUno clientes, FileManager fileManager)
     {
         this.inputReader = inputReader;
         this.clientes = clientes;
+        this.fileManager = fileManager;
     }
     
     private void mostrarMenu()

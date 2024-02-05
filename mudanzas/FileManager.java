@@ -12,6 +12,8 @@ import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
 import estructuras.propositoEspecifico.MapeoAUno;
 
+// clase para leer y escribir estructuras a archivo
+
 public class FileManager {
     private MapeoAUno clientes;
     private ClientesManager clientesManager;
@@ -43,6 +45,7 @@ public class FileManager {
 
     public void leerArchivo(String path)
     {
+        // se lee un archivo y se cargan sus datos a las estructuras
         try {
             File file = new File(path);
             Scanner myReader = new Scanner(file);
@@ -63,6 +66,7 @@ public class FileManager {
 
     public void escribirArchivo(String path)
     {
+        // se escriben las estructuras al archivo dado
         try {
             FileWriter file = new FileWriter(path);
             BufferedWriter out = new BufferedWriter(file);
@@ -130,6 +134,10 @@ public class FileManager {
         String s;
         for(int ciudadIndex = 1; ciudadIndex <= ciudadesLista.longitud(); ciudadIndex++)
         {
+            // se recorren todas las ciudades almacenadas
+            // por cada una se consiguen todas las solicitudes que parten de la misma
+            // por cada ciudad destino hay una lista de solicitudes
+            // por lo tanto solicitudesTotalLista es una lista de listas
             c = (Ciudad)ciudadesLista.recuperar(ciudadIndex);
             Lista solicitudesTotalLista = c.listarSolicitudes();
             Lista solicitudesLista;
@@ -137,9 +145,11 @@ public class FileManager {
             Cliente cl;
             for(int solTotalIndex = 1; solTotalIndex <= solicitudesTotalLista.longitud(); solTotalIndex++)
             {
+                // cada iteracion corresponde a las solicitudes a un destino distinto
                 solicitudesLista = (Lista)(solicitudesTotalLista.recuperar(solTotalIndex));
                 for(int solIndex = 1; solIndex<=solicitudesLista.longitud(); solIndex++)
                 {
+                    // se recorren las solicitudes
                     sol = (Solicitud)solicitudesLista.recuperar(solIndex);
                     cl = sol.getCliente();
                     s = "S;" + c.getCodigo() + ";" + sol.getDestino().getCodigo() + ";" + 
@@ -167,7 +177,7 @@ public class FileManager {
         System.out.println();
     }
 
-    private void cargarCliente(StringTokenizer tokenizer)
+    private void cargarCliente(StringTokenizer tokenizer) throws Exception
     {
         String tipo, num, apellido, nombre, telefono, email;
         tipo = tokenizer.nextToken();
@@ -176,6 +186,10 @@ public class FileManager {
         nombre = tokenizer.nextToken();
         telefono = tokenizer.nextToken();
         email = tokenizer.nextToken();
+
+        // se comprueba la validez de los datos
+        inputReader.comprobarTipoDocumento(tipo);
+        inputReader.comprobarNumeroDocumento(num);
         Cliente c = new Cliente(tipo, num, nombre, apellido, telefono, email);
         if(clientesManager.insertar(c))
         {
@@ -187,16 +201,18 @@ public class FileManager {
         }
     }
 
-    private void cargarCiudad(StringTokenizer tokenizer)
+    private void cargarCiudad(StringTokenizer tokenizer) throws Exception
     {
-        Comparable codigo;
+        int codigo;
         String nombre, provincia;
 
         codigo = Integer.parseInt(tokenizer.nextToken());
         nombre = tokenizer.nextToken();
         provincia = tokenizer.nextToken();
 
-        Ciudad c = new Ciudad(codigo, nombre, provincia, inputReader);
+        // se comprueba la validez de los datos
+        inputReader.comprobarCp(codigo);
+        Ciudad c = new Ciudad((Comparable)codigo, nombre, provincia, inputReader);
         if(ciudadesManager.insertar(c))
         {
             this.count[1]+=1;
@@ -263,7 +279,7 @@ public class FileManager {
         }
     }
 
-    private void cargarRuta(StringTokenizer tokenizer)
+    private void cargarRuta(StringTokenizer tokenizer) throws Exception
     {
         int cpo, cpd;
         float distancia;
@@ -271,6 +287,9 @@ public class FileManager {
         cpd = Integer.parseInt(tokenizer.nextToken());
         distancia = Float.parseFloat(tokenizer.nextToken());
 
+        // se comprueba la validez de los datos
+        inputReader.comprobarCp(cpo);
+        inputReader.comprobarCp(cpd);
         if(rutasManager.insertar(cpo, cpd, distancia))
         {
             this.count[3] += 1;
