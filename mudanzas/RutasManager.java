@@ -21,7 +21,7 @@ public class RutasManager {
     private void mostrarMenu()
     {
             System.out.println("Gestionar Rutas");
-            System.out.println("1. Cargar");
+            System.out.println("1. Insertar");
             System.out.println("2. Eliminar");
             System.out.println("3. Modificar");
     }
