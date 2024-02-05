@@ -13,26 +13,6 @@ public class LogOperacionesManager {
     public LogOperacionesManager(String path)
     {
         this.path = path;
-        //crearArchivo(path);
-    }
-
-    private void crearArchivo(String path)
-    {
-        // necesario para reestablecer el archivo
-        // caso contrario se duplican entradas
-        // con cada carga inicial
-        try(
-            FileWriter file = new FileWriter(path);
-            BufferedWriter bw = new BufferedWriter(file);
-            PrintWriter out = new PrintWriter(bw);
-        )
-        {
-            out.println();
-            out.close();
-        } catch (Exception e)
-        {
-            System.out.println("Error escribiendo");
-        }
     }
 
     private void escribir(String str)
