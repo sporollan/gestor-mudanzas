@@ -192,7 +192,7 @@ public class SolicitudesManager {
                     }
                     if(inputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar?"))
                     {
-                        s.setDomicilioEntrega(inputReader.scanString("Domicilio Retiro"));
+                        s.setDomicilioEntrega(inputReader.scanString("Domicilio Entrega"));
                         modificado = true;
                     }
                     if(inputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar?"))
@@ -217,6 +217,7 @@ public class SolicitudesManager {
                     }
                     if(modificado)
                     {
+                        System.out.println("Modificado con exito");
                         logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
                         s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
                     }
@@ -251,6 +252,7 @@ public class SolicitudesManager {
             for(int i = 1; i <= pedidos.longitud(); i++)
             {
                 pedido = (Solicitud)pedidos.recuperar(i);
+                System.out.println();
                 System.out.println("Pedido " + i);
                 cliente = pedido.getCliente();
                 System.out.println(cliente.getNombres() + " " + cliente.getApellidos());
