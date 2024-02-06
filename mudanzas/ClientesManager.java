@@ -67,13 +67,14 @@ public class ClientesManager {
 
     private void eliminar()
     {
+        // es obtiene cliente y si existe se lo borra
         Cliente c = inputReader.scanCliente();
         if(c != null)
         {
             System.out.println("Cliente:");
             System.out.println(c.getNombres() + " " + c.getApellidos());
             System.out.println(c.getTipo() + c.getNum());
-            if(inputReader.scanBool("Eliminar? s/n"))
+            if(inputReader.scanBool("Eliminar?"))
             {
                 if(clientes.desasociar(c.getTipo() + c.getNum()))
                 {
@@ -86,31 +87,48 @@ public class ClientesManager {
 
     private void modificar()
     {
+        // se obtiene el cliente y si existe se recorren uno a uno sus campos dando la opcion de modificarlos
         Cliente c = inputReader.scanCliente();
         if(c != null)
         {
             System.out.println("Cliente:");
             System.out.println(c.getNombres() + " " + c.getApellidos());
             System.out.println(c.getTipo() + c.getNum());
-            if(inputReader.scanBool("Modificar? s/n"))
+            if(inputReader.scanBool("Modificar?"))
             {
-                if(inputReader.scanBool("Nombres: " + c.getNombres() + " Modificar? s/n"))
+                boolean modificado = false;
+                if(inputReader.scanBool("Nombres: " + c.getNombres() + " Modificar?"))
+                {
                     c.setNombres(inputReader.scanString("Nombres"));
-                if(inputReader.scanBool("Apellidos: " + c.getApellidos() + " Modificar? s/n"))
+                    modificado = true;
+                }
+                if(inputReader.scanBool("Apellidos: " + c.getApellidos() + " Modificar?"))
+                {
                     c.setApellidos(inputReader.scanString("Apellidos"));
-                if(inputReader.scanBool("Telefono: " + c.getTelefono() + " Modificar? s/n"))
+                    modificado = true;
+                }
+                if(inputReader.scanBool("Telefono: " + c.getTelefono() + " Modificar?"))
+                {
                     c.setTelefono(inputReader.scanString("Telefono"));
-                if(inputReader.scanBool("Email: " + c.getEmail() + " Modificar? s/n"))
+                    modificado = true;
+                }
+                if(inputReader.scanBool("Email: " + c.getEmail() + " Modificar?"))
+                {
                     c.setEmail(inputReader.scanString("Email"));
-                logOperacionesManager.escribirModificacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
+                    modificado = true;
+                }
+                if(modificado)
+                {
+                    System.out.println("Modificado con exito");
+                    logOperacionesManager.escribirModificacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
+                }
             }
         }
     }
 
-
-
     private void cargarDatos()
     {
+        // cargo datos, creo nuevo cliente y lo inserto en la estructura
         String[] stringValues = {
             "Nombres", "Apellidos", "Telefono", "Email"
         };
@@ -145,6 +163,7 @@ public class ClientesManager {
 
     public boolean insertar(Cliente c)
     {
+        // se comprueba la existencia antes de insertar el dato dado
         boolean exito = false;
         if(!clientes.existeClave(c.getTipo()+c.getNum()))
         {
