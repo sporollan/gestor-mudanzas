@@ -19,7 +19,9 @@ public class InputReader {
         this.clientes = clientes;
         this.ciudades = ciudades;
     }
-
+    /*  Funciones comprobar
+     *  Se encargan de validar un dato dado utilizando excepciones  
+     */
     public void comprobarFecha(String fecha) throws Exception
     {
         StringTokenizer tokenizer = new StringTokenizer(fecha, "/");
@@ -36,6 +38,7 @@ public class InputReader {
             throw new Exception();
         Integer.parseInt(y);
     }
+
     public void comprobarTipoDocumento(String s) throws Exception
     {
         String[] tiposAceptados = {
@@ -94,7 +97,10 @@ public class InputReader {
             throw new Exception();
         }
     }
-
+/*  Funciones scan
+ *  reciben que mensaje mostrar al usuario
+ *  devuelven un dato de tipo correspondiente dado por el usuario 
+ */ 
 
     public String scanString(String message)
     {
@@ -165,6 +171,7 @@ public class InputReader {
     public int[] scanCodigos(String[] names)
     {
         // devuelve un array con codigos postales
+        // segun la longitud de names
         int[] codigos = new int[names.length];
         codigos[names.length-1] = -1;
         int i = 0;
@@ -179,6 +186,8 @@ public class InputReader {
 
     public Cliente scanCliente()
     {
+        // se piden datos de clientes hasta dar con uno existente
+        // y se lo devuelve
         Cliente cliente = null;
         String[] c;
         do
@@ -195,6 +204,8 @@ public class InputReader {
 
     public Ciudad scanCiudad(String message)
     {
+        // se piden CP hasta dar con uno existente
+        // y se devuelve la ciudad
         Ciudad ciudad = null;
         int cp = 0;
         while(cp != -1 && ciudad == null)
@@ -208,6 +219,7 @@ public class InputReader {
 
     public String[] scanClaveCliente()
     {
+        // devuelve un array con tipo y numero de documento
         String[] clave = {"", ""};
         boolean valida = false;
 
@@ -235,6 +247,7 @@ public class InputReader {
 
     public boolean scanBool(String name)
     {
+        // devuelve true o false segun input (s o n)
         boolean b = false;
         String input = "";
         while(!(input.equals("s") || input.equals("n") || input.equals("q")))
@@ -252,7 +265,7 @@ public class InputReader {
         {
             try
             {
-                System.out.print("Fecha: ");
+                System.out.print("Fecha: (dd/mm/aaaa)");
                 s = sc.nextLine();
                 if(!s.equals("q"))
                     comprobarFecha(s);
@@ -263,6 +276,43 @@ public class InputReader {
         return s;
     }
 
+    public int scanInt(String message)
+    {
+        int i = -1;
+        String input ="";
+        while(i < 1 && !input.equals("q"))
+        {
+            try
+            {
+                System.out.println(message);
+                input = sc.nextLine();
+                i = Integer.parseInt(input);
+            } catch (Exception e){}
+        }
+        return i;
+    }
+
+    public float scanFloat(String message)
+    {
+        float i = -1;
+        String input ="";
+        while(i < 1 && !input.equals("q"))
+        {
+            try
+            {
+                System.out.println(message);
+                input = sc.nextLine();
+                i = Float.parseFloat(input);
+            } catch (Exception e){}
+        }
+        return i;
+    }
+
+    /* Funciones cargar
+     * devuelven un arreglo con input del usuario, segun el tipo correspondiente
+     * reciben un arreglo con mensajes para mostrar para cada dato
+     * la longitud de los arreglos dependen de la longitud del arreglo de entrada
+     */ 
     public String[] cargarStringsSc(String[] stringValues)
     {
         int sL = stringValues.length;
@@ -297,36 +347,6 @@ public class InputReader {
         return scannedInputs;
     }
 
-    public int scanInt(String message)
-    {
-        int i = -1;
-        String input ="";
-        while(i < 1 && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println(message);
-                input = sc.nextLine();
-                i = Integer.parseInt(input);
-            } catch (Exception e){}
-        }
-        return i;
-    }
 
-    public float scanFloat(String message)
-    {
-        float i = -1;
-        String input ="";
-        while(i < 1 && !input.equals("q"))
-        {
-            try
-            {
-                System.out.println(message);
-                input = sc.nextLine();
-                i = Float.parseFloat(input);
-            } catch (Exception e){}
-        }
-        return i;
-    }
 
 }
