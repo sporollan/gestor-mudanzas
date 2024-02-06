@@ -1,19 +1,16 @@
 package mudanzas;
 
 import estructuras.grafo.Grafo;
-import estructuras.propositoEspecifico.Diccionario;
 
 public class RutasManager {
     private InputReader inputReader;
     private Grafo rutas;
-    private Diccionario ciudades;
     private LogOperacionesManager logOperacionesManager;
 
-    public RutasManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, LogOperacionesManager logOperacionesManager)
+    public RutasManager(InputReader inputReader, Grafo rutas, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
         this.rutas = rutas;
-        this.ciudades = ciudades;
         this.logOperacionesManager = logOperacionesManager;
     }
     private void mostrarMenu()

@@ -29,7 +29,7 @@ public class MudanzasCompartidas {
         this.inputReader = new InputReader(clientes, ciudades);
         this.ciudadesManager = new CiudadesManager(this.inputReader, ciudades, rutas, logOperacionesManager);
         this.solicitudesManager = new SolicitudesManager(inputReader, ciudades, logOperacionesManager);
-        this.rutasManager = new RutasManager(inputReader, ciudades, rutas, logOperacionesManager);
+        this.rutasManager = new RutasManager(inputReader, rutas, logOperacionesManager);
         this.clientesManager = new ClientesManager(inputReader, clientes, logOperacionesManager);
         this.fileManager = new FileManager(inputReader, clientes, clientesManager, ciudades, ciudadesManager, solicitudesManager, rutas, rutasManager);
         this.viajesManager = new ViajesManager(inputReader, ciudades, rutas);
