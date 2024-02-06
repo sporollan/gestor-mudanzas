@@ -142,6 +142,7 @@ public class Grafo {
         }
         return visitados;
     }
+    
     private void listarEnProfundidadAux(NodoVert n, Lista vis)
     {
         if(n != null)
@@ -158,6 +159,7 @@ public class Grafo {
             }
         }
     }
+
     public boolean existeCamino(Object origen, Object destino)
     {
         boolean exito = false;
@@ -250,6 +252,7 @@ public class Grafo {
         }
         return exito;
     }
+
     public Object obtener(Object origen, Object destino)
     {
         Object etiqueta = null;
@@ -378,7 +381,6 @@ public class Grafo {
         }
         return (Lista)caminos.recuperar(caminos.longitud());
     }
-
 
     public Lista obtenerCaminoPorCiudadesAux(NodoVert n, int cantCiudades, NodoVert dest, Lista vis, Lista caminos)
     {
@@ -534,40 +536,6 @@ public class Grafo {
             caminos = obtenerCaminoPorDistanciaAux(auxO, 0, auxD, visitados, caminos);
         }
         return (Lista)caminos.recuperar(caminos.longitud());
-    }
-
-    public Lista obtenerCaminoPorKMMaximos(NodoVert n, float distancia, NodoVert dest, Lista vis, Lista caminos)
-    {
-        if(n != null)
-        {
-            if(!n.equals(dest))
-            {
-                vis.insertar(n.getElem(), vis.longitud() + 1);
-                NodoAdy ady = n.getPrimerAdy();
-                float newDistancia;
-                while (ady != null)
-                {
-                    newDistancia = (float)ady.getEtiqueta() + distancia;
-                    if(vis.localizar(ady.getVertice().getElem()) < 0 && newDistancia < (float)caminos.recuperar(1))
-                    { 
-                        Lista v = vis.clone();
-                        obtenerCaminoPorDistanciaAux(ady.getVertice(), distancia + (float)ady.getEtiqueta(), dest, v, caminos);
-                    }
-                    ady = ady.getSigAdyacente();
-                }
-            }else
-            {
-                vis.insertar(n.getElem(), vis.longitud()+1);
-                vis.insertar(distancia, vis.longitud()+1);
-                caminos.insertar(vis, caminos.longitud()+1);
-                if(distancia < (float)caminos.recuperar(1))
-                {
-                    caminos.eliminar(1);
-                    caminos.insertar(distancia, 1);
-                }
-            }
-        }
-        return caminos;
     }
 
     public String toString()
