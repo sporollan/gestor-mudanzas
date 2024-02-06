@@ -10,17 +10,9 @@ public class TablaHash {
         this.tabla = new Nodo[TAMANIO];
         this.cant = 0;
     }
-    public Nodo[] getTabla() {
-        return tabla;
-    }
-    public void setTabla(Nodo[] tabla) {
-        this.tabla = tabla;
-    }
+
     public int getCant() {
         return cant;
-    }
-    public void setCant(int cant) {
-        this.cant = cant;
     }
 
     public boolean pertenece(Object elem)
