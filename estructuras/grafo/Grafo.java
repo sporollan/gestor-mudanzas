@@ -480,8 +480,8 @@ public class Grafo {
                     // si el camino existe
                     // calculo la distancia total recorrida hasta el momento
 
-                    // compruebo si vale la pena seguir recorriendo (no fue visitado ni supera la distancia maxima)
-                    if(vis.localizar(ady.getVertice().getElem()) < 0)
+                    // compruebo si vale la pena seguir recorriendo (no fue visitado ni es el destino)
+                    if(vis.localizar(ady.getVertice().getElem()) < 0 && !ady.getVertice().getElem().equals(dest))
                     { 
                         // clono visitados, cada camino almacena sus propios visitados
                         Lista v = vis.clone();
