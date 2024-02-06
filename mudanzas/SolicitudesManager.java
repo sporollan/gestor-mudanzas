@@ -41,36 +41,82 @@ public class SolicitudesManager {
         }
     }
 
-    private void mostrarPedidosEntreCiudades()
+    private void cargarDatos()
     {
-        String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
-        Ciudad c = (Ciudad)ciudades.obtenerInformacion(codigos[0]);
-        Lista pedidos=null;
-        if(c != null)
+        boolean estaPago;
+        String fecha="";
+        String[] strNames = {"Domicilio Retiro", "Domicilio Entrega"};
+        String[] intNames = {"Metros Cubicos", "Bultos"};
+        String[] strInputs = new String[strNames.length+1];
+        int[] intInputs = new int[intNames.length+1];
+        Ciudad ciudadOrigen, ciudadDestino;
+        Cliente cliente;
+        boolean continuar = true;
+
+        ciudadOrigen = inputReader.scanCiudad("Origen");
+        continuar = ciudadOrigen != null;
+
+        ciudadDestino = null;
+        if(continuar)
         {
-            pedidos = c.obtenerSolicitudes(codigos[1]);
+            ciudadDestino = inputReader.scanCiudad("Destino");
+            continuar = ciudadDestino != null;
         }
-        if(pedidos != null)
+
+        if(continuar)
         {
-            System.out.println("Pedidos entre " + c.getNombre() + 
-                                " y " + 
-                                ((Ciudad)ciudades.obtenerInformacion(codigos[1])).getNombre());
-            
-            Solicitud pedido;
-            Cliente cliente;
-            int metrosCubicos = 0;
-            for(int i = 1; i <= pedidos.longitud(); i++)
+            fecha = inputReader.scanFecha();
+            continuar = !fecha.equals("q");
+        }
+
+        if(continuar)
+        {
+            strInputs = inputReader.cargarStringsSc(strNames);
+            continuar = !strInputs[strNames.length].equals("q");
+        }
+
+        if(continuar)
+        {
+            intInputs = inputReader.cargarIntsSc(intNames);
+            continuar = !(intInputs[intNames.length] == -1);
+        }
+
+        cliente = null;
+        if(continuar)
+        {
+            cliente = inputReader.scanCliente();
+            continuar = cliente != null;
+        }
+
+        estaPago = false;
+        if(continuar)
+        {
+            /*
+            estaPago = false;
+            input = "";
+            while(!(input.equals("y") || input.equals("n") || input.equals("q")))
             {
-                pedido = (Solicitud)pedidos.recuperar(i);
-                System.out.println("Pedido " + i);
-                cliente = pedido.getCliente();
-                System.out.println(cliente.getNombres() + " " + cliente.getApellidos());
-                System.out.println("Bultos "+pedido.getBultos());
-                System.out.println("Metros cubicos "+pedido.getMetrosCubicos());
-                metrosCubicos = metrosCubicos + pedido.getMetrosCubicos();
+                input = inputReader.scanString("Esta Pago? y/n");
+                estaPago = input == "y";
             }
-            System.out.println("Espacio necesario para transportar: " + metrosCubicos + " metros cubicos");
+            continuar = !input.equals("q");
+            */
+            estaPago = inputReader.scanBool("Esta Pago? s/n");
+        }
+
+        if(continuar)
+        {
+            Solicitud solicitud = new Solicitud(ciudadDestino, fecha, cliente, intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
+            if(insertar(ciudadOrigen, solicitud))
+            {
+                System.out.println("Solicitud insertada con exito");
+                logOperacionesManager.escribirInsercion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
+                solicitud.getDestino().getCodigo() + " " + solicitud.getMetrosCubicos() + " metros cubicos");
+            }
+            else
+            {
+                System.out.println("Error insertando solicitud");
+            }
         }
     }
 
@@ -156,93 +202,37 @@ public class SolicitudesManager {
         }
     }
 
-    private void cargarDatos()
+    private void mostrarPedidosEntreCiudades()
     {
-        boolean estaPago;
-        String fecha="";
-        String[] strNames = {"Domicilio Retiro", "Domicilio Entrega"};
-        String[] intNames = {"Metros Cubicos", "Bultos"};
-        String[] strInputs = new String[strNames.length+1];
-        int[] intInputs = new int[intNames.length+1];
-        Ciudad ciudadOrigen, ciudadDestino;
-        Cliente cliente;
-        boolean continuar = true;
-
-        ciudadOrigen = inputReader.scanCiudad("Origen");
-        continuar = ciudadOrigen != null;
-
-        ciudadDestino = null;
-        if(continuar)
+        String[] names = {"Origen(cp)", "Destino(cp)"};
+        int[] codigos = inputReader.scanCodigos(names);
+        Ciudad c = (Ciudad)ciudades.obtenerInformacion(codigos[0]);
+        Lista pedidos=null;
+        if(c != null)
         {
-            ciudadDestino = inputReader.scanCiudad("Destino");
-            continuar = ciudadDestino != null;
+            pedidos = c.obtenerSolicitudes(codigos[1]);
         }
-
-        if(continuar)
+        if(pedidos != null)
         {
-            fecha = inputReader.scanFecha();
-            continuar = !fecha.equals("q");
-        }
-
-        if(continuar)
-        {
-            strInputs = inputReader.cargarStringsSc(strNames);
-            continuar = !strInputs[strNames.length].equals("q");
-        }
-
-        if(continuar)
-        {
-            intInputs = inputReader.cargarIntsSc(intNames);
-            continuar = !(intInputs[intNames.length] == -1);
-        }
-
-        cliente = null;
-        if(continuar)
-        {
-            cliente = inputReader.scanCliente();
-            continuar = cliente != null;
-        }
-
-        estaPago = false;
-        if(continuar)
-        {
-            /*
-            estaPago = false;
-            input = "";
-            while(!(input.equals("y") || input.equals("n") || input.equals("q")))
+            System.out.println("Pedidos entre " + c.getNombre() + 
+                                " y " + 
+                                ((Ciudad)ciudades.obtenerInformacion(codigos[1])).getNombre());
+            
+            Solicitud pedido;
+            Cliente cliente;
+            int metrosCubicos = 0;
+            for(int i = 1; i <= pedidos.longitud(); i++)
             {
-                input = inputReader.scanString("Esta Pago? y/n");
-                estaPago = input == "y";
+                pedido = (Solicitud)pedidos.recuperar(i);
+                System.out.println("Pedido " + i);
+                cliente = pedido.getCliente();
+                System.out.println(cliente.getNombres() + " " + cliente.getApellidos());
+                System.out.println("Bultos "+pedido.getBultos());
+                System.out.println("Metros cubicos "+pedido.getMetrosCubicos());
+                metrosCubicos = metrosCubicos + pedido.getMetrosCubicos();
             }
-            continuar = !input.equals("q");
-            */
-            estaPago = inputReader.scanBool("Esta Pago? s/n");
+            System.out.println("Espacio necesario para transportar: " + metrosCubicos + " metros cubicos");
         }
-
-        if(continuar)
-        {
-            Solicitud solicitud = new Solicitud(ciudadDestino, fecha, cliente, intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
-            if(insertar(ciudadOrigen, solicitud))
-            {
-                System.out.println("Solicitud insertada con exito");
-                logOperacionesManager.escribirInsercion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                solicitud.getDestino().getCodigo() + " " + solicitud.getMetrosCubicos() + " metros cubicos");
-            }
-            else
-            {
-                System.out.println("Error insertando solicitud");
-            }
-        }
-    }
-
-    public boolean insertar(Ciudad ciudadOrigen, Solicitud solicitud)
-    {
-        boolean exito = false;
-        if(!ciudadOrigen.existeSolicitud(solicitud))
-        {   
-            exito = ciudadOrigen.insertarSolicitud(solicitud);
-        }
-        return exito;
     }
 
     public void mostrarEstructura()
@@ -257,33 +247,13 @@ public class SolicitudesManager {
         }
     }
 
-    public void mostrarSolicitudes()
+    public boolean insertar(Ciudad ciudadOrigen, Solicitud solicitud)
     {
-        Ciudad ciudadOrigen, ciudadDestino;
-        Lista solicitudes;
-        boolean continuar;
-
-        ciudadOrigen = inputReader.scanCiudad("Codigo Postal Origen");
-        continuar = ciudadOrigen != null;
-
-        ciudadDestino = null;
-        if(continuar)
-        {
-            ciudadDestino = inputReader.scanCiudad("Codigo Postal Destino");
-            continuar = ciudadDestino != null;
+        boolean exito = false;
+        if(!ciudadOrigen.existeSolicitud(solicitud))
+        {   
+            exito = ciudadOrigen.insertarSolicitud(solicitud);
         }
-
-        if(continuar)
-        {
-            solicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
-            System.out.println("Solicitudes desde " + ciudadOrigen + " a " + ciudadDestino);
-            System.out.println(solicitudes);
-        }
-        else
-        {
-            System.out.println("Ciudad no encontrada para el codigo dado");
-        }
+        return exito;
     }
-
-
 }
