@@ -43,6 +43,18 @@ public class FileManager {
         this.count = new int[4];
     }
 
+    private void mostrarConteo()
+    {
+        System.out.println();
+        System.out.println("Carga Completada");
+        System.out.println("Insertados:");
+        System.out.println(this.count[0] + " Clientes");
+        System.out.println(this.count[1] + " Ciudades");
+        System.out.println(this.count[2] + " Solicitudes");
+        System.out.println(this.count[3] + " Rutas");
+        System.out.println();
+    }
+
     public void leerArchivo(String path)
     {
         // se lee un archivo y se cargan sus datos a las estructuras
@@ -82,7 +94,7 @@ public class FileManager {
         }
     }
 
-    public void escribirCiudades(BufferedWriter out) throws Exception
+    private void escribirCiudades(BufferedWriter out) throws Exception
     {
         Lista ciudadesLista = this.ciudades.listarDatos();
         Ciudad c;
@@ -97,7 +109,7 @@ public class FileManager {
         }
     }
 
-    public void escribirClientes(BufferedWriter out) throws Exception
+    private void escribirClientes(BufferedWriter out) throws Exception
     {
         Lista clientesLista = this.clientes.listarDatos();
         Cliente c;
@@ -113,7 +125,7 @@ public class FileManager {
         }
     }
 
-    public void escribirRutas(BufferedWriter out) throws Exception
+    private void escribirRutas(BufferedWriter out) throws Exception
     {
         Lista rutasLista = this.rutas.listarDatos();
         Lista r;
@@ -127,7 +139,7 @@ public class FileManager {
             out.newLine();
         }
     }
-    public void escribirSolicitudes(BufferedWriter out) throws Exception
+    private void escribirSolicitudes(BufferedWriter out) throws Exception
     {
         Lista ciudadesLista = this.ciudades.listarDatos();
         Ciudad c;
@@ -165,16 +177,36 @@ public class FileManager {
         }
     }
 
-    private void mostrarConteo()
+    private void cargar(String line)
     {
-        System.out.println();
-        System.out.println("Carga Completada");
-        System.out.println("Insertados:");
-        System.out.println(this.count[0] + " Clientes");
-        System.out.println(this.count[1] + " Ciudades");
-        System.out.println(this.count[2] + " Solicitudes");
-        System.out.println(this.count[3] + " Rutas");
-        System.out.println();
+        // cada linea se separa segun ; y se carga segun la primer letra
+        StringTokenizer tokenizer = new StringTokenizer(line, ";");
+        if(tokenizer.hasMoreTokens())
+        {
+            String tipo = tokenizer.nextToken();
+            try
+            {
+                if(tipo.equals("P"))
+                {
+                    cargarCliente(tokenizer);
+                }
+                else if (tipo.equals("C"))
+                {
+                    cargarCiudad(tokenizer);
+                }
+                else if (tipo.equals("S"))
+                {
+                    cargarSolicitud(tokenizer);
+                }
+                else if (tipo.equals("R"))
+                {
+                    cargarRuta(tokenizer);
+                }
+            } catch (Exception e)
+            {
+                System.out.println("Error cargando " + tipo);
+            }
+        }
     }
 
     private void cargarCliente(StringTokenizer tokenizer) throws Exception
@@ -195,10 +227,7 @@ public class FileManager {
         {
             this.count[0] += 1;
         }
-        else
-        {
-            // System.out.println("Error insertando cliente " + tipo+num);
-        }
+
     }
 
     private void cargarCiudad(StringTokenizer tokenizer) throws Exception
@@ -297,38 +326,6 @@ public class FileManager {
         else
         {
             //System.out.println("Error insertando ruta " + cpo + " " + cpd);
-        }
-    }
-
-    public void cargar(String line)
-    {
-        // cada linea se separa segun ; y se carga segun la primer letra
-        StringTokenizer tokenizer = new StringTokenizer(line, ";");
-        if(tokenizer.hasMoreTokens())
-        {
-            String tipo = tokenizer.nextToken();
-            try
-            {
-                if(tipo.equals("P"))
-                {
-                    cargarCliente(tokenizer);
-                }
-                else if (tipo.equals("C"))
-                {
-                    cargarCiudad(tokenizer);
-                }
-                else if (tipo.equals("S"))
-                {
-                    cargarSolicitud(tokenizer);
-                }
-                else if (tipo.equals("R"))
-                {
-                    cargarRuta(tokenizer);
-                }
-            } catch (Exception e)
-            {
-                System.out.println("Error cargando " + tipo);
-            }
         }
     }
 }
