@@ -16,6 +16,7 @@ public class ViajesManager {
         this.rutas = rutas;
         this.ciudades = ciudades;
     }
+
     private void mostrarMenu()
     {
             System.out.println("Gestionar Viajes");
@@ -26,6 +27,7 @@ public class ViajesManager {
             System.out.println("5. Listar Posibles Pedidos Intermedios");
             System.out.println("6. Verificar Camino Perfecto");
     }
+    
     public void gestionar()
     {
         String seleccion = "";
@@ -134,7 +136,9 @@ public class ViajesManager {
             mostrarCamino(camino);
 
             // calculo el disponible, simulo que cargo el pedido que va de origen a fin
-            int disponible = capacidad - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
+            int disponible = capacidad;
+            if(origen.obtenerSolicitudes(destino.getCodigo())!=null)
+                disponible = disponible - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
 
             // pedidosEnCamion almacena como clave el destino de los pedidos para que sea facil descargarlos
             MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
@@ -171,12 +175,7 @@ public class ViajesManager {
             }
             // se muestran las posibles solicitudes intermedias
             System.out.println("Posibles solicitudes intermedias");
-            Lista solicitudIntermedia;
-            for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
-            {
-                solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
-                System.out.println(solicitudIntermedia.toString());
-            }
+            mostrarSolicitudes(solicitudesIntermedias);
         }
     }
 
@@ -292,12 +291,7 @@ public class ViajesManager {
                 {
                     System.out.println("Es un camino perfecto");
                     System.out.println("Posibles solicitudes intermedias");
-                    Lista solicitudIntermedia;
-                    for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
-                    {
-                        solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
-                        System.out.println(solicitudIntermedia.toString());
-                    }
+                    mostrarSolicitudes(solicitudesIntermedias);
                 }
                 else
                 {
@@ -305,6 +299,17 @@ public class ViajesManager {
                 }
             }
     
+        }
+    }
+
+    private void mostrarSolicitudes(Lista solicitudesIntermedias)
+    {
+        // se muestran los datos de la lista dada
+        Lista solicitudIntermedia;
+        for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
+        {
+            solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
+            System.out.println(solicitudIntermedia.toString());
         }
     }
 
