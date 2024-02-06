@@ -48,6 +48,144 @@ public class ViajesManager {
         }  
     }
 
+    private void mostrarCaminoMenorDistancia()
+    {
+        Lista camino = obtenerCaminoMenorDistancia();
+        mostrarCamino(camino);
+    }
+
+    private void mostrarCaminoMenosCiudades()
+    {
+        String[] names = {"Origen(cp)", "Destino(cp)"};
+        int[] codigos = inputReader.scanCodigos(names);
+        Lista camino = null;
+
+        if(codigos[codigos.length-1]!=-1)
+        {
+            camino = this.rutas.obtenerCaminoPorCiudades(codigos[0], codigos[1]);
+        }
+
+        mostrarCamino(camino);
+    }
+
+    private void mostrarCaminoPasandoPorCiudad()
+    {
+        String[] names = {"Origen(cp)", "Destino(cp)", "Pasando por(cp)"};
+        int[] codigos = inputReader.scanCodigos(names);
+
+        if(codigos[names.length-1] != -1)
+        {
+            Lista caminos = this.rutas.obtenerCaminoPasandoPorCiudad(codigos[0], codigos[1], codigos[2]);
+            Lista camino;
+            for(int i = 2; i < caminos.longitud()+1; i++)
+            {
+                camino = (Lista)caminos.recuperar(i);
+                mostrarCamino(camino);
+            }
+            System.out.println("Longitud min " + caminos.recuperar(1));
+        }
+    }
+
+    private void mostrarCaminoKMMaximos()
+    {
+        float maximo = -1;
+        String[] names = {"Origen(cp)", "Destino(cp)"};
+        int[] codigos = inputReader.scanCodigos(names);
+        boolean continuar = codigos[codigos.length-1] != -1;
+        Lista camino = null;
+
+        if(continuar)
+        {
+            maximo = inputReader.scanFloat("Longitud Maxima (KM)");
+            continuar = maximo != -1;
+        }
+
+        if(continuar)
+        {
+            camino = this.rutas.obtenerCaminoPorKMMaximos(codigos[0], codigos[1], maximo);
+        }
+
+        mostrarCamino(camino);
+    }
+
+    private void mostrarPedidosIntermedios()
+    {
+        int capacidad = -1;
+        Lista camino = obtenerCaminoMenorDistancia();
+        if(camino != null)
+        {
+            capacidad = inputReader.scanInt("Capacidad del Camion");
+        }
+
+        if(capacidad != -1)
+        {
+            Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
+            Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
+            Lista solicitudesIntermedias = new Lista();
+            mostrarCamino(camino);
+
+            int disponible = capacidad - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
+
+            MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
+            Lista descargas;
+            Solicitud descarga;
+            Ciudad ciudadOrigen;
+            for(int indexOrigen = 1; indexOrigen < camino.longitud(); indexOrigen++)
+            {
+                // recorro partiendo de cada ciudad
+                // compruebo si hay pedidos que se puedan descargar
+                ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
+
+                descargas = pedidosEnCamion.obtenerValor((Comparable)camino.recuperar(indexOrigen));
+                if(descargas != null)
+                {
+                    disponible = disponible + obtenerEspacioPedidos(descargas);
+                }
+
+                Lista pedidosParaEnviar = null;
+                for(int indexDestino = indexOrigen+1; indexDestino < camino.longitud(); indexDestino++)
+                {
+                    // recorro hacia cada destino
+                    // compruebo si hay espacio disponible para enviar pedidos
+
+                    // el envio desde origen a destino tiene prioridad
+                    if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
+                    {
+                        pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
+                        if(pedidosParaEnviar!=null)
+                        {
+                            Solicitud pedidoParaEnviar = null;
+
+                            for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
+                            {
+                                // recorro agregando todos los pedidos segun el espacio disponible
+                                pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
+                                if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
+                                {
+                                    Lista solicitudIntermedia = new Lista();
+                                    solicitudIntermedia.insertar(ciudadOrigen.getCodigo(), 1);
+                                    solicitudIntermedia.insertar(pedidoParaEnviar, 2);
+                                    solicitudesIntermedias.insertar(solicitudIntermedia, solicitudesIntermedias.longitud()+1);
+
+                                    disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
+                                    pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            System.out.println("Posibles solicitudes intermedias");
+            Lista solicitudIntermedia;
+            for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
+            {
+                solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
+                System.out.println(solicitudIntermedia.toString());
+            }
+        }
+    }
+
     private void verificarCaminoPerfecto()
     {
         // un camino perfecto es 8300 5620
@@ -160,11 +298,6 @@ public class ViajesManager {
     
         }
     }
-    private void mostrarCaminoMenorDistancia()
-    {
-        Lista camino = obtenerCaminoMenorDistancia();
-        mostrarCamino(camino);
-    }
 
     private void mostrarCamino(Lista camino)
     {
@@ -187,11 +320,6 @@ public class ViajesManager {
         return camino;
     }
 
-    private void obtenerSolicitudesIntermedias()
-    {
-        
-    }
-
     private int obtenerEspacioPedidos(Lista pedidos)
     {
         int espacio = 0;
@@ -203,136 +331,5 @@ public class ViajesManager {
             espacio = espacio + pedido.getMetrosCubicos();
         }
         return espacio;
-    }
-
-    private void mostrarPedidosIntermedios()
-    {
-        int capacidad = -1;
-        Lista camino = obtenerCaminoMenorDistancia();
-        if(camino != null)
-        {
-            capacidad = inputReader.scanInt("Capacidad del Camion");
-        }
-
-        if(capacidad != -1)
-        {
-            Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
-            Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
-            Lista solicitudesIntermedias = new Lista();
-            mostrarCamino(camino);
-
-            int disponible = capacidad - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
-
-            MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
-            Lista descargas;
-            Solicitud descarga;
-            Ciudad ciudadOrigen;
-            for(int indexOrigen = 1; indexOrigen < camino.longitud(); indexOrigen++)
-            {
-                // recorro partiendo de cada ciudad
-                // compruebo si hay pedidos que se puedan descargar
-                ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
-
-                descargas = pedidosEnCamion.obtenerValor((Comparable)camino.recuperar(indexOrigen));
-                if(descargas != null)
-                {
-                    disponible = disponible + obtenerEspacioPedidos(descargas);
-                }
-
-                Lista pedidosParaEnviar = null;
-                for(int indexDestino = indexOrigen+1; indexDestino < camino.longitud(); indexDestino++)
-                {
-                    // recorro hacia cada destino
-                    // compruebo si hay espacio disponible para enviar pedidos
-
-                    // el envio desde origen a destino tiene prioridad
-                    if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
-                    {
-                        pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
-                        if(pedidosParaEnviar!=null)
-                        {
-                            Solicitud pedidoParaEnviar = null;
-
-                            for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
-                            {
-                                // recorro agregando todos los pedidos segun el espacio disponible
-                                pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
-                                if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
-                                {
-                                    Lista solicitudIntermedia = new Lista();
-                                    solicitudIntermedia.insertar(ciudadOrigen.getCodigo(), 1);
-                                    solicitudIntermedia.insertar(pedidoParaEnviar, 2);
-                                    solicitudesIntermedias.insertar(solicitudIntermedia, solicitudesIntermedias.longitud()+1);
-
-                                    disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
-                                    pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            System.out.println("Posibles solicitudes intermedias");
-            Lista solicitudIntermedia;
-            for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
-            {
-                solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
-                System.out.println(solicitudIntermedia.toString());
-            }
-        }
-
-    }
-
-    private void mostrarCaminoKMMaximos()
-    {
-        float maximo = -1;
-        String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
-        boolean continuar = codigos[codigos.length-1] != -1;
-        Lista camino = null;
-
-        if(continuar)
-        {
-            maximo = inputReader.scanFloat("Longitud Maxima (KM)");
-            continuar = maximo != -1;
-        }
-
-        if(continuar)
-        {
-            camino = this.rutas.obtenerCaminoPorKMMaximos(codigos[0], codigos[1], maximo);
-        }
-
-        mostrarCamino(camino);
-    }
-    private void mostrarCaminoPasandoPorCiudad()
-    {
-        String[] names = {"Origen(cp)", "Destino(cp)", "Pasando por(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
-
-        if(codigos[names.length-1] != -1)
-        {
-            Lista caminos = this.rutas.obtenerCaminoPasandoPorCiudad(codigos[0], codigos[1], codigos[2]);
-            Lista camino;
-            for(int i = 2; i < caminos.longitud()+1; i++)
-            {
-                camino = (Lista)caminos.recuperar(i);
-                mostrarCamino(camino);
-            }
-            System.out.println("Longitud min " + caminos.recuperar(1));
-        }
-    }
-    private void mostrarCaminoMenosCiudades()
-    {
-        String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
-        Lista camino = null;
-
-        if(codigos[codigos.length-1]!=-1)
-        {
-            camino = this.rutas.obtenerCaminoPorCiudades(codigos[0], codigos[1]);
-        }
-
-        mostrarCamino(camino);
     }
 }
