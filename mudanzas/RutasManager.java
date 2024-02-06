@@ -1,9 +1,7 @@
 package mudanzas;
 
 import estructuras.grafo.Grafo;
-import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
-import estructuras.propositoEspecifico.MapeoAMuchos;
 
 public class RutasManager {
     private InputReader inputReader;
@@ -41,67 +39,9 @@ public class RutasManager {
         }  
     }
 
-    public void mostrarEstructura()
-    {
-        System.out.println(rutas.toString());
-    }
-
-    private void modificar()
-    {
-        String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
-        if(rutas.existeArco(codigos[0], codigos[1]))
-        {
-            float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
-            if(rutas.eliminarArco(codigos[0], codigos[1]))
-                if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
-                {
-                    System.out.println("Modificado con exito");
-                    logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
-                }
-        }
-    }
-
-    private void eliminarArco()
-    {
-        int origenCP = inputReader.scanCp("CP origen");
-        int destinoCP = -1;
-        if(origenCP != -1)
-            destinoCP = inputReader.scanCp("CP destino");
-
-        if(destinoCP != -1)
-        {
-            if(rutas.eliminarArco(origenCP, destinoCP))
-            {
-                System.out.println("Eliminado con exito");
-                logOperacionesManager.escribirEliminacion("la ruta entre " + origenCP + " y " + destinoCP + " de distancia ");
-            }
-            else
-                System.out.println("No se pudo eliminar");
-        }
-    }
-
-    private void consultarRuta()
-    {
-        String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
-
-        if(codigos[codigos.length-1] != -1)
-        {
-            if(rutas.existeCamino(codigos[0], codigos[1]))
-            {
-                System.out.println("La ruta existe");
-                System.out.println("Desde " + this.ciudades.obtenerInformacion(codigos[0]));
-                System.out.println("Hasta " + this.ciudades.obtenerInformacion(codigos[1]));
-                System.out.println("Distancia " + rutas.obtener(codigos[0], codigos[1]));
-            }
-            else
-                System.out.println("La ruta no existe");
-        }
-    }
-
     private void cargarDatos()
     {
+        // se cargan los datos y luego se los inserta en la estructura
         float distancia = -1;
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
@@ -113,6 +53,7 @@ public class RutasManager {
             continuar = distancia != -1;
         }
 
+        // inserto los datos de la nueva ruta
         if(continuar)
         {
             if(insertar(codigos[0], codigos[1], distancia))
@@ -127,12 +68,70 @@ public class RutasManager {
         }
     }
 
+    private void eliminarArco()
+    {
+        // obtengo origen y destino, luego intento eliminar el arco
+        int origenCP = inputReader.scanCp("CP origen");
+        int destinoCP = -1;
+        if(origenCP != -1)
+            destinoCP = inputReader.scanCp("CP destino");
+
+        // elimino el arco 
+        if(destinoCP != -1)
+        {
+            if(rutas.eliminarArco(origenCP, destinoCP))
+            {
+                System.out.println("Eliminado con exito");
+                logOperacionesManager.escribirEliminacion("la ruta entre " + origenCP + " y " + destinoCP + " de distancia ");
+            }
+            else
+                System.out.println("No se pudo eliminar");
+        }
+    }
+
+    private void modificar()
+    {
+        // cargo origen y destino. Si existe el arco solicito nueva distancia y realizo la modificacion.
+        String[] names = {"Origen(cp)", "Destino(cp)"};
+        int[] codigos = inputReader.scanCodigos(names);
+
+        // compruebo si existe el arco
+        if(rutas.existeArco(codigos[0], codigos[1]))
+        {
+            // ingreso nueva distancia
+            float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
+            if(nuevaDistancia != -1)
+            {
+                // modifico el arco
+                // modificar consiste en eliminar el arco y volverlo a insertar
+                if(rutas.eliminarArco(codigos[0], codigos[1]))
+                {
+                    if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
+                    {
+                        System.out.println("Modificado con exito");
+                        logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                    }
+                }
+            }
+        }
+        else
+        {
+            System.out.println("La ruta no existe");
+        }
+    }
+
+    public void mostrarEstructura()
+    {
+        System.out.println(rutas.toString());
+    }
+
     public boolean insertar(int cpo, int cpd, float distancia)
     {
+        // se obtienen origen, destino, y distancia.
+        // se comprueba la existencia de la ruta para luego insertarla
         boolean exito = false;
         if(!rutas.existeArco(cpo, cpd))
             exito = rutas.insertarArco(cpo, cpd, distancia);
         return exito;
     }
-
 }
