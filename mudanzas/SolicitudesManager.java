@@ -43,6 +43,8 @@ public class SolicitudesManager {
 
     private void cargarDatos()
     {
+        // se cargan los datos de la solicitud
+        // se la crea y se la inserta en la ciudad correspondiente
         boolean estaPago;
         String fecha="";
         String[] strNames = {"Domicilio Retiro", "Domicilio Entrega"};
@@ -91,19 +93,10 @@ public class SolicitudesManager {
         estaPago = false;
         if(continuar)
         {
-            /*
-            estaPago = false;
-            input = "";
-            while(!(input.equals("y") || input.equals("n") || input.equals("q")))
-            {
-                input = inputReader.scanString("Esta Pago? y/n");
-                estaPago = input == "y";
-            }
-            continuar = !input.equals("q");
-            */
-            estaPago = inputReader.scanBool("Esta Pago? s/n");
+            estaPago = inputReader.scanBool("Esta Pago?");
         }
 
+        // si esta todo correcto se crea la solicitud y se la inserta
         if(continuar)
         {
             Solicitud solicitud = new Solicitud(ciudadDestino, fecha, cliente, intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
@@ -122,6 +115,9 @@ public class SolicitudesManager {
 
     private void eliminar()
     {
+        // se obtiene origen y destino
+        // luego se recorren todas las solicitudes entre las ciudades
+        // solicitando si deben ser eliminadas
         Ciudad ciudadOrigen = inputReader.scanCiudad("Origen");
         Ciudad ciudadDestino = null;
         if(ciudadOrigen != null)
@@ -131,9 +127,11 @@ public class SolicitudesManager {
         
         if(ciudadDestino != null)
         {
+            // obtengo las solicitudes hacia la ciudad
             Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
             Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
             int i = 1;
+            // las recorro consultando por cada una si se desea eliminar
             while(s != null)
             {
                 System.out.println(s.getFecha());
@@ -159,51 +157,80 @@ public class SolicitudesManager {
 
     private void modificar()
     {
+        // ingreso origen y destino
+        // luego pregunto por cada dato si se debe modificar
         Ciudad ciudadOrigen = inputReader.scanCiudad("Origen");
         Ciudad ciudadDestino = null;
         if(ciudadOrigen != null)
         {
             ciudadDestino = inputReader.scanCiudad("Destino");
         }
-        
-        Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
-        Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
-        int i = 1;
-        while(s != null)
+
+        if(ciudadDestino!=null)
         {
-            System.out.println(s.getFecha());
-            System.out.println(((Cliente)s.getCliente()).getNombres());
-            if(inputReader.scanBool("Modificar? s/n"))
+            Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
+            Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+            int i = 1;
+            // se recorren todas las solicitudes consultando si se la quiere modificar
+            // al modificar se recorren todos los datos consultando uno por uno si se lo quiere modificar
+            while(s != null)
             {
-                if(inputReader.scanBool("Modificar fecha? s/n"))
-                    s.setFecha(inputReader.scanFecha());
-
-                if(inputReader.scanBool("Domicilio Retiro: " + s.getDomicilioRetiro() + " Modificar? s/n"))
-                    s.setDomicilioRetiro(inputReader.scanString("Domicilio Retiro"));
-
-                if(inputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar? s/n"))
-                    s.setDomicilioEntrega(inputReader.scanString("Domicilio Retiro"));
-
-                if(inputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar? s/n"))
-                    s.setMetrosCubicos(inputReader.scanInt("Metros Cubicos"));
-                
-                if(inputReader.scanBool("Bultos: " + s.getBultos() + " Modificar? s/n"))
-                    s.setBultos(inputReader.scanInt("Bultos"));
-
-                s.setEstaPago(inputReader.scanBool("Esta pago?"));
-
-                if(inputReader.scanBool("Cliente: " + ((Cliente)s.getCliente()).getNombres() + " Modificar? s/n"))
-                    s.setCliente(inputReader.scanCliente());
-                logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
+                System.out.println(s.getFecha());
+                System.out.println(((Cliente)s.getCliente()).getNombres());
+                if(inputReader.scanBool("Modificar?"))
+                {
+                    boolean modificado = false;
+                    if(inputReader.scanBool("Modificar fecha?"))
+                    {
+                        s.setFecha(inputReader.scanFecha());
+                        modificado = true;
+                    }
+                    if(inputReader.scanBool("Domicilio Retiro: " + s.getDomicilioRetiro() + " Modificar?"))
+                    {
+                        s.setDomicilioRetiro(inputReader.scanString("Domicilio Retiro"));
+                        modificado = true;
+                    }
+                    if(inputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar?"))
+                    {
+                        s.setDomicilioEntrega(inputReader.scanString("Domicilio Retiro"));
+                        modificado = true;
+                    }
+                    if(inputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar?"))
+                    {
+                        s.setMetrosCubicos(inputReader.scanInt("Metros Cubicos"));
+                        modificado = true;
+                    }
+                    if(inputReader.scanBool("Bultos: " + s.getBultos() + " Modificar?"))
+                    {
+                        s.setBultos(inputReader.scanInt("Bultos"));
+                        modificado = true;
+                    }
+                    if(inputReader.scanBool("Esta pago: " + (s.isEstaPago()?"T":"F") + " Modificar?"))
+                    {
+                        s.setEstaPago(inputReader.scanBool("Esta pago?"));
+                        modificado = true;
+                    }
+                    if(inputReader.scanBool("Cliente: " + ((Cliente)s.getCliente()).getNombres() + " Modificar?"))
+                    {
+                        s.setCliente(inputReader.scanCliente());
+                        modificado = true;
+                    }
+                    if(modificado)
+                    {
+                        logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
+                        s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
+                    }
+                }
+                i+=1;
+                s = (Solicitud)listaSolicitudes.recuperar(i);
             }
-            i+=1;
-            s = (Solicitud)listaSolicitudes.recuperar(i);
         }
     }
 
     private void mostrarPedidosEntreCiudades()
     {
+        // se ingresa origen y destino
+        // luego se recorren todas las solicitudes entre las ciudades mostrando cada una
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
         Ciudad c = (Ciudad)ciudades.obtenerInformacion(codigos[0]);
@@ -227,6 +254,7 @@ public class SolicitudesManager {
                 System.out.println("Pedido " + i);
                 cliente = pedido.getCliente();
                 System.out.println(cliente.getNombres() + " " + cliente.getApellidos());
+                System.out.println("Fecha " + pedido.getFecha());
                 System.out.println("Bultos "+pedido.getBultos());
                 System.out.println("Metros cubicos "+pedido.getMetrosCubicos());
                 metrosCubicos = metrosCubicos + pedido.getMetrosCubicos();
@@ -237,6 +265,8 @@ public class SolicitudesManager {
 
     public void mostrarEstructura()
     {
+        // se obtienen una lista con todas las ciudades
+        // se recorre cada ciudad mostrando su estructura de solicitudes
         Lista listaCiudades = ciudades.listarDatos();
         Ciudad c;
         for(int i = 1; i <= listaCiudades.longitud(); i++)
@@ -249,6 +279,8 @@ public class SolicitudesManager {
 
     public boolean insertar(Ciudad ciudadOrigen, Solicitud solicitud)
     {
+        // se ingresa una ciudad y una solicitud
+        // se comprueba si existe y luego se inserta la solicitud a la ciudad dada
         boolean exito = false;
         if(!ciudadOrigen.existeSolicitud(solicitud))
         {   
