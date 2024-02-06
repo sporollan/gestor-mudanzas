@@ -169,61 +169,64 @@ public class SolicitudesManager {
         if(ciudadDestino!=null)
         {
             Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
-            Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
-            int i = 1;
-            // se recorren todas las solicitudes consultando si se la quiere modificar
-            // al modificar se recorren todos los datos consultando uno por uno si se lo quiere modificar
-            while(s != null)
+            if(listaSolicitudes != null)
             {
-                System.out.println(s.getFecha());
-                System.out.println(((Cliente)s.getCliente()).getNombres());
-                if(inputReader.scanBool("Modificar?"))
+                Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+                int i = 1;
+                // se recorren todas las solicitudes consultando si se la quiere modificar
+                // al modificar se recorren todos los datos consultando uno por uno si se lo quiere modificar
+                while(s != null)
                 {
-                    boolean modificado = false;
-                    if(inputReader.scanBool("Modificar fecha?"))
+                    System.out.println(s.getFecha());
+                    System.out.println(((Cliente)s.getCliente()).getNombres());
+                    if(inputReader.scanBool("Modificar?"))
                     {
-                        s.setFecha(inputReader.scanFecha());
-                        modificado = true;
+                        boolean modificado = false;
+                        if(inputReader.scanBool("Modificar fecha?"))
+                        {
+                            s.setFecha(inputReader.scanFecha());
+                            modificado = true;
+                        }
+                        if(inputReader.scanBool("Domicilio Retiro: " + s.getDomicilioRetiro() + " Modificar?"))
+                        {
+                            s.setDomicilioRetiro(inputReader.scanString("Domicilio Retiro"));
+                            modificado = true;
+                        }
+                        if(inputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar?"))
+                        {
+                            s.setDomicilioEntrega(inputReader.scanString("Domicilio Entrega"));
+                            modificado = true;
+                        }
+                        if(inputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar?"))
+                        {
+                            s.setMetrosCubicos(inputReader.scanInt("Metros Cubicos"));
+                            modificado = true;
+                        }
+                        if(inputReader.scanBool("Bultos: " + s.getBultos() + " Modificar?"))
+                        {
+                            s.setBultos(inputReader.scanInt("Bultos"));
+                            modificado = true;
+                        }
+                        if(inputReader.scanBool("Esta pago: " + (s.isEstaPago()?"T":"F") + " Modificar?"))
+                        {
+                            s.setEstaPago(inputReader.scanBool("Esta pago?"));
+                            modificado = true;
+                        }
+                        if(inputReader.scanBool("Cliente: " + ((Cliente)s.getCliente()).getNombres() + " Modificar?"))
+                        {
+                            s.setCliente(inputReader.scanCliente());
+                            modificado = true;
+                        }
+                        if(modificado)
+                        {
+                            System.out.println("Modificado con exito");
+                            logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
+                            s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
+                        }
                     }
-                    if(inputReader.scanBool("Domicilio Retiro: " + s.getDomicilioRetiro() + " Modificar?"))
-                    {
-                        s.setDomicilioRetiro(inputReader.scanString("Domicilio Retiro"));
-                        modificado = true;
-                    }
-                    if(inputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar?"))
-                    {
-                        s.setDomicilioEntrega(inputReader.scanString("Domicilio Entrega"));
-                        modificado = true;
-                    }
-                    if(inputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar?"))
-                    {
-                        s.setMetrosCubicos(inputReader.scanInt("Metros Cubicos"));
-                        modificado = true;
-                    }
-                    if(inputReader.scanBool("Bultos: " + s.getBultos() + " Modificar?"))
-                    {
-                        s.setBultos(inputReader.scanInt("Bultos"));
-                        modificado = true;
-                    }
-                    if(inputReader.scanBool("Esta pago: " + (s.isEstaPago()?"T":"F") + " Modificar?"))
-                    {
-                        s.setEstaPago(inputReader.scanBool("Esta pago?"));
-                        modificado = true;
-                    }
-                    if(inputReader.scanBool("Cliente: " + ((Cliente)s.getCliente()).getNombres() + " Modificar?"))
-                    {
-                        s.setCliente(inputReader.scanCliente());
-                        modificado = true;
-                    }
-                    if(modificado)
-                    {
-                        System.out.println("Modificado con exito");
-                        logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                        s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
-                    }
+                    i+=1;
+                    s = (Solicitud)listaSolicitudes.recuperar(i);
                 }
-                i+=1;
-                s = (Solicitud)listaSolicitudes.recuperar(i);
             }
         }
     }
@@ -283,6 +286,7 @@ public class SolicitudesManager {
     {
         // se ingresa una ciudad y una solicitud
         // se comprueba si existe y luego se inserta la solicitud a la ciudad dada
+        // se consideran duplicadas las solicitudes con mismo cliente, origen y destino
         boolean exito = false;
         if(!ciudadOrigen.existeSolicitud(solicitud))
         {   

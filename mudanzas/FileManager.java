@@ -286,6 +286,7 @@ public class FileManager {
             cargaValida = true;
         } catch(Exception e) {
             System.out.println("Error con la carga de datos");
+            e.printStackTrace();
         }
 
         if(cargaValida)

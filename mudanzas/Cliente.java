@@ -17,14 +17,6 @@ public class Cliente {
         this.telefono = telefono;
         this.email = email;
     }
-/*
-    @Override
-    public int hashCode() {
-        int hc = this.clave.hashCode();
-        hc = hc < 0 ? -1 * hc : hc;
-        return hc;
-    }
-*/
 
     @Override
     public String toString()
