@@ -17,6 +17,7 @@ public class CiudadesManager {
         this.rutas = rutas;
         this.logOperacionesManager = logOperacionesManager;
     }
+
     private void mostrarMenu()
     {
         System.out.println("Gestionar Ciudades");
@@ -27,10 +28,6 @@ public class CiudadesManager {
         System.out.println("5. Mostrar por Prefijo");
     }
 
-    public void mostrarEstructura()
-    {
-        System.out.println(ciudades.toString());
-    }
     public void gestionar()
     {
         String seleccion = "";
@@ -51,35 +48,36 @@ public class CiudadesManager {
         }
     }
 
-    private void mostrarDatosCiudad()
+    private void cargarDatos()
     {
-        Ciudad c = ((Ciudad)ciudades.obtenerInformacion(inputReader.scanCp("CP")));
-        if( c != null)
-        {
-            System.out.println();
-            System.out.println(c.getCodigo());
-            System.out.println("Nombre");
-            System.out.println(c.getNombre());
-            System.out.println("Provincia");
-            System.out.println(c.getProvincia());
-        }
-    }
-
-    private void modificar()
-    {
-        int cp = this.inputReader.scanCp("Codigo Postal");
-        Ciudad c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cp);
-        System.out.println("Modificando " + c.getNombre() + " CP: " + c.getCodigo());
+        // se leen los datos de ciudad
+        int cpo = -1;
         String[] strNames = {"Nombre", "Provincia"};
-        String[] strInputs = inputReader.cargarStringsSc(strNames);
-        if(!strInputs[strNames.length].equals("q"))
+        String[] strInputs = new String[strNames.length+1];
+        boolean continuar = true;
+
+        cpo = inputReader.scanCp("Codigo Postal");
+        continuar = cpo != -1;
+
+        if(continuar)
         {
-            c.setNombre(strInputs[0]);
-            c.setProvincia(strInputs[1]);
-            System.out.println("Modificado con exito");
-            this.logOperacionesManager.escribirModificacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia());
-        }   
-        
+            strInputs = inputReader.cargarStringsSc(strNames);
+            continuar = !strInputs[strNames.length].equals("q");
+        }
+
+        if (continuar)
+        {
+            // se crea la ciudad y se la inserta
+            if(insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1], inputReader)))
+            {
+                System.out.println("Ciudad insertada con exito");
+                logOperacionesManager.escribirInsercion("la ciudad " + cpo + ": " + strInputs[0] +", "+ strInputs[1]);
+            }
+            else
+            {
+                System.out.println("Error insertando ciudad");
+            }
+        }
     }
 
     private void eliminar()
@@ -133,6 +131,52 @@ public class CiudadesManager {
         }
     }
 
+    private void modificar()
+    {
+        // se obtiene la ciudad
+        int cp = this.inputReader.scanCp("Codigo Postal");
+        Ciudad c = null;
+        if(cp != -1)
+            c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cp);
+
+        // si existe se la modifica
+        if(c != null)
+        {
+            System.out.println("Modificando " + c.getNombre() + " CP: " + c.getCodigo());
+            boolean modificado = false;
+            if(inputReader.scanBool("Cambiar nombre?"))
+            {
+                c.setNombre(inputReader.scanString("Nombre"));
+                modificado = true;
+            }
+            if(inputReader.scanBool("Cambiar provincia?"))
+            {
+                c.setProvincia(inputReader.scanString("Provincia"));
+                modificado = true;
+            }
+
+            if(modificado)
+            {
+                System.out.println("Modificado con exito");
+                this.logOperacionesManager.escribirModificacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia());
+            }   
+        }
+    }
+
+    private void mostrarDatosCiudad()
+    {
+        Ciudad c = ((Ciudad)ciudades.obtenerInformacion(inputReader.scanCp("CP")));
+        if( c != null)
+        {
+            System.out.println();
+            System.out.println(c.getCodigo());
+            System.out.println("Nombre");
+            System.out.println(c.getNombre());
+            System.out.println("Provincia");
+            System.out.println(c.getProvincia());
+        }
+    }
+
     private void mostrarPorPrefijo()
     {
         int cpo = inputReader.scanPrefijo("Prefijo");
@@ -148,43 +192,11 @@ public class CiudadesManager {
         }
     }
 
-
-
-
-    private void cargarDatos()
+    public void mostrarEstructura()
     {
-        int cpo = -1;
-        String[] strNames = {"Nombre", "Provincia"};
-        String[] strInputs = new String[strNames.length+1];
-        boolean continuar = true;
-
-        cpo = inputReader.scanCp("Codigo Postal");
-        continuar = cpo != -1;
-
-        if(continuar)
-        {
-            strInputs = inputReader.cargarStringsSc(strNames);
-            continuar = !strInputs[strNames.length].equals("q");
-        }
-
-        if (continuar)
-        {
-            //insertar(cpo, strInputs[0], strInputs[1]);
-
-            if(insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1], inputReader)))
-            {
-                System.out.println("Ciudad insertada con exito");
-                logOperacionesManager.escribirInsercion("la ciudad " + cpo + ": " + strInputs[0] +", "+ strInputs[1]);
-            }
-            else
-            {
-                System.out.println("Error insertando ciudad");
-            }
-
-        }
+        System.out.println(ciudades.toString());
     }
 
-    //public void insertar(int cpo, String nombre, String provincia)
     public boolean insertar(Ciudad ciudad)
     {
         boolean exito = false;
