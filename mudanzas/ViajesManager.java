@@ -50,12 +50,14 @@ public class ViajesManager {
 
     private void mostrarCaminoMenorDistancia()
     {
+        // obtengo y muestro el camino con distancia menor
         Lista camino = obtenerCaminoMenorDistancia();
         mostrarCamino(camino);
     }
 
     private void mostrarCaminoMenosCiudades()
     {
+        // obtengo y muestro el camino con menor cantidad de ciudades
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
         Lista camino = null;
@@ -70,6 +72,7 @@ public class ViajesManager {
 
     private void mostrarCaminoPasandoPorCiudad()
     {
+        // obtengo y muestro los caminos que pasan por una ciudad dada
         String[] names = {"Origen(cp)", "Destino(cp)", "Pasando por(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
 
@@ -88,6 +91,8 @@ public class ViajesManager {
 
     private void mostrarCaminoKMMaximos()
     {
+        // ademas de origen y destino, ingreso una distancia maxima
+        // obtengo el camino de menor distancia respetando el maximo dado.
         float maximo = -1;
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
@@ -110,6 +115,10 @@ public class ViajesManager {
 
     private void mostrarPedidosIntermedios()
     {
+        // obtengo el camino de menor distancia entre dos ciudades
+        // luego ingreso la capacidad del camion
+        // finalmente recorro el camino simulando cargas y descargas para hacer una lista 
+        // de los pedidos intermedios que se podrian cargar
         int capacidad = -1;
         Lista camino = obtenerCaminoMenorDistancia();
         if(camino != null)
@@ -124,18 +133,19 @@ public class ViajesManager {
             Lista solicitudesIntermedias = new Lista();
             mostrarCamino(camino);
 
+            // calculo el disponible, simulo que cargo el pedido que va de origen a fin
             int disponible = capacidad - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
 
+            // pedidosEnCamion almacena como clave el destino de los pedidos para que sea facil descargarlos
             MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
             Lista descargas;
-            Solicitud descarga;
             Ciudad ciudadOrigen;
             for(int indexOrigen = 1; indexOrigen < camino.longitud(); indexOrigen++)
             {
                 // recorro partiendo de cada ciudad
-                // compruebo si hay pedidos que se puedan descargar
                 ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
 
+                // compruebo si hay pedidos que se puedan descargar
                 descargas = pedidosEnCamion.obtenerValor((Comparable)camino.recuperar(indexOrigen));
                 if(descargas != null)
                 {
@@ -146,36 +156,20 @@ public class ViajesManager {
                 for(int indexDestino = indexOrigen+1; indexDestino < camino.longitud(); indexDestino++)
                 {
                     // recorro hacia cada destino
-                    // compruebo si hay espacio disponible para enviar pedidos
-
-                    // el envio desde origen a destino tiene prioridad
+                    // el envio desde origen a destino tiene prioridad por lo que evito tenerlo en cuenta
                     if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
                     {
+                        // compruebo si hay pedidos para enviar
                         pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
                         if(pedidosParaEnviar!=null)
                         {
-                            Solicitud pedidoParaEnviar = null;
-
-                            for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
-                            {
-                                // recorro agregando todos los pedidos segun el espacio disponible
-                                pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
-                                if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
-                                {
-                                    Lista solicitudIntermedia = new Lista();
-                                    solicitudIntermedia.insertar(ciudadOrigen.getCodigo(), 1);
-                                    solicitudIntermedia.insertar(pedidoParaEnviar, 2);
-                                    solicitudesIntermedias.insertar(solicitudIntermedia, solicitudesIntermedias.longitud()+1);
-
-                                    disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
-                                    pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
-                                }
-                            }
+                            disponible = procesarCargaCamion(pedidosParaEnviar, solicitudesIntermedias, 
+                            pedidosEnCamion, camino, indexDestino, ciudadOrigen, disponible);
                         }
                     }
                 }
             }
-
+            // se muestran las posibles solicitudes intermedias
             System.out.println("Posibles solicitudes intermedias");
             Lista solicitudIntermedia;
             for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
@@ -186,8 +180,35 @@ public class ViajesManager {
         }
     }
 
+    private int procesarCargaCamion(Lista pedidosParaEnviar, Lista solicitudesIntermedias, 
+                        MapeoAMuchos pedidosEnCamion, Lista camino, int indexDestino,
+                        Ciudad ciudadOrigen, int disponible)
+    {
+        Solicitud pedidoParaEnviar = null;
+
+        for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
+        {
+            // recorro agregando todos los pedidos segun el espacio disponible
+            pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
+            if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
+            {
+                // si hay espacio se lo carga en solicitudes intermedias para mostrarlo despues
+                Lista solicitudIntermedia = new Lista();
+                solicitudIntermedia.insertar(ciudadOrigen.getCodigo(), 1);
+                solicitudIntermedia.insertar(pedidoParaEnviar, 2);
+                solicitudesIntermedias.insertar(solicitudIntermedia, solicitudesIntermedias.longitud()+1);
+                // se simula que se lo carga en el camion
+                disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
+                pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
+            }
+        }
+        return disponible;
+    }
+
     private void verificarCaminoPerfecto()
     {
+        // se obtiene un camino
+        // luego se comprueba que para cada ciudad haya al menos un pedido saliente
         // un camino perfecto es 8300 5620
         {
             int capacidad = -1;
@@ -205,22 +226,23 @@ public class ViajesManager {
                 mostrarCamino(camino);
     
                 // primero se cargan los pedidos de origen a fin
+                // puede pasar que no hayan pedidos
+                // pero se considera que si existe tiene prioridad
                 int disponible = capacidad;
                 if(origen.obtenerSolicitudes(destino.getCodigo())!=null)
                     disponible = disponible - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
     
                 MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
                 Lista descargas;
-                Solicitud descarga;
                 Ciudad ciudadOrigen;
                 int indexOrigen = 1;
                 boolean caminoPerfecto = true;
                 while(indexOrigen < camino.longitud() && caminoPerfecto)
                 {
-                    // recorro partiendo de cada ciudad
-                    // compruebo si hay pedidos que se puedan descargar
+                    // recorro partiendo de cada ciudad siempre haya posibilidad de ser camino perfecto
                     ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
     
+                    // compruebo si hay pedidos que se puedan descargar
                     descargas = pedidosEnCamion.obtenerValor((Comparable)camino.recuperar(indexOrigen));
                     if(descargas != null)
                     {
@@ -232,13 +254,11 @@ public class ViajesManager {
                     int indexDestino = indexOrigen+1;
                     while(indexDestino < camino.longitud())
                     {
-
                         // recorro hacia cada destino
-
-                        // compruebo si hay espacio disponible para enviar pedidos
                         // el envio desde origen a destino tiene prioridad
                         if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
-                        {
+                        {                        
+                            // compruebo si hay espacio disponible para enviar pedidos
                             pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
                             if(pedidosParaEnviar!=null)
                             {
@@ -248,37 +268,26 @@ public class ViajesManager {
                                     haySolicitudSaliente = true;
                                 }
 
-                                Solicitud pedidoParaEnviar = null;
-    
-                                for(int i = 1; i <= pedidosParaEnviar.longitud(); i++)
-                                {
-                                    // recorro agregando todos los pedidos segun el espacio disponible
-                                    pedidoParaEnviar = (Solicitud)pedidosParaEnviar.recuperar(i);
-                                    if(disponible - pedidoParaEnviar.getMetrosCubicos() >= 0)
-                                    {
-                                        Lista solicitudIntermedia = new Lista();
-                                        solicitudIntermedia.insertar(ciudadOrigen.getCodigo(), 1);
-                                        solicitudIntermedia.insertar(pedidoParaEnviar, 2);
-                                        solicitudesIntermedias.insertar(solicitudIntermedia, solicitudesIntermedias.longitud()+1);
-    
-                                        disponible = disponible - pedidoParaEnviar.getMetrosCubicos();
-                                        pedidosEnCamion.asociar((Comparable)camino.recuperar(indexDestino), pedidoParaEnviar);
-                                    }
-                                }
+                                disponible = procesarCargaCamion(pedidosParaEnviar, solicitudesIntermedias,
+                                 pedidosEnCamion, camino, indexDestino, ciudadOrigen, disponible);
                             }
                         }
                         else
                         {
+                            // caso origen a fin
                             if(!haySolicitudSaliente)
                                 haySolicitudSaliente = (ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(camino.longitud()-1))!=null);
                         }
+                        // actualizo valores del while para recorrer ciudades destino
                         indexDestino = indexDestino + 1;
                     }
+                    // actualizo valores del while para recorrer ciudad origen, condicion de camino perfecto
                     if(indexOrigen != camino.longitud()-1)
                         caminoPerfecto = haySolicitudSaliente;
                     indexOrigen = indexOrigen + 1;
                 }
     
+                // muestro si es camino perfecto
                 if(caminoPerfecto)
                 {
                     System.out.println("Es un camino perfecto");
@@ -301,6 +310,8 @@ public class ViajesManager {
 
     private void mostrarCamino(Lista camino)
     {
+        // se recorre el camino mostrando cada ciudad
+        // al final se muestra su longitud
         if(camino != null)
         {
             for(int i = 1; i < camino.longitud(); i++)
@@ -310,8 +321,11 @@ public class ViajesManager {
             System.out.println("Longitud: " + camino.recuperar(camino.longitud()));
         }
     }
+
     private Lista obtenerCaminoMenorDistancia()
     {
+        // se obtiene origen y destino
+        // luego se devuelve el camino
         Lista camino=null;
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
@@ -322,6 +336,8 @@ public class ViajesManager {
 
     private int obtenerEspacioPedidos(Lista pedidos)
     {
+        // se obtiene una lista de pedidos
+        // se devuelve el espacio total que ocupan en el camion
         int espacio = 0;
         Solicitud pedido;
         for(int i = 1; i <= pedidos.longitud(); i++)
@@ -332,4 +348,5 @@ public class ViajesManager {
         }
         return espacio;
     }
+
 }
