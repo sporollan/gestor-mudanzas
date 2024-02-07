@@ -28,12 +28,14 @@ public class Diccionario {
             // si la raiz existe se continua recorriendo
             exito = insertarAux(this.raiz, clave, dato);
         }
+        /*
         if(exito)
         {
             // si se inserto el dato se recalcula la altura y el balance
             this.raiz.recalcularAltura();
             this.comprobarBalance(this.raiz);
         }
+        */
         return exito;
     }
 
@@ -61,7 +63,8 @@ public class Diccionario {
             if(clave.compareTo(n.getClave())==0)
             {
                 // encontrado
-                NodoAVLDicc i, d, reemplazo;
+                NodoAVLDicc i, d, reemplazo=null;
+                boolean a=false;
                 i = n.getHijoIzquierdo();
                 d = n.getHijoDerecho();
                 // evaluo cual es el reemplazo
@@ -73,15 +76,26 @@ public class Diccionario {
                 else if(i == null || d == null)
                 {
                     // caso 2, el nodo tiene un solo hijo
-                    reemplazo = i == null ? d : i;
+
+                    if(i != null)
+                    {
+                        reemplazo = i;
+                        n.setHijoIzquierdo(null);
+                    }
+                    else if(d != null)
+                    {
+                        reemplazo = d;
+                        n.setHijoDerecho(null);
+                    }
                 }
                 else
                 {
                     // caso 3, el nodo tiene 2 hijos
                     // utilizo el metodo de obtener candidato A
                     reemplazo = obtenerCandidatoA(n);
-                }
+                    a = true;
 
+                }
                 // evaluo donde insertar el reemplazo
                 NodoAVLDicc encontrado, derecho, izquierdo;
                 if(p == null)
@@ -93,6 +107,8 @@ public class Diccionario {
                         derecho = this.raiz.getHijoDerecho();
                         reemplazo.setHijoIzquierdo(izquierdo);
                         reemplazo.setHijoDerecho(derecho);
+                        this.raiz.recalcularAltura();
+
                     }
                     this.raiz = reemplazo;
                 }
@@ -100,37 +116,55 @@ public class Diccionario {
                 {
                     // elimino izquierdo
                     encontrado = p.getHijoIzquierdo();
+                    izquierdo = null;
                     derecho = null;
 
                     if(encontrado!=null)
+                    {
+                        izquierdo = encontrado.getHijoIzquierdo();
                         derecho = encontrado.getHijoDerecho();
+                    }
 
                     p.setHijoIzquierdo(reemplazo);
                     if(reemplazo != null)
-                        p.getHijoIzquierdo().setHijoDerecho(derecho);
-
+                    {
+                        p.getHijoIzquierdo().setHijoIzquierdo(izquierdo);
+                        if(a)
+                            p.getHijoIzquierdo().setHijoDerecho(derecho);
+                    }
+                    this.raiz.recalcularAltura();
+                    if(reemplazo != null)
+                        comprobarBalance(reemplazo);
+                    else
+                        comprobarBalance(p);
                 }
                 else
                 {
                     // elimino derecho
                     encontrado = p.getHijoDerecho();
                     derecho = null;
+                    izquierdo = null;
 
                     if(encontrado!=null)
+                    {
                         derecho = encontrado.getHijoDerecho();
+                        izquierdo = encontrado.getHijoIzquierdo();
+                    }
 
                     p.setHijoDerecho(reemplazo);
                     if(reemplazo != null)
+                    {
                         p.getHijoDerecho().setHijoDerecho(derecho);
-
-                }
-
-                if(this.raiz!=null)
-                {
-                    // recalculo el balance y la altura
+                        if(a)
+                            p.getHijoDerecho().setHijoIzquierdo(izquierdo);
+                    }
                     this.raiz.recalcularAltura();
-                    this.comprobarBalance(this.raiz);
+                    if(reemplazo != null)
+                        comprobarBalance(reemplazo);
+                    else
+                        comprobarBalance(p);
                 }
+
                 exito = true;
             }
             else if(clave.compareTo(n.getClave()) < 0)
@@ -144,6 +178,8 @@ public class Diccionario {
                 exito = eliminarAux(n.getHijoDerecho(), clave, n, false);
             }
         }
+        if(this.raiz != null)
+            this.raiz.recalcularAltura();
         return exito;
     }
 
@@ -154,6 +190,7 @@ public class Diccionario {
         if(i.getHijoDerecho() == null)
         {
             candidatoA = i;
+            n.setHijoIzquierdo(null);
         }
         else
         {
@@ -386,7 +423,7 @@ public class Diccionario {
         NodoAVLDicc nh = null;
         int ai = -1;
         int ad = -1;
-
+        boolean ocurrioBalance = false;
         if(n != null)
         {
             b = this.getBalance(n);
@@ -408,6 +445,7 @@ public class Diccionario {
                         // simple a derecha
                         this.rotarDerecha(n);
                         this.raiz.recalcularAltura();
+                        ocurrioBalance = true;
                     }
                     else if(bh == -1)
                     {
@@ -415,6 +453,7 @@ public class Diccionario {
                         this.rotarIzquierda(nh);
                         this.rotarDerecha(n);
                         this.raiz.recalcularAltura();
+                        ocurrioBalance = true;
                     }
                 }
                 else if(b == -2)
@@ -424,6 +463,8 @@ public class Diccionario {
                         // simple a izquierda
                         this.rotarIzquierda(n);
                         this.raiz.recalcularAltura();
+                        ocurrioBalance = true;
+
                     }
                     else if(bh == 1)
                     {
@@ -431,10 +472,34 @@ public class Diccionario {
                         this.rotarDerecha(nh);
                         this.rotarIzquierda(n);
                         this.raiz.recalcularAltura();
+                        ocurrioBalance = true;
                     }
                 }
             }
+            buscarYBalancearPadre(this.raiz, n);
         }
+    }
+
+    private boolean buscarYBalancearPadre(NodoAVLDicc p, NodoAVLDicc n)
+    {
+        boolean exito = false;
+        if(p!=null)
+        {
+            if(p.getHijoDerecho() == n || p.getHijoIzquierdo() == n)
+            {
+                comprobarBalance(p);
+                exito = true;
+            }
+            else
+            {
+                exito = buscarYBalancearPadre(p.getHijoIzquierdo(), n);
+                if(!exito)
+                {
+                    exito = buscarYBalancearPadre(p.getHijoDerecho(), n);
+                }
+            }
+        }
+        return exito;
     }
 
     private String toStringAux(NodoAVLDicc n)
