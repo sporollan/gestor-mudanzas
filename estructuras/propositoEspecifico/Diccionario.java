@@ -2,26 +2,35 @@ package estructuras.propositoEspecifico;
 
 import estructuras.lineales.dinamicas.Lista;
 
+// diccionario avl
+
 public class Diccionario {
     NodoAVLDicc raiz;
+
     public Diccionario()
     {
         this.raiz = null;
     }
+
     public boolean insertar(Comparable clave, Object dato)
     {
+        // recibe clave y dato
+        // devuelve si el dato fue insertado
         boolean exito = false;
         if(this.raiz == null) 
         {
+            // si no hay raiz se inserta en la raiz
             this.raiz = new NodoAVLDicc(clave, dato, null, null);
             exito = true;
         }
         else
         {
+            // si la raiz existe se continua recorriendo
             exito = insertarAux(this.raiz, clave, dato);
         }
         if(exito)
         {
+            // si se inserto el dato se recalcula la altura y el balance
             this.raiz.recalcularAltura();
             this.comprobarBalance(this.raiz);
         }
@@ -30,14 +39,21 @@ public class Diccionario {
 
     public boolean eliminar(Comparable clave)
     {
+        // recibe clave, la busca en el arbol y devuelve si pudo elminarse
         boolean exito = this.raiz!=null;
         if(exito)
+        {
+            // si la raiz existe se continua recorriendo
             exito = eliminarAux(this.raiz, clave, null, false);
+        }
         return exito;
     }
 
     private boolean eliminarAux(NodoAVLDicc n, Comparable clave, NodoAVLDicc p, boolean esIzquierdo)
     {
+        // n es el nodo al comparar con la clave
+        // p es su padre. esizquierdo es si es hijo izquierdo
+        // esto es necesario realizar la eliminacion
         boolean exito = false;
         if(n != null)
         {
@@ -62,6 +78,7 @@ public class Diccionario {
                 else
                 {
                     // caso 3, el nodo tiene 2 hijos
+                    // utilizo el metodo de obtener candidato A
                     reemplazo = obtenerCandidatoA(n);
                 }
 
@@ -81,6 +98,7 @@ public class Diccionario {
                 }
                 else if(esIzquierdo)
                 {
+                    // elimino izquierdo
                     encontrado = p.getHijoIzquierdo();
                     derecho = null;
 
@@ -94,6 +112,7 @@ public class Diccionario {
                 }
                 else
                 {
+                    // elimino derecho
                     encontrado = p.getHijoDerecho();
                     derecho = null;
 
@@ -108,8 +127,8 @@ public class Diccionario {
 
                 if(this.raiz!=null)
                 {
+                    // recalculo el balance y la altura
                     this.raiz.recalcularAltura();
-                    //System.out.println(this.toString());
                     this.comprobarBalance(this.raiz);
                 }
                 exito = true;
