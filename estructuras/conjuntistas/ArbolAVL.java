@@ -5,51 +5,62 @@ import estructuras.lineales.dinamicas.Lista;
 
 public class ArbolAVL {
     NodoAVL raiz;
+
     public ArbolAVL()
     {
         this.raiz = null;
     }
+
     private Comparable obtenerAux(NodoAVL n, Comparable clave)
     {
+        // recibe un nodo y una clave.
+        // si el nodo es el buscado se devuelve su elemento almacenado
+        // sino se continua recorriendo
         Comparable obtenido = null;
         if(n != null)
         {
             if(n.getElem().compareTo(clave) == 0)
+            {
+                // el nodo es el buscado
                 obtenido = n.getElem();
+            }
             else if (n.getElem().compareTo(clave) > 0)
             {
+                // la clave es menor a la clave del nodo
                 obtenido = obtenerAux(n.getIzquierdo(), clave);
             }
             else
             {
+                // la clave es mayor a la clave del nodo
                 obtenido = obtenerAux(n.getDerecho(), clave);
             }
         }
         return obtenido;
     }
+
     public Comparable obtener(Comparable clave)
     {
+        // recibe una clave, devuelve el elemento almacenado
         Comparable obtenido = null;
         if(this.raiz != null)
         {
             if(this.raiz.getElem().compareTo(clave) == 0)
             {
+                // la raiz es el elemento buscado
                 obtenido = this.raiz.getElem();
             }
             else if(this.raiz.getElem().compareTo(clave) > 0)
             {
+                // el elemento buscado es menor a la raiz
                 obtenido = obtenerAux(this.raiz.getIzquierdo(), clave);
             }
             else
             {
+                // el elemento buscado es mayor a la raiz
                 obtenido = obtenerAux(this.raiz.getDerecho(), clave);
             }
         }
         return obtenido;
-    }
-    public boolean pertenece(Object elem)
-    {
-        return false;
     }
 
     private void _rotarDerecha(NodoAVL n)
