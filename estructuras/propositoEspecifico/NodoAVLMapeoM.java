@@ -1,6 +1,5 @@
 package estructuras.propositoEspecifico;
 
-import estructuras.conjuntistas.NodoAVL;
 import estructuras.lineales.dinamicas.Lista;
 
 public class NodoAVLMapeoM {

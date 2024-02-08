@@ -55,11 +55,11 @@ public class Ciudad {
         return exito;
     }
 
-    public boolean eliminarSolicitudes(Ciudad ciudadDestino)
+    public Solicitud eliminarSolicitudes(Ciudad ciudadDestino)
     {
-        boolean exito = false;
         Lista listaSolicitudes = solicitudes.obtenerValor(ciudadDestino.getCodigo());
         Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
+        Solicitud retorno=null;
         int i = 1;
         while(s != null)
         {
@@ -67,8 +67,11 @@ public class Ciudad {
             System.out.println(((Cliente)s.getCliente()).getNombres());
             if(inputReader.scanBool("Eliminar? s/n"))
             {
-                if(listaSolicitudes.eliminar(i))
+                if(solicitudes.desasociar(ciudadDestino.getCodigo(), s))
+                {
                     System.out.println("Eliminado con exito");
+                    retorno = s;
+                }
             }
             else
             {
@@ -76,7 +79,7 @@ public class Ciudad {
             }
             s = (Solicitud)listaSolicitudes.recuperar(i);
         }
-        return exito;
+        return retorno;
     }
 
     @Override public String toString()

@@ -127,30 +127,12 @@ public class SolicitudesManager {
         
         if(ciudadDestino != null)
         {
-            // obtengo las solicitudes hacia la ciudad
-            Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
-            Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
-            int i = 1;
-            // las recorro consultando por cada una si se desea eliminar
-            while(s != null)
+            Solicitud s = ciudadOrigen.eliminarSolicitudes(ciudadDestino);
+            if(s != null)
             {
-                System.out.println(s.getFecha());
-                System.out.println(((Cliente)s.getCliente()).getNombres());
-                System.out.println(s.getMetrosCubicos() +" metros cubicos");
-                if(inputReader.scanBool("Eliminar? s/n"))
-                {
-                    if(listaSolicitudes.eliminar(i))
-                    {
-                        System.out.println("Eliminado con exito");
-                        logOperacionesManager.escribirEliminacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                        s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
-                    }
-                }
-                else
-                {
-                    i+=1;
-                }
-                s = (Solicitud)listaSolicitudes.recuperar(i);
+                System.out.println("Eliminado con exito");
+                logOperacionesManager.escribirEliminacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
+                s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos"); 
             }
         }
     }

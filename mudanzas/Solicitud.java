@@ -53,7 +53,7 @@ public class Solicitud {
     @Override
     public String toString()
     {
-        return destino + ", " + fecha + ", " + cliente;
+        return "("+destino.getCodigo() + ", " + metrosCubicos + " m2, "+cliente+")";
     }
 
     public String getFecha() {
