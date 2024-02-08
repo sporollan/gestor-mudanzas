@@ -252,7 +252,7 @@ public class InputReader {
         String input = "";
         while(!(input.equals("s") || input.equals("n") || input.equals("q")))
         {
-            input = scanString(name);
+            input = scanString(name+" (s/n)");
             b = (input.equals("s"));
         }
         return b;

@@ -31,30 +31,6 @@ public class Ciudad {
         System.out.println(solicitudes.toString());
     }
 
-    public boolean modificarSolicitudes(Ciudad ciudadDestino)
-    {
-        boolean exito = false;
-        Lista listaSolicitudes = solicitudes.obtenerValor(ciudadDestino.getCodigo());
-        Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
-        int i = 1;
-        while(s != null)
-        {
-            System.out.println(s.getFecha());
-            System.out.println(((Cliente)s.getCliente()).getNombres());
-            if(inputReader.scanBool("Modificar? s/n"))
-            {
-                if(listaSolicitudes.eliminar(i))
-                    System.out.println("Eliminado con exito");
-            }
-            else
-            {
-                i+=1;
-            }
-            s = (Solicitud)listaSolicitudes.recuperar(i);
-        }
-        return exito;
-    }
-
     public Solicitud eliminarSolicitudes(Ciudad ciudadDestino)
     {
         Lista listaSolicitudes = solicitudes.obtenerValor(ciudadDestino.getCodigo());
@@ -65,7 +41,7 @@ public class Ciudad {
         {
             System.out.println(s.getFecha());
             System.out.println(((Cliente)s.getCliente()).getNombres());
-            if(inputReader.scanBool("Eliminar? s/n"))
+            if(inputReader.scanBool("Eliminar?"))
             {
                 if(solicitudes.desasociar(ciudadDestino.getCodigo(), s))
                 {
