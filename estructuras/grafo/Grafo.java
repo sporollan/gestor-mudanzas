@@ -31,16 +31,16 @@ public class Grafo {
     {
         // se busca y elimina el nodovert buscado
 
-        boolean exito = true;
+        boolean exito = false;
         if(inicio == null)
         {
             // caso Grafo Vacio
-            exito = false;
         }
         else if(inicio.getElem().equals(buscado))
         {
             // caso eliminar primer NodoVert
             inicio = inicio.getSigVertice();
+            exito = true;
         }
         // caso eliminar nodovert no extremo
         {
@@ -54,10 +54,7 @@ public class Grafo {
             if(aux != null && aux.getElem().equals(buscado))
             {
                 prev.setSigVertice(aux.getSigVertice());
-            }
-            else
-            {
-                exito = false;
+                exito = true;
             }
         }
         return exito;
@@ -535,7 +532,10 @@ public class Grafo {
             Lista visitados = new Lista();
             caminos = obtenerCaminoPorDistanciaAux(auxO, 0, auxD, visitados, caminos);
         }
-        return (Lista)caminos.recuperar(caminos.longitud());
+        Lista ret = null;
+        if(caminos.longitud() > 1)
+            ret = (Lista)caminos.recuperar(caminos.longitud());
+        return ret;
     }
 
     public String toString()
