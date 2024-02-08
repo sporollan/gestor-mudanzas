@@ -250,6 +250,7 @@ public class ViajesManager {
     
                     Lista pedidosParaEnviar = null;
                     boolean haySolicitudSaliente = false;
+                    int nuevoDisponible;
                     int indexDestino = indexOrigen+1;
                     while(indexDestino < camino.longitud())
                     {
@@ -262,13 +263,17 @@ public class ViajesManager {
                             if(pedidosParaEnviar!=null)
                             {
                                 // compruebo flag de camino perfecto
-                                if(!haySolicitudSaliente)
-                                {
-                                    haySolicitudSaliente = true;
-                                }
-
-                                disponible = procesarCargaCamion(pedidosParaEnviar, solicitudesIntermedias,
+                                nuevoDisponible = procesarCargaCamion(pedidosParaEnviar, solicitudesIntermedias,
                                  pedidosEnCamion, camino, indexDestino, ciudadOrigen, disponible);
+
+                                 if(nuevoDisponible != disponible)
+                                 {
+                                    if(!haySolicitudSaliente)
+                                    {
+                                        haySolicitudSaliente = true;
+                                        disponible = nuevoDisponible;
+                                    }
+                                 }
                             }
                         }
                         else
