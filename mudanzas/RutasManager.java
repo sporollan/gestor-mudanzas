@@ -93,27 +93,30 @@ public class RutasManager {
         int[] codigos = inputReader.scanCodigos(names);
 
         // compruebo si existe el arco
-        if(rutas.existeArco(codigos[0], codigos[1]))
+        if(codigos[1] != -1)
         {
-            // ingreso nueva distancia
-            float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
-            if(nuevaDistancia != -1)
+            if(rutas.existeArco(codigos[0], codigos[1]))
             {
-                // modifico el arco
-                // modificar consiste en eliminar el arco y volverlo a insertar
-                if(rutas.eliminarArco(codigos[0], codigos[1]))
+                // ingreso nueva distancia
+                float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
+                if(nuevaDistancia != -1)
                 {
-                    if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
+                    // modifico el arco
+                    // modificar consiste en eliminar el arco y volverlo a insertar
+                    if(rutas.eliminarArco(codigos[0], codigos[1]))
                     {
-                        System.out.println("Modificado con exito");
-                        logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                        if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
+                        {
+                            System.out.println("Modificado con exito");
+                            logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                        }
                     }
                 }
             }
-        }
-        else
-        {
-            System.out.println("La ruta no existe");
+            else
+            {
+                System.out.println("La ruta no existe");
+            }
         }
     }
 

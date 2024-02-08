@@ -113,7 +113,7 @@ public class CiudadesManager {
                 }
 
                 // elimino el vertice
-                if(rutas.eliminarVertice(cpo))
+                if(rutas.eliminarVertice((Comparable)cpo))
                 {
                     str = "el vertice " + cpo;
                     System.out.println("Se elimino " + str);
@@ -204,8 +204,14 @@ public class CiudadesManager {
             if(ciudades.insertar(ciudad.getCodigo(), ciudad))
             {
                 exito = true;
-                if (!rutas.insertarVertice(ciudad.getCodigo()))
+                if (rutas.insertarVertice(ciudad.getCodigo()))
+                {
+                    logOperacionesManager.escribirInsercion("vertice " + ciudad.getCodigo());
+                }
+                else
+                {
                     System.out.println("Error creando vertice para ciudad " + ciudad.getCodigo());
+                }
             }
         }
         return exito;
