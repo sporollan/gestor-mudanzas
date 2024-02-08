@@ -90,33 +90,41 @@ public class RutasManager {
     {
         // cargo origen y destino. Si existe el arco solicito nueva distancia y realizo la modificacion.
         String[] names = {"Origen(cp)", "Destino(cp)"};
+
         int[] codigos = inputReader.scanCodigos(names);
 
         // compruebo si existe el arco
         if(codigos[1] != -1)
         {
-            if(rutas.existeArco(codigos[0], codigos[1]))
+            try
             {
-                // ingreso nueva distancia
-                float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
-                if(nuevaDistancia != -1)
+                if(rutas.existeArco(codigos[0], codigos[1]))
                 {
-                    // modifico el arco
-                    // modificar consiste en eliminar el arco y volverlo a insertar
-                    if(rutas.eliminarArco(codigos[0], codigos[1]))
+                    // ingreso nueva distancia
+                    float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
+                    if(nuevaDistancia != -1)
                     {
-                        if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
+                        // modifico el arco
+                        // modificar consiste en eliminar el arco y volverlo a insertar
+                        if(rutas.eliminarArco(codigos[0], codigos[1]))
                         {
-                            System.out.println("Modificado con exito");
-                            logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                            if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
+                            {
+                                System.out.println("Modificado con exito");
+                                logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                            }
                         }
                     }
                 }
-            }
-            else
+                else
+                {
+                    System.out.println("La ruta no existe");
+                }
+            } catch(Exception e)
             {
-                System.out.println("La ruta no existe");
+                System.out.println("Codigos incorrectos");
             }
+
         }
     }
 
