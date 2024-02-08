@@ -274,7 +274,6 @@ public class Grafo {
 
     private Object obtenerAux(NodoVert n, Object etiqueta, Object dest, Lista vis)
     {
-        Object ret = null;
         if(n != null)
         {
             if(!n.getElem().equals(dest))
@@ -291,7 +290,6 @@ public class Grafo {
                 }
             }else
             {
-                ret = etiqueta;
             }
         }
         return etiqueta;

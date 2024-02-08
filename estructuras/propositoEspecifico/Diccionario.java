@@ -64,7 +64,7 @@ public class Diccionario {
             {
                 // encontrado
                 NodoAVLDicc i, d, reemplazo=null;
-                boolean a=false;
+                boolean dobleHijo=false;
                 i = n.getHijoIzquierdo();
                 d = n.getHijoDerecho();
                 // evaluo cual es el reemplazo
@@ -93,7 +93,7 @@ public class Diccionario {
                     // caso 3, el nodo tiene 2 hijos
                     // utilizo el metodo de obtener candidato A
                     reemplazo = obtenerCandidatoA(n);
-                    a = true;
+                    dobleHijo = true;
 
                 }
                 // evaluo donde insertar el reemplazo
@@ -129,7 +129,7 @@ public class Diccionario {
                     if(reemplazo != null)
                     {
                         p.getHijoIzquierdo().setHijoIzquierdo(izquierdo);
-                        if(a)
+                        if(dobleHijo)
                             p.getHijoIzquierdo().setHijoDerecho(derecho);
                     }
                     this.raiz.recalcularAltura();
@@ -155,7 +155,7 @@ public class Diccionario {
                     if(reemplazo != null)
                     {
                         p.getHijoDerecho().setHijoDerecho(derecho);
-                        if(a)
+                        if(dobleHijo)
                             p.getHijoDerecho().setHijoIzquierdo(izquierdo);
                     }
                     this.raiz.recalcularAltura();
