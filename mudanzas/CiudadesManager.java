@@ -72,6 +72,8 @@ public class CiudadesManager {
             {
                 System.out.println("Ciudad insertada con exito");
                 logOperacionesManager.escribirInsercion("la ciudad " + cpo + ": " + strInputs[0] +", "+ strInputs[1]);
+                logOperacionesManager.escribirInsercion("vertice " + cpo);
+
             }
             else
             {
@@ -203,15 +205,7 @@ public class CiudadesManager {
         {
             if(ciudades.insertar(ciudad.getCodigo(), ciudad))
             {
-                exito = true;
-                if (rutas.insertarVertice(ciudad.getCodigo()))
-                {
-                    logOperacionesManager.escribirInsercion("vertice " + ciudad.getCodigo());
-                }
-                else
-                {
-                    System.out.println("Error creando vertice para ciudad " + ciudad.getCodigo());
-                }
+                exito = rutas.insertarVertice(ciudad.getCodigo());
             }
         }
         return exito;
