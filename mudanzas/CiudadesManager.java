@@ -179,16 +179,15 @@ public class CiudadesManager {
 
     private void mostrarPorPrefijo()
     {
-        int cpo = inputReader.scanPrefijo("Prefijo");
-        cpo = cpo*100;
-        int cpf = cpo + 100;
-        Ciudad ciudad;
-
-        for(int i = cpo; i < cpf; i++)
+        Comparable pf = inputReader.scanPrefijo("Prefijo");
+        if(pf.compareTo(-1) != 0)
         {
-            ciudad = (Ciudad)this.ciudades.obtenerInformacion(i);
-            if(ciudad != null)
-                System.out.println(ciudad);
+            Lista listaPorPrefijo = ciudades.listarPrefijo(pf);
+            System.out.println("Ciudades para el prefijo " + pf);
+            for(int i = 1; i < listaPorPrefijo.longitud()+1; i++)
+            {
+                System.out.println(listaPorPrefijo.recuperar(i));
+            }
         }
     }
 

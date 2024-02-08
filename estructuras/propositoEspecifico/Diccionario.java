@@ -532,4 +532,36 @@ public class Diccionario {
             s += null;
         return s;
     }
+
+    public Lista listarPrefijo(Comparable pf)
+    {
+        // se recorre el arbol tratando de mantenerse dentro del rango
+        // pf es un prefijo. ej 83
+        Lista ciudades = new Lista();
+        Comparable min = (int)pf*100;
+        Comparable max = (int)min + 100;
+        listarPrefijoAux(ciudades, min, max, raiz);
+        return ciudades;
+    }
+
+    public void listarPrefijoAux(Lista ciudades, Comparable min, Comparable max, NodoAVLDicc n)
+    {
+        if(n != null)
+        {
+            if(n.getClave().compareTo(min) >= 0 && n.getClave().compareTo(max) < 0)
+            {
+                ciudades.insertar(n.getDato(), ciudades.longitud()+1);
+                listarPrefijoAux(ciudades, min, max, n.getHijoIzquierdo());
+                listarPrefijoAux(ciudades, min, max, n.getHijoDerecho());
+            }
+            else if(n.getClave().compareTo(min) < 0)
+            {
+                listarPrefijoAux(ciudades, min, max, n.getHijoDerecho());
+            }
+            else if(n.getClave().compareTo(max) >= 0)
+            {
+                listarPrefijoAux(ciudades, min, max, n.getHijoIzquierdo());
+            }
+        }
+    }
 }
