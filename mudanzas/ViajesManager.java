@@ -54,8 +54,7 @@ public class ViajesManager {
     {
         // obtengo y muestro el camino con distancia menor
         Lista camino = obtenerCaminoMenorDistancia();
-        System.out.println(camino);
-        //mostrarCamino(camino);
+        mostrarCamino(camino);
     }
 
     private void mostrarCaminoMenosCiudades()
@@ -67,7 +66,7 @@ public class ViajesManager {
 
         if(codigos[codigos.length-1]!=-1)
         {
-            camino = this.rutas.obtenerCaminoPorCiudades(codigos[0], codigos[1]);
+            camino = this.rutas.obtenerCaminoPorNumeroDeNodos(codigos[0], codigos[1]);
         }
 
         mostrarCamino(camino);
@@ -343,7 +342,7 @@ public class ViajesManager {
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
         if(codigos[codigos.length-1]!=-1)
-            camino = this.rutas.obtenerCaminoPorDistancia(codigos[0], codigos[1]);
+            camino = this.rutas.obtenerCaminoPorPeso(codigos[0], codigos[1]);
         return camino;
     }
 
