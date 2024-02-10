@@ -54,7 +54,8 @@ public class ViajesManager {
     {
         // obtengo y muestro el camino con distancia menor
         Lista camino = obtenerCaminoMenorDistancia();
-        mostrarCamino(camino);
+        System.out.println(camino);
+        //mostrarCamino(camino);
     }
 
     private void mostrarCaminoMenosCiudades()
@@ -122,7 +123,8 @@ public class ViajesManager {
         // finalmente recorro el camino simulando cargas y descargas para hacer una lista 
         // de los pedidos intermedios que se podrian cargar
         int capacidad = -1;
-        Lista camino = obtenerCaminoMenorDistancia();
+        //Lista camino = obtenerCaminoMenorDistancia();
+        Lista camino = new Lista();
         if(camino != null)
         {
             capacidad = inputReader.scanInt("Capacidad del Camion");
@@ -211,7 +213,8 @@ public class ViajesManager {
         // un camino perfecto es 8300 5620
         {
             int capacidad = -1;
-            Lista camino = obtenerCaminoMenorDistancia();
+            //Lista camino = obtenerCaminoMenorDistancia();
+            Lista camino = new Lista();
             if(camino != null)
             {
                 capacidad = inputReader.scanInt("Capacidad del Camion");

@@ -211,6 +211,7 @@ public class Diccionario {
         else
         {
             candidatoA = obtenerCandidatoAAux(d);
+            // recalcular altura y verificar control de n
         }
         return candidatoA;
     }
