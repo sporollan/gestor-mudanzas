@@ -68,7 +68,7 @@ public class CiudadesManager {
         if (continuar)
         {
             // se crea la ciudad y se la inserta
-            if(insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1], inputReader)))
+            if(insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1])))
             {
                 System.out.println("Ciudad insertada con exito");
                 logOperacionesManager.escribirInsercion("la ciudad " + cpo + ": " + strInputs[0] +", "+ strInputs[1]);
@@ -201,12 +201,9 @@ public class CiudadesManager {
     public boolean insertar(Ciudad ciudad)
     {
         boolean exito = false;
-        if(!ciudades.existeClave(ciudad.getCodigo()))
+        if(ciudades.insertar(ciudad.getCodigo(), ciudad))
         {
-            if(ciudades.insertar(ciudad.getCodigo(), ciudad))
-            {
-                exito = rutas.insertarVertice(ciudad.getCodigo());
-            }
+            exito = rutas.insertarVertice(ciudad.getCodigo());
         }
         return exito;
     }

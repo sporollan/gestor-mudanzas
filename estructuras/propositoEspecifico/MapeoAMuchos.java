@@ -78,7 +78,14 @@ public class MapeoAMuchos {
         if (n.getDominio().compareTo(dominio) == 0)
         {
             Lista l = n.getRango();
-            l.insertar(rango, l.longitud()+1);
+            if(l.localizar(rango) == -1)
+            {
+                l.insertar(rango, l.longitud()+1);
+            }
+            else
+            {
+                exito = false;
+            }
         }
         else if (n.getDominio().compareTo(dominio) > 0)
         {
@@ -462,7 +469,7 @@ public class MapeoAMuchos {
         NodoAVLMapeoM d;
         if(n!=null)
         {
-            s += n.getRango() + "(" + n.getAltura() + "): ";
+            s += n.getDominio() + "(" + n.getAltura() + "): ";
             i = this.raiz.getIzquierdo();
             s += addElem(i);
 
@@ -483,7 +490,7 @@ public class MapeoAMuchos {
         if(n != null)
         {
             s += "\n";
-            s += n.getRango() + "(" + n.getAltura() + ")";
+            s += n.getDominio() + "(" + n.getAltura() + ")";
             s += ": ";
             s += addElem(n.getIzquierdo());
             s += ", ";
@@ -500,7 +507,7 @@ public class MapeoAMuchos {
         String s = "";
         if(n != null)
         {
-            s += n.getRango() + "(" + n.getAltura() + ")";
+            s += n.getDominio() + "(" + n.getAltura() + ")";
         }
         else
             s += null;

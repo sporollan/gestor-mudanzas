@@ -9,12 +9,14 @@ public class ViajesManager {
     private InputReader inputReader;
     private Grafo rutas;
     private Diccionario ciudades;
+    private MapeoAMuchos solicitudes;
 
-    public ViajesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas)
+    public ViajesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, MapeoAMuchos solicitudes)
     {
         this.inputReader = inputReader;
         this.rutas = rutas;
         this.ciudades = ciudades;
+        this.solicitudes = solicitudes;
     }
 
     private void mostrarMenu()
@@ -138,9 +140,12 @@ public class ViajesManager {
 
             // calculo el disponible, simulo que cargo el pedido que va de origen a fin
             int disponible = capacidad;
-            if(origen.obtenerSolicitudes(destino.getCodigo())!=null)
-                disponible = disponible - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
-
+            String codigoStr = origen.getCodigo() + "" + destino.getCodigo();
+            int codigo = Integer.parseInt(codigoStr);
+            if(solicitudes.obtenerValor((Comparable)codigo)!=null)
+            {
+                disponible = disponible - obtenerEspacioPedidos(solicitudes.obtenerValor((Comparable)codigo));
+            }
             // pedidosEnCamion almacena como clave el destino de los pedidos para que sea facil descargarlos
             MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
             Lista descargas;
@@ -165,7 +170,9 @@ public class ViajesManager {
                     if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
                     {
                         // compruebo si hay pedidos para enviar
-                        pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
+                        codigoStr = ciudadOrigen.getCodigo() + "" + camino.recuperar(indexDestino);
+                        codigo = Integer.parseInt(codigoStr);
+                        pedidosParaEnviar = solicitudes.obtenerValor((Comparable)codigo);
                         if(pedidosParaEnviar!=null)
                         {
                             disponible = procesarCargaCamion(pedidosParaEnviar, solicitudesIntermedias, 
@@ -212,8 +219,7 @@ public class ViajesManager {
         // un camino perfecto es 8300 5620
         {
             int capacidad = -1;
-            //Lista camino = obtenerCaminoMenorDistancia();
-            Lista camino = new Lista();
+            Lista camino = obtenerCaminoMenorDistancia();
             if(camino != null)
             {
                 capacidad = inputReader.scanInt("Capacidad del Camion");
@@ -230,8 +236,11 @@ public class ViajesManager {
                 // puede pasar que no hayan pedidos
                 // pero se considera que si existe tiene prioridad
                 int disponible = capacidad;
-                if(origen.obtenerSolicitudes(destino.getCodigo())!=null)
-                    disponible = disponible - obtenerEspacioPedidos(origen.obtenerSolicitudes(destino.getCodigo()));
+                String codigoStr = origen.getCodigo() + "" + destino.getCodigo();
+                int codigo = Integer.parseInt(codigoStr);
+                Lista sol = solicitudes.obtenerValor((Comparable)codigo);
+                if(sol!=null)
+                    disponible = disponible - obtenerEspacioPedidos(sol);
     
                 MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
                 Lista descargas;
@@ -254,42 +263,60 @@ public class ViajesManager {
                     boolean haySolicitudSaliente = false;
                     int nuevoDisponible;
                     int indexDestino = indexOrigen+1;
+                    //System.out.println();
+                    //System.out.println("origen" + ciudadOrigen);
                     while(indexDestino < camino.longitud())
                     {
                         // recorro hacia cada destino
                         // el envio desde origen a destino tiene prioridad
+                        //System.out.println("pedidos a " + camino.recuperar(indexDestino));
                         if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
                         {                        
                             // compruebo si hay espacio disponible para enviar pedidos
-                            pedidosParaEnviar = ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(indexDestino));
+                            codigoStr = ciudadOrigen.getCodigo() + "" + camino.recuperar(indexDestino);
+                            codigo = Integer.parseInt(codigoStr);
+                            pedidosParaEnviar = solicitudes.obtenerValor((Comparable)codigo);
+                            //System.out.println(pedidosParaEnviar);
                             if(pedidosParaEnviar!=null)
                             {
                                 // compruebo flag de camino perfecto
                                 nuevoDisponible = procesarCargaCamion(pedidosParaEnviar, solicitudesIntermedias,
-                                 pedidosEnCamion, camino, indexDestino, ciudadOrigen, disponible);
+                                pedidosEnCamion, camino, indexDestino, ciudadOrigen, disponible);
 
-                                 if(nuevoDisponible != disponible)
-                                 {
-                                    if(!haySolicitudSaliente)
-                                    {
-                                        haySolicitudSaliente = true;
-                                        disponible = nuevoDisponible;
-                                    }
-                                 }
+                                //System.out.print(disponible);
+                                //System.out.print(" ");
+                                //System.out.print(nuevoDisponible);
+                                //System.out.println(solicitudesIntermedias);
+                                //System.out.println();
+
+                                if(nuevoDisponible != disponible)
+                                {
+                                if(!haySolicitudSaliente)
+                                {
+                                    haySolicitudSaliente = true;
+                                    disponible = nuevoDisponible;
+                                }
+                                }
                             }
                         }
                         else
                         {
                             // caso origen a fin
                             if(!haySolicitudSaliente)
-                                haySolicitudSaliente = (ciudadOrigen.obtenerSolicitudes((Comparable)camino.recuperar(camino.longitud()-1))!=null);
+                            {           
+                                codigoStr = ciudadOrigen.getCodigo() + "" + camino.recuperar(camino.longitud()-1);
+                                codigo = Integer.parseInt(codigoStr);
+                                haySolicitudSaliente = (solicitudes.obtenerValor(codigo)!=null);
+                            }
                         }
                         // actualizo valores del while para recorrer ciudades destino
                         indexDestino = indexDestino + 1;
                     }
                     // actualizo valores del while para recorrer ciudad origen, condicion de camino perfecto
                     if(indexOrigen != camino.longitud()-1)
+                    {
                         caminoPerfecto = haySolicitudSaliente;
+                    }
                     indexOrigen = indexOrigen + 1;
                 }
     
@@ -313,7 +340,7 @@ public class ViajesManager {
     {
         // se muestran los datos de la lista dada
         Lista solicitudIntermedia;
-        for(int i = 1; i < solicitudesIntermedias.longitud(); i++)
+        for(int i = 1; i <= solicitudesIntermedias.longitud(); i++)
         {
             solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
             System.out.println(solicitudIntermedia.toString());

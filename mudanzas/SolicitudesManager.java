@@ -1,18 +1,18 @@
 package mudanzas;
 
 import estructuras.lineales.dinamicas.Lista;
-import estructuras.propositoEspecifico.Diccionario;
+import estructuras.propositoEspecifico.MapeoAMuchos;
 
 public class SolicitudesManager {
     InputReader inputReader;
-    Diccionario ciudades;
+    MapeoAMuchos solicitudes;
     LogOperacionesManager logOperacionesManager;
 
-    public SolicitudesManager(InputReader inputReader, Diccionario ciudades, LogOperacionesManager logOperacionesManager)
+    public SolicitudesManager(InputReader inputReader, MapeoAMuchos solicitudes, LogOperacionesManager logOperacionesManager)
     {
         this.inputReader = inputReader;
-        this.ciudades = ciudades;
         this.logOperacionesManager = logOperacionesManager;
+        this.solicitudes = solicitudes;
     }
     private void mostrarMenu()
     {
@@ -99,12 +99,15 @@ public class SolicitudesManager {
         // si esta todo correcto se crea la solicitud y se la inserta
         if(continuar)
         {
-            Solicitud solicitud = new Solicitud(ciudadDestino, fecha, cliente, intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
-            if(insertar(ciudadOrigen, solicitud))
+            String codigoStr = ciudadOrigen.getCodigo() + "" + ciudadDestino.getCodigo();
+            int codigo = Integer.parseInt(codigoStr);
+            Solicitud solicitud = new Solicitud((Comparable)codigo, fecha, cliente.getTipo()+cliente.getNum(), intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
+
+            if(insertar((Comparable)codigo, solicitud))
             {
                 System.out.println("Solicitud insertada con exito");
                 logOperacionesManager.escribirInsercion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                solicitud.getDestino().getCodigo() + " " + solicitud.getMetrosCubicos() + " metros cubicos");
+                solicitud.getCodigo() + " " + solicitud.getMetrosCubicos() + " metros cubicos");
             }
             else
             {
@@ -127,12 +130,27 @@ public class SolicitudesManager {
         
         if(ciudadDestino != null)
         {
-            Solicitud s = ciudadOrigen.eliminarSolicitudes(ciudadDestino);
-            if(s != null)
+            String codigoStr = ciudadOrigen.getCodigo() + "" + ciudadDestino.getCodigo();
+            int codigo = Integer.parseInt(codigoStr);
+            Lista solicitudesADestino = solicitudes.obtenerValor((Comparable)codigo);
+            Solicitud s = (Solicitud)solicitudesADestino.recuperar(1);
+            int i = 1;
+            while(s != null)
             {
-                System.out.println("Eliminado con exito");
-                logOperacionesManager.escribirEliminacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos"); 
+                System.out.println(s.getFecha());
+                System.out.println(s.getCliente());
+                if(inputReader.scanBool("Eliminar?"))
+                {
+                    if(solicitudes.desasociar(ciudadDestino.getCodigo(), s))
+                    {
+                        System.out.println("Eliminado con exito");
+                        logOperacionesManager.escribirEliminacion("la solicitud " + ciudadOrigen.getCodigo());                 }
+                }
+                else
+                {
+                    i+=1;
+                }
+                s = (Solicitud)solicitudesADestino.recuperar(i);
             }
         }
     }
@@ -150,7 +168,9 @@ public class SolicitudesManager {
 
         if(ciudadDestino!=null)
         {
-            Lista listaSolicitudes = ciudadOrigen.obtenerSolicitudes(ciudadDestino.getCodigo());
+            String codigoStr = ciudadOrigen.getCodigo() + "" + ciudadDestino.getCodigo();
+            int codigo = Integer.parseInt(codigoStr);
+            Lista listaSolicitudes = solicitudes.obtenerValor((Comparable)codigo);
             if(listaSolicitudes != null)
             {
                 Solicitud s = (Solicitud)listaSolicitudes.recuperar(1);
@@ -160,7 +180,7 @@ public class SolicitudesManager {
                 while(s != null)
                 {
                     System.out.println(s.getFecha());
-                    System.out.println(((Cliente)s.getCliente()).getNombres());
+                    System.out.println(s.getCliente());
                     if(inputReader.scanBool("Modificar?"))
                     {
                         boolean modificado = false;
@@ -194,16 +214,17 @@ public class SolicitudesManager {
                             s.setEstaPago(inputReader.scanBool("Esta pago?"));
                             modificado = true;
                         }
-                        if(inputReader.scanBool("Cliente: " + ((Cliente)s.getCliente()).getNombres() + " Modificar?"))
+                        if(inputReader.scanBool("Cliente: " + s.getCliente() + " Modificar?"))
                         {
-                            s.setCliente(inputReader.scanCliente());
+                            Cliente c = inputReader.scanCliente();
+                            s.setCliente(c.getTipo()+c.getNum());
                             modificado = true;
                         }
                         if(modificado)
                         {
                             System.out.println("Modificado con exito");
                             logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                            s.getDestino().getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
+                            s.getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
                         }
                     }
                     i+=1;
@@ -219,20 +240,20 @@ public class SolicitudesManager {
         // luego se recorren todas las solicitudes entre las ciudades mostrando cada una
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = inputReader.scanCodigos(names);
-        Ciudad c = (Ciudad)ciudades.obtenerInformacion(codigos[0]);
         Lista pedidos=null;
-        if(c != null)
+        if(codigos[codigos.length-1] != -1)
         {
-            pedidos = c.obtenerSolicitudes(codigos[1]);
+            String codigoStr = codigos[0] +""+ codigos[1];
+            int codigo = Integer.parseInt(codigoStr);
+            pedidos = solicitudes.obtenerValor(codigo);
         }
         if(pedidos != null)
         {
-            System.out.println("Pedidos entre " + c.getNombre() + 
-                                " y " + 
-                                ((Ciudad)ciudades.obtenerInformacion(codigos[1])).getNombre());
+            System.out.println("Pedidos entre " + codigos[0] + 
+                                " y " + codigos[1]);
             
             Solicitud pedido;
-            Cliente cliente;
+            String cliente;
             int metrosCubicos = 0;
             for(int i = 1; i <= pedidos.longitud(); i++)
             {
@@ -240,7 +261,7 @@ public class SolicitudesManager {
                 System.out.println();
                 System.out.println("Pedido " + i);
                 cliente = pedido.getCliente();
-                System.out.println(cliente.getNombres() + " " + cliente.getApellidos());
+                System.out.println(cliente);
                 System.out.println("Fecha " + pedido.getFecha());
                 System.out.println("Bultos "+pedido.getBultos());
                 System.out.println("Metros cubicos "+pedido.getMetrosCubicos());
@@ -254,26 +275,15 @@ public class SolicitudesManager {
     {
         // se obtienen una lista con todas las ciudades
         // se recorre cada ciudad mostrando su estructura de solicitudes
-        Lista listaCiudades = ciudades.listarDatos();
-        Ciudad c;
-        for(int i = 1; i <= listaCiudades.longitud(); i++)
-        {
-            c = (Ciudad)listaCiudades.recuperar(i);
-            System.out.println("Solicitudes de " + c.getNombre() + " " + c.getCodigo());
-            c.mostrarEstructuraSolicitudes();
-        }
+        System.out.println(solicitudes);
     }
 
-    public boolean insertar(Ciudad ciudadOrigen, Solicitud solicitud)
+    public boolean insertar(Comparable codigo, Solicitud solicitud)
     {
         // se ingresa una ciudad y una solicitud
         // se comprueba si existe y luego se inserta la solicitud a la ciudad dada
         // se consideran duplicadas las solicitudes con mismo cliente, origen y destino
-        boolean exito = false;
-        if(!ciudadOrigen.existeSolicitud(solicitud))
-        {   
-            exito = ciudadOrigen.insertarSolicitud(solicitud);
-        }
-        return exito;
+        return solicitudes.asociar(codigo, solicitud);
+
     }
 }

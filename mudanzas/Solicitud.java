@@ -1,18 +1,18 @@
 package mudanzas;
 
 public class Solicitud {
-    final Ciudad destino;
+    final Comparable origenDestino;
     String fecha;
-    Cliente cliente;
+    String cliente;
     int metrosCubicos;
     int bultos;
     String domicilioRetiro;
     String domicilioEntrega;
     boolean estaPago;
 
-    public Solicitud(Ciudad destino, String fecha, Cliente cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
+    public Solicitud(Comparable origenDestino, String fecha, String cliente, int metrosCubicos, int bultos, String domicilioRetiro, String domicilioEntrega, boolean estaPago)
     {   
-        this.destino = destino;
+        this.origenDestino = origenDestino;
         this.fecha = fecha;
         this.cliente = cliente;
         this.metrosCubicos = metrosCubicos;
@@ -22,9 +22,9 @@ public class Solicitud {
         this.estaPago = estaPago;
     }
 
-    public Ciudad getDestino()
+    public Comparable getCodigo()
     {
-        return this.destino;
+        return this.origenDestino;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class Solicitud {
     {
         Solicitud sol = (Solicitud) s;
         return (
-            sol.destino.equals(destino) &&
+            sol.origenDestino.equals(origenDestino) &&
             sol.domicilioEntrega.equals(domicilioEntrega) &&
             sol.domicilioRetiro.equals(domicilioRetiro) &&
             sol.getCliente().equals(cliente)
@@ -43,7 +43,7 @@ public class Solicitud {
     {
         String c = "";
         int h;
-        c += destino;
+        c += origenDestino;
         h = c.hashCode();
         if(h < 0)
             h = -1 * h;
@@ -53,7 +53,7 @@ public class Solicitud {
     @Override
     public String toString()
     {
-        return "("+destino.getCodigo() + ", " + metrosCubicos + " m2, "+cliente+")";
+        return "("+origenDestino + ", " + metrosCubicos + " m2, "+cliente+")";
     }
 
     public String getFecha() {
@@ -64,11 +64,11 @@ public class Solicitud {
         this.fecha = fecha;
     }
 
-    public Cliente getCliente() {
+    public String getCliente() {
         return cliente;
     }
 
-    public void setCliente(Cliente cliente) {
+    public void setCliente(String cliente) {
         this.cliente = cliente;
     }
 
@@ -116,7 +116,7 @@ public class Solicitud {
     @Override
     public int compareTo(Object cp)
     {
-        return this.destino.compareTo((Comparable)cp);
+        return this.origenDestino.compareTo((Comparable)cp);
     }
 */
 

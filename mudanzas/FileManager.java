@@ -10,6 +10,7 @@ import java.util.StringTokenizer;
 import estructuras.grafo.Grafo;
 import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
+import estructuras.propositoEspecifico.MapeoAMuchos;
 import estructuras.propositoEspecifico.MapeoAUno;
 
 // clase para leer y escribir estructuras a archivo
@@ -20,18 +21,20 @@ public class FileManager {
     private Diccionario ciudades;
     private CiudadesManager ciudadesManager;
     private SolicitudesManager solicitudesManager;
+    private MapeoAMuchos solicitudes;
     private Grafo rutas;
     private RutasManager rutasManager;
     private InputReader inputReader;
     private int[] count;
 
-    public FileManager(InputReader inputReader, MapeoAUno clientes, ClientesManager clientesManager, Diccionario ciudades, CiudadesManager ciudadesManager, SolicitudesManager solicitudesManager, Grafo rutas, RutasManager rutasManager)
+    public FileManager(InputReader inputReader, MapeoAUno clientes, ClientesManager clientesManager, Diccionario ciudades, CiudadesManager ciudadesManager, SolicitudesManager solicitudesManager, MapeoAMuchos solicitudes, Grafo rutas, RutasManager rutasManager)
     {
         this.clientes = clientes;
         this.clientesManager = clientesManager;
         this.ciudades = ciudades;
         this.ciudadesManager = ciudadesManager;
         this.solicitudesManager = solicitudesManager;
+        this.solicitudes = solicitudes;
         this.rutas = rutas;
         this.rutasManager = rutasManager;
         this.inputReader = inputReader;
@@ -144,34 +147,95 @@ public class FileManager {
         Lista ciudadesLista = this.ciudades.listarDatos();
         Ciudad c;
         String s;
-        for(int ciudadIndex = 1; ciudadIndex <= ciudadesLista.longitud(); ciudadIndex++)
+        for(int cpoIndex = 1; cpoIndex < ciudadesLista.longitud(); cpoIndex++)
         {
             // se recorren todas las ciudades almacenadas
             // por cada una se consiguen todas las solicitudes que parten de la misma
             // por cada ciudad destino hay una lista de solicitudes
             // por lo tanto solicitudesTotalLista es una lista de listas
-            c = (Ciudad)ciudadesLista.recuperar(ciudadIndex);
-            Lista solicitudesTotalLista = c.listarSolicitudes();
-            Lista solicitudesLista;
+            c = (Ciudad)ciudadesLista.recuperar(cpoIndex);
+            Comparable cpo = c.getCodigo();
             Solicitud sol;
-            Cliente cl;
-            for(int solTotalIndex = 1; solTotalIndex <= solicitudesTotalLista.longitud(); solTotalIndex++)
+            String cl;
+            for(int cpdIndex = cpoIndex+1; cpdIndex <= ciudadesLista.longitud(); cpdIndex++)
             {
-                // cada iteracion corresponde a las solicitudes a un destino distinto
-                solicitudesLista = (Lista)(solicitudesTotalLista.recuperar(solTotalIndex));
-                for(int solIndex = 1; solIndex<=solicitudesLista.longitud(); solIndex++)
+                Comparable cpd = ((Ciudad)ciudadesLista.recuperar(cpdIndex)).getCodigo();
+                String  codigoIdaStr = cpo +""+ cpd;
+                String codigoVueltaStr = cpd + "" + cpo;
+                int codigoIda = Integer.parseInt(codigoIdaStr);
+                int codigoVuelta = Integer.parseInt(codigoVueltaStr);
+                Lista solicitudesIda = solicitudes.obtenerValor(codigoIda);
+                Lista solicitudesVuelta = solicitudes.obtenerValor(codigoVuelta);
+                if(solicitudesIda != null)
                 {
-                    // se recorren las solicitudes
-                    sol = (Solicitud)solicitudesLista.recuperar(solIndex);
-                    cl = sol.getCliente();
-                    s = "S;" + c.getCodigo() + ";" + sol.getDestino().getCodigo() + ";" + 
-                    sol.getFecha() + ";" + cl.getTipo() + ";" +
-                    cl.getNum() + ";" + sol.getMetrosCubicos() + ";" +
-                    sol.getBultos() + ";" + sol.getDomicilioRetiro() + ";" +
-                    sol.getDomicilioEntrega() + ";" + (sol.isEstaPago()?"T":"F");
+                    for(int solIndex = 1; solIndex<=solicitudesIda.longitud(); solIndex++)
+                    {
+                        // se recorren las solicitudes
+                        sol = (Solicitud)solicitudesIda.recuperar(solIndex);
+                        String codigo = ""+sol.getCodigo();
+                        String origen = "";
+                        String destino = "";
+                        for(int i = 0; i < 4; i++)
+                        {
+                            origen = origen + codigo.charAt(i);
+                            destino = destino + codigo.charAt(i+4);
+                        }
 
-                    out.write(s);
-                    out.newLine();
+                        String tipo = "";
+                        String num = "";
+                        cl = sol.getCliente();
+                        for(int i = 0; i < 3; i++)
+                        {
+                            tipo = tipo + cl.charAt(i);
+                        }
+                        for(int i = 3; i < cl.length(); i++)
+                        {
+                            num = num + cl.charAt(i);
+                        }
+                        s = "S;" + origen + ";" + destino + ";" + 
+                        sol.getFecha() + ";" + tipo + ";" + num + ";"
+                        + sol.getMetrosCubicos() + ";" +
+                        sol.getBultos() + ";" + sol.getDomicilioRetiro() + ";" +
+                        sol.getDomicilioEntrega() + ";" + (sol.isEstaPago()?"T":"F");
+
+                        out.write(s);
+                        out.newLine();
+                    }
+                }
+                if(solicitudesVuelta != null)
+                {
+                    for(int solIndex = 1; solIndex<=solicitudesVuelta.longitud(); solIndex++)
+                    {
+                        // se recorren las solicitudes
+                        sol = (Solicitud)solicitudesVuelta.recuperar(solIndex);
+                        String codigo = ""+sol.getCodigo();
+                        String origen = "";
+                        String destino = "";
+                        for(int i = 0; i < 4; i++)
+                        {
+                            origen = origen + codigo.charAt(i);
+                            destino = destino + codigo.charAt(i+4);
+                        }
+                        String tipo = "";
+                        String num = "";
+                        cl = sol.getCliente();
+                        for(int i = 0; i < 3; i++)
+                        {
+                            tipo = tipo + cl.charAt(i);
+                        }
+                        for(int i = 3; i < cl.length(); i++)
+                        {
+                            num = num + cl.charAt(i);
+                        }                        
+                        s = "S;" + origen + ";" + destino + ";" + 
+                        sol.getFecha() + ";" + tipo + ";" + num + ";"
+                        + sol.getMetrosCubicos() + ";" +
+                        sol.getBultos() + ";" + sol.getDomicilioRetiro() + ";" +
+                        sol.getDomicilioEntrega() + ";" + (sol.isEstaPago()?"T":"F");
+
+                        out.write(s);
+                        out.newLine();
+                    }
                 }
             }
         }
@@ -205,6 +269,7 @@ public class FileManager {
             } catch (Exception e)
             {
                 System.out.println("Error cargando " + tipo);
+                e.printStackTrace();
             }
         }
     }
@@ -241,7 +306,7 @@ public class FileManager {
 
         // se comprueba la validez de los datos
         inputReader.comprobarCp(codigo);
-        Ciudad c = new Ciudad((Comparable)codigo, nombre, provincia, inputReader);
+        Ciudad c = new Ciudad((Comparable)codigo, nombre, provincia);
         if(ciudadesManager.insertar(c))
         {
             this.count[1]+=1;
@@ -292,13 +357,15 @@ public class FileManager {
         if(cargaValida)
         {
             // si la carga es valida se inserta en su estructura
-            Ciudad ciudadOrigen = (Ciudad)ciudades.obtenerInformacion(cpo);
+            String codigoStr = cpo + "" + cpd;
+            int codigo = Integer.parseInt(codigoStr);
             Solicitud solicitud = new Solicitud(
-                (Ciudad)(ciudades.obtenerInformacion(cpd)), fecha, 
-                (Cliente)clientes.obtenerValor(tipo+num), metrosCubicos, 
+                (Comparable)codigo, fecha, 
+                (tipo+num), metrosCubicos, 
                 bultos, dirRetiro, dirEntrega, esPago);
 
-            if(solicitudesManager.insertar(ciudadOrigen, solicitud))
+
+            if(solicitudesManager.insertar((Comparable)codigo, solicitud))
             {
                 this.count[2] += 1;
             }

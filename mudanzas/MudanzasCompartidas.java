@@ -2,6 +2,7 @@ package mudanzas;
 
 import estructuras.grafo.Grafo;
 import estructuras.propositoEspecifico.Diccionario;
+import estructuras.propositoEspecifico.MapeoAMuchos;
 import estructuras.propositoEspecifico.MapeoAUno;
 
 
@@ -18,6 +19,7 @@ public class MudanzasCompartidas {
     FileManager fileManager;
     LogOperacionesManager logOperacionesManager;
     ViajesManager viajesManager;
+    MapeoAMuchos solicitudes;
 
 
     public MudanzasCompartidas()
@@ -25,14 +27,15 @@ public class MudanzasCompartidas {
         rutas = new Grafo();
         ciudades = new Diccionario();
         clientes = new MapeoAUno();
+        solicitudes = new MapeoAMuchos();
         this.logOperacionesManager = new LogOperacionesManager("files/operaciones.log");
         this.inputReader = new InputReader(clientes, ciudades);
         this.ciudadesManager = new CiudadesManager(this.inputReader, ciudades, rutas, logOperacionesManager);
-        this.solicitudesManager = new SolicitudesManager(inputReader, ciudades, logOperacionesManager);
+        this.solicitudesManager = new SolicitudesManager(inputReader, solicitudes, logOperacionesManager);
         this.rutasManager = new RutasManager(inputReader, rutas, logOperacionesManager);
         this.clientesManager = new ClientesManager(inputReader, clientes, logOperacionesManager);
-        this.fileManager = new FileManager(inputReader, clientes, clientesManager, ciudades, ciudadesManager, solicitudesManager, rutas, rutasManager);
-        this.viajesManager = new ViajesManager(inputReader, ciudades, rutas);
+        this.fileManager = new FileManager(inputReader, clientes, clientesManager, ciudades, ciudadesManager, solicitudesManager, solicitudes, rutas, rutasManager);
+        this.viajesManager = new ViajesManager(inputReader, ciudades, rutas, solicitudes);
     }
 
     public void gestionar()
