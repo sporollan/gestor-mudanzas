@@ -135,25 +135,32 @@ public class SolicitudesManager {
             String codigoStr = ciudadOrigen + "" + ciudadDestino;
             int codigo = Integer.parseInt(codigoStr);
             Lista solicitudesADestino = solicitudes.obtenerValor((Comparable)codigo);
-            Solicitud s = (Solicitud)solicitudesADestino.recuperar(1);
-            int i = 1;
-            while(s != null)
+            if(solicitudesADestino != null)
             {
-                System.out.println(s.getFecha());
-                System.out.println(s.getCliente());
-                if(InputReader.scanBool("Eliminar?"))
+                Solicitud s = (Solicitud)solicitudesADestino.recuperar(1);
+                int i = 1;
+                while(s != null)
                 {
-                    if(solicitudes.desasociar(codigo, s))
+                    System.out.println(s.getFecha());
+                    System.out.println(s.getCliente());
+                    if(InputReader.scanBool("Eliminar?"))
                     {
-                        System.out.println("Eliminado con exito");
-                        LogOperacionesManager.escribirEliminacion("la solicitud " + codigo, path);
+                        if(solicitudes.desasociar((Comparable)codigo, s))
+                        {
+                            System.out.println("Eliminado con exito");
+                            LogOperacionesManager.escribirEliminacion("la solicitud " + codigo, path);
+                        }
                     }
+                    else
+                    {
+                        i+=1;
+                    }
+                    s = (Solicitud)solicitudesADestino.recuperar(i);
                 }
-                else
-                {
-                    i+=1;
-                }
-                s = (Solicitud)solicitudesADestino.recuperar(i);
+            }
+            else
+            {
+                System.out.println("No se encontraron solicitudes");
             }
         }
     }

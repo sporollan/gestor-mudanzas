@@ -74,7 +74,7 @@ public class MapeoAMuchos {
         naux.recalcularAltura();
         n.recalcularAltura();
     }
-    
+
     private boolean _asociarAux(NodoAVLMapeoM n, Comparable dominio, Object rango)
     {
         boolean exito = true;
@@ -213,6 +213,7 @@ public class MapeoAMuchos {
                 {
                     // desasociar
                     rangoN.eliminar(indexRango);
+                    exito = true;
                 }
                 if(rangoN.esVacia())
                 {
@@ -320,25 +321,25 @@ public class MapeoAMuchos {
                     }
                     exito = true;
                 }
-                else if(clave.compareTo(n.getDominio()) < 0)
+            }
+            else if(clave.compareTo(n.getDominio()) < 0)
+            {
+                // buscar por izquierda
+                exito = eliminarAux(n.getIzquierdo(), clave, n, true, rango);
+                if(exito)
                 {
-                    // buscar por izquierda
-                    exito = eliminarAux(n.getIzquierdo(), clave, n, true, rango);
-                    if(exito)
-                    {
-                        n.recalcularAltura();
-                        comprobarBalance(n);
-                    }
+                    n.recalcularAltura();
+                    comprobarBalance(n);
                 }
-                else
+            }
+            else
+            {
+                // buscar por derecha
+                exito = eliminarAux(n.getDerecho(), clave, n, false, rango);
+                if(exito)
                 {
-                    // buscar por derecha
-                    exito = eliminarAux(n.getDerecho(), clave, n, false, rango);
-                    if(exito)
-                    {
-                        n.recalcularAltura();
-                        comprobarBalance(n);
-                    }
+                    n.recalcularAltura();
+                    comprobarBalance(n);
                 }
             }
         }
