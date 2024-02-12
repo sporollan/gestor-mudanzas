@@ -28,14 +28,7 @@ public class Diccionario {
             // si la raiz existe se continua recorriendo
             exito = insertarAux(this.raiz, clave, dato);
         }
-        /*
-        if(exito)
-        {
-            // si se inserto el dato se recalcula la altura y el balance
-            this.raiz.recalcularAltura();
-            this.comprobarBalance(this.raiz);
-        }
-        */
+
         return exito;
     }
 
@@ -107,8 +100,7 @@ public class Diccionario {
                         derecho = this.raiz.getHijoDerecho();
                         reemplazo.setHijoIzquierdo(izquierdo);
                         reemplazo.setHijoDerecho(derecho);
-                        this.raiz.recalcularAltura();
-
+                        reemplazo.recalcularAltura();
                     }
                     this.raiz = reemplazo;
                 }
@@ -130,9 +122,12 @@ public class Diccionario {
                     {
                         p.getHijoIzquierdo().setHijoIzquierdo(izquierdo);
                         if(dobleHijo)
+                        {
                             p.getHijoIzquierdo().setHijoDerecho(derecho);
+                        }
+                        reemplazo.recalcularAltura();
                     }
-                    this.raiz.recalcularAltura();
+                    p.recalcularAltura();
                     if(reemplazo != null)
                         comprobarBalance(reemplazo);
                     else
@@ -156,30 +151,38 @@ public class Diccionario {
                     {
                         p.getHijoDerecho().setHijoDerecho(derecho);
                         if(dobleHijo)
+                        {
                             p.getHijoDerecho().setHijoIzquierdo(izquierdo);
+                        }
+                        reemplazo.recalcularAltura();
                     }
-                    this.raiz.recalcularAltura();
+                    p.recalcularAltura();
                     if(reemplazo != null)
                         comprobarBalance(reemplazo);
                     else
                         comprobarBalance(p);
                 }
-
                 exito = true;
             }
             else if(clave.compareTo(n.getClave()) < 0)
             {
                 // buscar por izquierda
                 exito = eliminarAux(n.getHijoIzquierdo(), clave, n, true);
+                if(exito)
+                {
+                    n.recalcularAltura();
+                }
             }
             else
             {
                 // buscar por derecha
                 exito = eliminarAux(n.getHijoDerecho(), clave, n, false);
+                if(exito)
+                {
+                    n.recalcularAltura();
+                }
             }
         }
-        if(this.raiz != null)
-            this.raiz.recalcularAltura();
         return exito;
     }
 
@@ -190,11 +193,13 @@ public class Diccionario {
         if(i.getHijoDerecho() == null)
         {
             candidatoA = i;
-            n.setHijoIzquierdo(null);
+            n.setHijoIzquierdo(i.getHijoIzquierdo());
+            n.recalcularAltura();
         }
         else
         {
             candidatoA = obtenerCandidatoAAux(i);
+            i.recalcularAltura();
         }
         return candidatoA;
     }
@@ -206,12 +211,13 @@ public class Diccionario {
         if(d.getHijoDerecho() == null)
         {
             candidatoA = d;
-            n.setHijoDerecho(null);
+            n.setHijoDerecho(d.getHijoIzquierdo());
         }
         else
         {
             candidatoA = obtenerCandidatoAAux(d);
             // recalcular altura y verificar control de n
+            d.recalcularAltura();
         }
         return candidatoA;
     }
@@ -345,6 +351,8 @@ public class Diccionario {
         naux.setHijoIzquierdo(naux.getHijoDerecho());
         naux.setHijoDerecho(n.getHijoDerecho());
         n.setHijoDerecho(naux);
+        naux.recalcularAltura();
+        n.recalcularAltura();
     }
 
     private void rotarIzquierda(NodoAVLDicc n)
@@ -360,6 +368,8 @@ public class Diccionario {
         naux.setHijoDerecho(naux.getHijoIzquierdo());
         naux.setHijoIzquierdo(n.getHijoIzquierdo());
         n.setHijoIzquierdo(naux);
+        naux.recalcularAltura();
+        n.recalcularAltura();
     }
 
     
@@ -380,7 +390,6 @@ public class Diccionario {
             else
             {
                 n.setHijoIzquierdo(new NodoAVLDicc(clave, dato, null, null));
-                //this.raiz.recalcularAltura();
             }
         }
         else
@@ -393,11 +402,13 @@ public class Diccionario {
             else
             {
                 n.setHijoDerecho(new NodoAVLDicc(clave, dato, null, null));
-                //this.raiz.recalcularAltura();
             }
         }
-        n.recalcularAltura();
-        this.comprobarBalance(n);
+        if(exito)
+        {
+            n.recalcularAltura();
+            comprobarBalance(n);
+        }
         return exito;
     }
 
@@ -445,7 +456,6 @@ public class Diccionario {
                     {
                         // simple a derecha
                         this.rotarDerecha(n);
-                        this.raiz.recalcularAltura();
                         ocurrioBalance = true;
                     }
                     else if(bh == -1)
@@ -453,7 +463,6 @@ public class Diccionario {
                         // doble izquierda-derecha
                         this.rotarIzquierda(nh);
                         this.rotarDerecha(n);
-                        this.raiz.recalcularAltura();
                         ocurrioBalance = true;
                     }
                 }
@@ -463,7 +472,6 @@ public class Diccionario {
                     {
                         // simple a izquierda
                         this.rotarIzquierda(n);
-                        this.raiz.recalcularAltura();
                         ocurrioBalance = true;
 
                     }
@@ -472,7 +480,6 @@ public class Diccionario {
                         // doble derecha-izquierda
                         this.rotarDerecha(nh);
                         this.rotarIzquierda(n);
-                        this.raiz.recalcularAltura();
                         ocurrioBalance = true;
                     }
                 }

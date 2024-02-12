@@ -15,31 +15,20 @@ public class NodoAVLDicc {
         this.altura = 0;
     }
 
-    private int _recalcularAlturaAux(NodoAVLDicc n, int a)
-    {
-        int ai;
-        int ad;
-        if( n != null )
-        {
-            ai = this._recalcularAlturaAux(n.hijoIzquierdo, a);
-            ad = this._recalcularAlturaAux(n.hijoDerecho, a);
-            a = ai > ad ? ai : ad;
-            n.altura = a;
-        }
-        else
-        {
-            return 0;
-        }
-        return a + 1;
-
-    }
     public void recalcularAltura() {
         int ai = 0;
         int ad = 0;
-        ai = this._recalcularAlturaAux(this.hijoIzquierdo, 0);
-        ad = this._recalcularAlturaAux(this.hijoDerecho, 0);
-        this.altura = ai > ad ? ai : ad;
+        if(hijoIzquierdo != null)
+        {
+            ai = hijoIzquierdo.altura + 1;
+        }
+        if(hijoDerecho != null)
+        {
+            ad = hijoDerecho.altura + 1;
+        }
+        altura = ai > ad ? ai : ad;
     }
+
     public Comparable getClave() {
         return clave;
     }
