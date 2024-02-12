@@ -101,6 +101,7 @@ public class Diccionario {
                         reemplazo.setHijoIzquierdo(izquierdo);
                         reemplazo.setHijoDerecho(derecho);
                         reemplazo.recalcularAltura();
+                        comprobarBalance(reemplazo);
                     }
                     this.raiz = reemplazo;
                 }
@@ -126,12 +127,9 @@ public class Diccionario {
                             p.getHijoIzquierdo().setHijoDerecho(derecho);
                         }
                         reemplazo.recalcularAltura();
-                    }
-                    p.recalcularAltura();
-                    if(reemplazo != null)
                         comprobarBalance(reemplazo);
-                    else
-                        comprobarBalance(p);
+                    }
+                    //p.recalcularAltura();
                 }
                 else
                 {
@@ -155,12 +153,9 @@ public class Diccionario {
                             p.getHijoDerecho().setHijoIzquierdo(izquierdo);
                         }
                         reemplazo.recalcularAltura();
-                    }
-                    p.recalcularAltura();
-                    if(reemplazo != null)
                         comprobarBalance(reemplazo);
-                    else
-                        comprobarBalance(p);
+                    }
+                    //p.recalcularAltura();
                 }
                 exito = true;
             }
@@ -171,6 +166,7 @@ public class Diccionario {
                 if(exito)
                 {
                     n.recalcularAltura();
+                    comprobarBalance(n);
                 }
             }
             else
@@ -180,6 +176,7 @@ public class Diccionario {
                 if(exito)
                 {
                     n.recalcularAltura();
+                    comprobarBalance(n);
                 }
             }
         }
@@ -195,11 +192,13 @@ public class Diccionario {
             candidatoA = i;
             n.setHijoIzquierdo(i.getHijoIzquierdo());
             n.recalcularAltura();
+            comprobarBalance(n);
         }
         else
         {
             candidatoA = obtenerCandidatoAAux(i);
             i.recalcularAltura();
+            comprobarBalance(i);
         }
         return candidatoA;
     }
@@ -218,6 +217,7 @@ public class Diccionario {
             candidatoA = obtenerCandidatoAAux(d);
             // recalcular altura y verificar control de n
             d.recalcularAltura();
+            comprobarBalance(d);
         }
         return candidatoA;
     }
@@ -435,7 +435,6 @@ public class Diccionario {
         NodoAVLDicc nh = null;
         int ai = -1;
         int ad = -1;
-        boolean ocurrioBalance = false;
         if(n != null)
         {
             b = this.getBalance(n);
@@ -456,14 +455,12 @@ public class Diccionario {
                     {
                         // simple a derecha
                         this.rotarDerecha(n);
-                        ocurrioBalance = true;
                     }
                     else if(bh == -1)
                     {
                         // doble izquierda-derecha
                         this.rotarIzquierda(nh);
                         this.rotarDerecha(n);
-                        ocurrioBalance = true;
                     }
                 }
                 else if(b == -2)
@@ -472,42 +469,16 @@ public class Diccionario {
                     {
                         // simple a izquierda
                         this.rotarIzquierda(n);
-                        ocurrioBalance = true;
-
                     }
                     else if(bh == 1)
                     {
                         // doble derecha-izquierda
                         this.rotarDerecha(nh);
                         this.rotarIzquierda(n);
-                        ocurrioBalance = true;
                     }
                 }
             }
-            buscarYBalancearPadre(this.raiz, n);
         }
-    }
-
-    private boolean buscarYBalancearPadre(NodoAVLDicc p, NodoAVLDicc n)
-    {
-        boolean exito = false;
-        if(p!=null)
-        {
-            if(p.getHijoDerecho() == n || p.getHijoIzquierdo() == n)
-            {
-                comprobarBalance(p);
-                exito = true;
-            }
-            else
-            {
-                exito = buscarYBalancearPadre(p.getHijoIzquierdo(), n);
-                if(!exito)
-                {
-                    exito = buscarYBalancearPadre(p.getHijoDerecho(), n);
-                }
-            }
-        }
-        return exito;
     }
 
     private String toStringAux(NodoAVLDicc n)
