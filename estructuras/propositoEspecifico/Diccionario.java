@@ -290,11 +290,6 @@ public class Diccionario {
         }
     }
 
-    public boolean esVacio()
-    {
-        return false;
-    }
-
     @Override
     public String toString()
     {
@@ -371,7 +366,6 @@ public class Diccionario {
         naux.recalcularAltura();
         n.recalcularAltura();
     }
-
     
     private boolean insertarAux(NodoAVLDicc n, Comparable clave, Object dato)
     {

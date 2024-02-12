@@ -53,9 +53,9 @@ public class MapeoAMuchos {
         n.setIzquierdo(n.getIzquierdo().getIzquierdo());
         naux.setIzquierdo(naux.getDerecho());
         naux.setDerecho(n.getDerecho());
-
         n.setDerecho(naux);
-
+        naux.recalcularAltura();
+        n.recalcularAltura();
     }
 
     private void rotarIzquierda(NodoAVLMapeoM n)
@@ -71,7 +71,10 @@ public class MapeoAMuchos {
         naux.setDerecho(naux.getIzquierdo());
         naux.setIzquierdo(n.getIzquierdo());
         n.setIzquierdo(naux);
+        naux.recalcularAltura();
+        n.recalcularAltura();
     }
+    
     private boolean _asociarAux(NodoAVLMapeoM n, Comparable dominio, Object rango)
     {
         boolean exito = true;
@@ -117,8 +120,11 @@ public class MapeoAMuchos {
                 //this.raiz.recalcularAltura();
             }
         }
-        n.recalcularAltura();
-        this.comprobarBalance(n);
+        if(exito)
+        {
+            n.recalcularAltura();
+            comprobarBalance(n);
+        }
         return exito;
     }
     public boolean asociar(Comparable dominio, Object rango)
@@ -135,11 +141,7 @@ public class MapeoAMuchos {
         {
             exito = _asociarAux(this.raiz, dominio, rango);
         }
-        if(exito)
-        {
-            this.raiz.recalcularAltura();
-            this.comprobarBalance(this.raiz);
-        }
+
         return exito;
     }
 
@@ -181,6 +183,7 @@ public class MapeoAMuchos {
         }
         return obtenido;
     }
+
     public boolean desasociar(Comparable clave, Object rango)
     {
         // recibe clave, la busca en el arbol y devuelve si pudo elminarse
@@ -258,8 +261,8 @@ public class MapeoAMuchos {
                             derecho = this.raiz.getDerecho();
                             reemplazo.setIzquierdo(izquierdo);
                             reemplazo.setDerecho(derecho);
-                            this.raiz.recalcularAltura();
-
+                            reemplazo.recalcularAltura();
+                            comprobarBalance(reemplazo);
                         }
                         this.raiz = reemplazo;
                     }
@@ -269,25 +272,25 @@ public class MapeoAMuchos {
                         encontrado = p.getIzquierdo();
                         izquierdo = null;
                         derecho = null;
-
+    
                         if(encontrado!=null)
                         {
                             izquierdo = encontrado.getIzquierdo();
                             derecho = encontrado.getDerecho();
                         }
-
+    
                         p.setIzquierdo(reemplazo);
                         if(reemplazo != null)
                         {
                             p.getIzquierdo().setIzquierdo(izquierdo);
                             if(dobleHijo)
+                            {
                                 p.getIzquierdo().setDerecho(derecho);
-                        }
-                        this.raiz.recalcularAltura();
-                        if(reemplazo != null)
+                            }
+                            reemplazo.recalcularAltura();
                             comprobarBalance(reemplazo);
-                        else
-                            comprobarBalance(p);
+                        }
+                        //p.recalcularAltura();
                     }
                     else
                     {
@@ -295,42 +298,50 @@ public class MapeoAMuchos {
                         encontrado = p.getDerecho();
                         derecho = null;
                         izquierdo = null;
-
+    
                         if(encontrado!=null)
                         {
                             derecho = encontrado.getDerecho();
                             izquierdo = encontrado.getIzquierdo();
                         }
-
+    
                         p.setDerecho(reemplazo);
                         if(reemplazo != null)
                         {
                             p.getDerecho().setDerecho(derecho);
                             if(dobleHijo)
+                            {
                                 p.getDerecho().setIzquierdo(izquierdo);
-                        }
-                        this.raiz.recalcularAltura();
-                        if(reemplazo != null)
+                            }
+                            reemplazo.recalcularAltura();
                             comprobarBalance(reemplazo);
-                        else
-                            comprobarBalance(p);
+                        }
+                        //p.recalcularAltura();
+                    }
+                    exito = true;
+                }
+                else if(clave.compareTo(n.getDominio()) < 0)
+                {
+                    // buscar por izquierda
+                    exito = eliminarAux(n.getIzquierdo(), clave, n, true, rango);
+                    if(exito)
+                    {
+                        n.recalcularAltura();
+                        comprobarBalance(n);
                     }
                 }
-                exito = true;
-            }
-            else if(clave.compareTo(n.getDominio()) < 0)
-            {
-                // buscar por izquierda
-                exito = eliminarAux(n.getIzquierdo(), clave, n, true, rango);
-            }
-            else
-            {
-                // buscar por derecha
-                exito = eliminarAux(n.getDerecho(), clave, n, false, rango);
+                else
+                {
+                    // buscar por derecha
+                    exito = eliminarAux(n.getDerecho(), clave, n, false, rango);
+                    if(exito)
+                    {
+                        n.recalcularAltura();
+                        comprobarBalance(n);
+                    }
+                }
             }
         }
-        if(this.raiz != null)
-            this.raiz.recalcularAltura();
         return exito;
     }
     private NodoAVLMapeoM obtenerCandidatoA(NodoAVLMapeoM n)
@@ -340,11 +351,15 @@ public class MapeoAMuchos {
         if(i.getDerecho() == null)
         {
             candidatoA = i;
-            n.setIzquierdo(null);
+            n.setIzquierdo(i.getIzquierdo());
+            n.recalcularAltura();
+            comprobarBalance(n);
         }
         else
         {
             candidatoA = obtenerCandidatoAAux(i);
+            i.recalcularAltura();
+            comprobarBalance(i);
         }
         return candidatoA;
     }
@@ -356,11 +371,13 @@ public class MapeoAMuchos {
         if(d.getDerecho() == null)
         {
             candidatoA = d;
-            n.setDerecho(null);
+            n.setDerecho(d.getIzquierdo());
         }
         else
         {
             candidatoA = obtenerCandidatoAAux(d);
+            d.recalcularAltura();
+            comprobarBalance(d);
         }
         return candidatoA;
     }
@@ -390,14 +407,12 @@ public class MapeoAMuchos {
                     {
                         // simple a derecha
                         this.rotarDerecha(n);
-                        this.raiz.recalcularAltura();
                     }
                     else if(bh == -1)
                     {
                         // doble izquierda-derecha
                         this.rotarIzquierda(nh);
                         this.rotarDerecha(n);
-                        this.raiz.recalcularAltura();
                     }
                 }
                 else if(b == -2)
@@ -406,7 +421,6 @@ public class MapeoAMuchos {
                     {
                         // simple a izquierda
                         this.rotarIzquierda(n);
-                        this.raiz.recalcularAltura();
 
                     }
                     else if(bh == 1)
@@ -414,35 +428,12 @@ public class MapeoAMuchos {
                         // doble derecha-izquierda
                         this.rotarDerecha(nh);
                         this.rotarIzquierda(n);
-                        this.raiz.recalcularAltura();
                     }
                 }
             }
-            buscarYBalancearPadre(this.raiz, n);
         }
     }
 
-    private boolean buscarYBalancearPadre(NodoAVLMapeoM p, NodoAVLMapeoM n)
-    {
-        boolean exito = false;
-        if(p!=null)
-        {
-            if(p.getDerecho() == n || p.getIzquierdo() == n)
-            {
-                comprobarBalance(p);
-                exito = true;
-            }
-            else
-            {
-                exito = buscarYBalancearPadre(p.getIzquierdo(), n);
-                if(!exito)
-                {
-                    exito = buscarYBalancearPadre(p.getDerecho(), n);
-                }
-            }
-        }
-        return exito;
-    }
     private int getBalance(NodoAVLMapeoM n)
     {
         int b = 0;
