@@ -1,4 +1,4 @@
-package mudanzas;
+package mudanzas.datos;
 
 public class Solicitud {
     final Comparable origenDestino;

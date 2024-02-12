@@ -3,7 +3,7 @@ package mudanzas.managers;
 import estructuras.grafo.Grafo;
 import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
-import mudanzas.Ciudad;
+import mudanzas.datos.Ciudad;
 import mudanzas.librerias.InputReader;
 import mudanzas.librerias.LogOperacionesManager;
 

@@ -4,8 +4,8 @@ import estructuras.grafo.Grafo;
 import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
 import estructuras.propositoEspecifico.MapeoAMuchos;
-import mudanzas.Ciudad;
-import mudanzas.Solicitud;
+import mudanzas.datos.Ciudad;
+import mudanzas.datos.Solicitud;
 import mudanzas.librerias.InputReader;
 
 public class ViajesManager {

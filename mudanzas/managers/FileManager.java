@@ -12,9 +12,9 @@ import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
 import estructuras.propositoEspecifico.MapeoAMuchos;
 import estructuras.propositoEspecifico.MapeoAUno;
-import mudanzas.Ciudad;
-import mudanzas.Cliente;
-import mudanzas.Solicitud;
+import mudanzas.datos.Ciudad;
+import mudanzas.datos.Cliente;
+import mudanzas.datos.Solicitud;
 import mudanzas.librerias.InputReader;
 
 // clase para leer y escribir estructuras a archivo

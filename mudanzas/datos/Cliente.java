@@ -1,4 +1,4 @@
-package mudanzas;
+package mudanzas.datos;
 
 public class Cliente {
     final String tipo;

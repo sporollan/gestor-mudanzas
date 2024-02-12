@@ -2,7 +2,7 @@ package tests.estructuras.conjuntistas;
 
 import estructuras.conjuntistas.ArbolAVL;
 import estructuras.conjuntistas.TablaHash;
-import mudanzas.Solicitud;
+import mudanzas.datos.Solicitud;
 import tests.Test;
 
 public class TestTablaHash extends Test {

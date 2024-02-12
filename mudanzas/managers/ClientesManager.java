@@ -1,7 +1,7 @@
 package mudanzas.managers;
 
 import estructuras.propositoEspecifico.MapeoAUno;
-import mudanzas.Cliente;
+import mudanzas.datos.Cliente;
 import mudanzas.librerias.InputReader;
 import mudanzas.librerias.LogOperacionesManager;
 
