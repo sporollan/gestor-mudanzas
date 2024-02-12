@@ -15,30 +15,18 @@ public class NodoAVLMapeoM {
         this.derecho = derecho;
         this.altura = 0;
     }
-    private int _recalcularAlturaAux(NodoAVLMapeoM n, int a)
-    {
-        int ai;
-        int ad;
-        if( n != null )
-        {
-            ai = this._recalcularAlturaAux(n.izquierdo, a);
-            ad = this._recalcularAlturaAux(n.derecho, a);
-            a = ai > ad ? ai : ad;
-            n.altura = a;
-        }
-        else
-        {
-            return 0;
-        }
-        return a + 1;
-
-    }
     public void recalcularAltura() {
         int ai = 0;
         int ad = 0;
-        ai = this._recalcularAlturaAux(this.izquierdo, 0);
-        ad = this._recalcularAlturaAux(this.derecho, 0);
-        this.altura = ai > ad ? ai : ad;
+        if(izquierdo != null)
+        {
+            ai = izquierdo.altura + 1;
+        }
+        if(derecho != null)
+        {
+            ad = derecho.altura + 1;
+        }
+        altura = ai > ad ? ai : ad;
     }
     public Comparable getDominio() {
         return dominio;
