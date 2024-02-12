@@ -16,7 +16,6 @@ import mudanzas.Ciudad;
 import mudanzas.Cliente;
 import mudanzas.Solicitud;
 import mudanzas.librerias.InputReader;
-import mudanzas.managers.RutasManager;
 
 // clase para leer y escribir estructuras a archivo
 
@@ -29,10 +28,9 @@ public class FileManager {
     private MapeoAMuchos solicitudes;
     private Grafo rutas;
     private RutasManager rutasManager;
-    private InputReader inputReader;
     private int[] count;
 
-    public FileManager(InputReader inputReader, MapeoAUno clientes, ClientesManager clientesManager, Diccionario ciudades, CiudadesManager ciudadesManager, SolicitudesManager solicitudesManager, MapeoAMuchos solicitudes, Grafo rutas, RutasManager rutasManager)
+    public FileManager(MapeoAUno clientes, ClientesManager clientesManager, Diccionario ciudades, CiudadesManager ciudadesManager, SolicitudesManager solicitudesManager, MapeoAMuchos solicitudes, Grafo rutas, RutasManager rutasManager)
     {
         this.clientes = clientes;
         this.clientesManager = clientesManager;
@@ -42,7 +40,6 @@ public class FileManager {
         this.solicitudes = solicitudes;
         this.rutas = rutas;
         this.rutasManager = rutasManager;
-        this.inputReader = inputReader;
         this.inicializarConteo();
     }
 
@@ -290,8 +287,8 @@ public class FileManager {
         email = tokenizer.nextToken();
 
         // se comprueba la validez de los datos
-        inputReader.comprobarTipoDocumento(tipo);
-        inputReader.comprobarNumeroDocumento(num);
+        InputReader.comprobarTipoDocumento(tipo);
+        InputReader.comprobarNumeroDocumento(num);
         Cliente c = new Cliente(tipo, num, nombre, apellido, telefono, email);
         if(clientesManager.insertar(c))
         {
@@ -310,7 +307,7 @@ public class FileManager {
         provincia = tokenizer.nextToken();
 
         // se comprueba la validez de los datos
-        inputReader.comprobarCp(codigo);
+        InputReader.comprobarCp(codigo);
         Ciudad c = new Ciudad((Comparable)codigo, nombre, provincia);
         if(ciudadesManager.insertar(c))
         {
@@ -335,18 +332,16 @@ public class FileManager {
             // leo todos los datos
             // si no hay error se considera la carga valida
             cpo = Integer.parseInt(tokenizer.nextToken());
-            inputReader.comprobarCp(cpo);
+            InputReader.comprobarCp(cpo);
 
             cpd = Integer.parseInt(tokenizer.nextToken());
-            inputReader.comprobarCp(cpd);
+            InputReader.comprobarCp(cpd);
 
             fecha = tokenizer.nextToken();
-            inputReader.comprobarFecha(fecha);
+            InputReader.comprobarFecha(fecha);
 
             tipo = tokenizer.nextToken();
             num = tokenizer.nextToken();
-            // comprobarclavecliente tira error si no existe el cliente
-            inputReader.comprobarClaveCliente(tipo+num);
 
             metrosCubicos = Integer.parseInt(tokenizer.nextToken());
             bultos = Integer.parseInt(tokenizer.nextToken());
@@ -390,8 +385,8 @@ public class FileManager {
         distancia = Float.parseFloat(tokenizer.nextToken());
 
         // se comprueba la validez de los datos
-        inputReader.comprobarCp(cpo);
-        inputReader.comprobarCp(cpd);
+        InputReader.comprobarCp(cpo);
+        InputReader.comprobarCp(cpd);
         if(rutasManager.insertar(cpo, cpd, distancia))
         {
             this.count[3] += 1;

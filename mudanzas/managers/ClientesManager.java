@@ -2,17 +2,16 @@ package mudanzas.managers;
 
 import estructuras.propositoEspecifico.MapeoAUno;
 import mudanzas.Cliente;
-import mudanzas.LogOperacionesManager;
 import mudanzas.librerias.InputReader;
+import mudanzas.librerias.LogOperacionesManager;
 
 public class ClientesManager {
     private MapeoAUno clientes;
-    private LogOperacionesManager logOperacionesManager;
+    String path="files/operaciones.log";
 
-    public ClientesManager(MapeoAUno clientes, LogOperacionesManager logOperacionesManager)
+    public ClientesManager(MapeoAUno clientes)
     {
         this.clientes = clientes;
-        this.logOperacionesManager = logOperacionesManager;
     }
     
     private void mostrarMenu()
@@ -98,7 +97,7 @@ public class ClientesManager {
                 if(clientes.desasociar(c.getTipo() + c.getNum()))
                 {
                     System.out.println("Eliminado con exito");
-                    logOperacionesManager.escribirEliminacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
+                    LogOperacionesManager.escribirEliminacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres(), path);
                 }
             }
         }
@@ -139,7 +138,7 @@ public class ClientesManager {
                 if(modificado)
                 {
                     System.out.println("Modificado con exito");
-                    logOperacionesManager.escribirModificacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
+                    LogOperacionesManager.escribirModificacion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres(), path);
                 }
             }
         }
@@ -173,7 +172,7 @@ public class ClientesManager {
             if(insertar(c))
             {
                 System.out.println("Cliente insertado con exito");
-                logOperacionesManager.escribirInsercion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres());
+                LogOperacionesManager.escribirInsercion("el cliente " + c.getTipo() + c.getNum() + " " + c.getApellidos()+", "+c.getNombres(), path);
             }
             else
                 System.out.println("Error insertando cliente");

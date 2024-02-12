@@ -4,21 +4,18 @@ import estructuras.grafo.Grafo;
 import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.Diccionario;
 import mudanzas.Ciudad;
-import mudanzas.LogOperacionesManager;
 import mudanzas.librerias.InputReader;
+import mudanzas.librerias.LogOperacionesManager;
 
 public class CiudadesManager {
-    private InputReader inputReader;
     private Diccionario ciudades;
     private Grafo rutas;
-    private LogOperacionesManager logOperacionesManager;
+    private String path = "files/operaciones.log";
 
-    public CiudadesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, LogOperacionesManager logOperacionesManager)
+    public CiudadesManager(Diccionario ciudades, Grafo rutas)
     {
-        this.inputReader = inputReader;
         this.ciudades = ciudades;
         this.rutas = rutas;
-        this.logOperacionesManager = logOperacionesManager;
     }
 
     private void mostrarMenu()
@@ -37,7 +34,7 @@ public class CiudadesManager {
         while(!seleccion.equals("q"))
         {
             mostrarMenu();
-            seleccion = inputReader.scanString("Seleccion");
+            seleccion = InputReader.scanString("Seleccion");
             if("1".equals(seleccion))
                 cargarDatos();
             else if("2".equals(seleccion))
@@ -59,12 +56,12 @@ public class CiudadesManager {
         String[] strInputs = new String[strNames.length+1];
         boolean continuar = true;
 
-        cpo = inputReader.scanCp("Codigo Postal");
+        cpo = InputReader.scanCp("Codigo Postal");
         continuar = cpo != -1;
 
         if(continuar)
         {
-            strInputs = inputReader.cargarStringsSc(strNames);
+            strInputs = InputReader.cargarStringsSc(strNames);
             continuar = !strInputs[strNames.length].equals("q");
         }
 
@@ -74,8 +71,8 @@ public class CiudadesManager {
             if(insertar(new Ciudad((Comparable)cpo, strInputs[0], strInputs[1])))
             {
                 System.out.println("Ciudad insertada con exito");
-                logOperacionesManager.escribirInsercion("la ciudad " + cpo + ": " + strInputs[0] +", "+ strInputs[1]);
-                logOperacionesManager.escribirInsercion("vertice " + cpo);
+                LogOperacionesManager.escribirInsercion("la ciudad " + cpo + ": " + strInputs[0] +", "+ strInputs[1], path);
+                LogOperacionesManager.escribirInsercion("vertice " + cpo, path);
 
             }
             else
@@ -85,12 +82,26 @@ public class CiudadesManager {
         }
     }
 
+    public Ciudad scanCiudad(String message)
+    {
+        // se piden CP hasta dar con uno existente
+        // y se devuelve la ciudad
+        Ciudad ciudad = null;
+        int cp = 0;
+        while(cp != -1 && ciudad == null)
+        {
+            cp = InputReader.scanCp("Codigo Postal " + message);
+            ciudad = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cp);
+        }
+        return ciudad;
+    }
+
     private void eliminar()
     {
         //  Eliminar una ciudad consiste en eliminar la ciudad,
         //  luego todas las rutas que la incluyan,
         //  y finalmente el vertice del grafo.
-        int cpo = inputReader.scanCp("Codigo Postal");
+        int cpo = InputReader.scanCp("Codigo Postal");
         if(cpo != -1)
         {
             Ciudad c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cpo);
@@ -98,7 +109,7 @@ public class CiudadesManager {
             if(this.ciudades.eliminar((Comparable)cpo))
             {
                 System.out.println("Eliminado con exito");
-                logOperacionesManager.escribirEliminacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia());
+                LogOperacionesManager.escribirEliminacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia(), path);
 
                 // elimino todas las rutas que incluyan esta ciudad
                 String str;
@@ -109,7 +120,7 @@ public class CiudadesManager {
                     if(rutas.eliminarArco(cpo, cpd))
                     {
                         System.out.println("Se elimino " + str);
-                        logOperacionesManager.escribirEliminacion(str);
+                        LogOperacionesManager.escribirEliminacion(str, path);
                     }
                     else
                     {
@@ -122,7 +133,7 @@ public class CiudadesManager {
                 {
                     str = "el vertice " + cpo;
                     System.out.println("Se elimino " + str);
-                    logOperacionesManager.escribirEliminacion(str);
+                    LogOperacionesManager.escribirEliminacion(str, path);
                 }
                 else
                 {
@@ -139,7 +150,7 @@ public class CiudadesManager {
     private void modificar()
     {
         // se obtiene la ciudad
-        int cp = this.inputReader.scanCp("Codigo Postal");
+        int cp = InputReader.scanCp("Codigo Postal");
         Ciudad c = null;
         if(cp != -1)
             c = (Ciudad)this.ciudades.obtenerInformacion((Comparable)cp);
@@ -149,28 +160,28 @@ public class CiudadesManager {
         {
             System.out.println("Modificando " + c.getNombre() + " CP: " + c.getCodigo());
             boolean modificado = false;
-            if(inputReader.scanBool("Cambiar nombre?"))
+            if(InputReader.scanBool("Cambiar nombre?"))
             {
-                c.setNombre(inputReader.scanString("Nombre"));
+                c.setNombre(InputReader.scanString("Nombre"));
                 modificado = true;
             }
-            if(inputReader.scanBool("Cambiar provincia?"))
+            if(InputReader.scanBool("Cambiar provincia?"))
             {
-                c.setProvincia(inputReader.scanString("Provincia"));
+                c.setProvincia(InputReader.scanString("Provincia"));
                 modificado = true;
             }
 
             if(modificado)
             {
                 System.out.println("Modificado con exito");
-                this.logOperacionesManager.escribirModificacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia());
+                LogOperacionesManager.escribirModificacion("la ciudad " + c.getCodigo() + ": " + c.getNombre() +", "+ c.getProvincia(), path);
             }   
         }
     }
 
     private void mostrarDatosCiudad()
     {
-        Ciudad c = ((Ciudad)ciudades.obtenerInformacion(inputReader.scanCp("CP")));
+        Ciudad c = ((Ciudad)ciudades.obtenerInformacion(InputReader.scanCp("CP")));
         if( c != null)
         {
             System.out.println();
@@ -184,7 +195,7 @@ public class CiudadesManager {
 
     private void mostrarPorPrefijo()
     {
-        Comparable pf = inputReader.scanPrefijo("Prefijo");
+        Comparable pf = InputReader.scanPrefijo("Prefijo");
         if(pf.compareTo(-1) != 0)
         {
             Lista listaPorPrefijo = ciudades.listarPrefijo(pf);

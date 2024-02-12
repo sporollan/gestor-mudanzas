@@ -1,19 +1,16 @@
 package mudanzas.managers;
 
 import estructuras.grafo.Grafo;
-import mudanzas.LogOperacionesManager;
 import mudanzas.librerias.InputReader;
+import mudanzas.librerias.LogOperacionesManager;
 
 public class RutasManager {
-    private InputReader inputReader;
     private Grafo rutas;
-    private LogOperacionesManager logOperacionesManager;
+    String path ="files/operaciones.log";
 
-    public RutasManager(InputReader inputReader, Grafo rutas, LogOperacionesManager logOperacionesManager)
+    public RutasManager(Grafo rutas)
     {
-        this.inputReader = inputReader;
         this.rutas = rutas;
-        this.logOperacionesManager = logOperacionesManager;
     }
     private void mostrarMenu()
     {
@@ -28,7 +25,7 @@ public class RutasManager {
         while(!seleccion.equals("q"))
         {
             mostrarMenu();
-            seleccion = inputReader.scanString("Seleccion");
+            seleccion = InputReader.scanString("Seleccion");
             if(seleccion.equals("1"))
                 cargarDatos();
             else if(seleccion.equals("2"))
@@ -43,12 +40,12 @@ public class RutasManager {
         // se cargan los datos y luego se los inserta en la estructura
         float distancia = -1;
         String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
+        int[] codigos = InputReader.scanCodigos(names);
         boolean continuar = codigos[codigos.length-1]!=-1;
 
         if(continuar)
         {
-            distancia = inputReader.scanFloat("Distancia");
+            distancia = InputReader.scanFloat("Distancia");
             continuar = distancia != -1;
         }
 
@@ -58,7 +55,7 @@ public class RutasManager {
             if(insertar(codigos[0], codigos[1], distancia))
             {
                 System.out.println("Ruta insertada con exito");
-                logOperacionesManager.escribirInsercion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                LogOperacionesManager.escribirInsercion("la ruta entre " + codigos[0] + " y " +codigos[1], path);
             }
             else
             {
@@ -70,10 +67,10 @@ public class RutasManager {
     private void eliminarArco()
     {
         // obtengo origen y destino, luego intento eliminar el arco
-        int origenCP = inputReader.scanCp("CP origen");
+        int origenCP = InputReader.scanCp("CP origen");
         int destinoCP = -1;
         if(origenCP != -1)
-            destinoCP = inputReader.scanCp("CP destino");
+            destinoCP = InputReader.scanCp("CP destino");
 
         // elimino el arco 
         if(destinoCP != -1)
@@ -81,7 +78,7 @@ public class RutasManager {
             if(rutas.eliminarArco(origenCP, destinoCP))
             {
                 System.out.println("Eliminado con exito");
-                logOperacionesManager.escribirEliminacion("la ruta entre " + origenCP + " y " + destinoCP + " de distancia ");
+                LogOperacionesManager.escribirEliminacion("la ruta entre " + origenCP + " y " + destinoCP + " de distancia ", path);
             }
             else
                 System.out.println("No se pudo eliminar");
@@ -93,7 +90,7 @@ public class RutasManager {
         // cargo origen y destino. Si existe el arco solicito nueva distancia y realizo la modificacion.
         String[] names = {"Origen(cp)", "Destino(cp)"};
 
-        int[] codigos = inputReader.scanCodigos(names);
+        int[] codigos = InputReader.scanCodigos(names);
 
         // compruebo si existe el arco
         if(codigos[1] != -1)
@@ -103,7 +100,7 @@ public class RutasManager {
                 if(rutas.existeArco(codigos[0], codigos[1]))
                 {
                     // ingreso nueva distancia
-                    float nuevaDistancia = inputReader.scanFloat("Nueva distancia");
+                    float nuevaDistancia = InputReader.scanFloat("Nueva distancia");
                     if(nuevaDistancia != -1)
                     {
                         // modifico el arco
@@ -113,7 +110,7 @@ public class RutasManager {
                             if(rutas.insertarArco(codigos[0], codigos[1], nuevaDistancia))
                             {
                                 System.out.println("Modificado con exito");
-                                logOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1]);
+                                LogOperacionesManager.escribirModificacion("la ruta entre " + codigos[0] + " y " +codigos[1], path);
                             }
                         }
                     }

@@ -4,19 +4,16 @@ import estructuras.lineales.dinamicas.Lista;
 import estructuras.propositoEspecifico.MapeoAMuchos;
 import mudanzas.Ciudad;
 import mudanzas.Cliente;
-import mudanzas.LogOperacionesManager;
 import mudanzas.Solicitud;
 import mudanzas.librerias.InputReader;
+import mudanzas.librerias.LogOperacionesManager;
 
 public class SolicitudesManager {
-    InputReader inputReader;
     MapeoAMuchos solicitudes;
-    LogOperacionesManager logOperacionesManager;
+    String path = "files/operaciones.log";
 
-    public SolicitudesManager(InputReader inputReader, MapeoAMuchos solicitudes, LogOperacionesManager logOperacionesManager)
+    public SolicitudesManager(MapeoAMuchos solicitudes)
     {
-        this.inputReader = inputReader;
-        this.logOperacionesManager = logOperacionesManager;
         this.solicitudes = solicitudes;
     }
     private void mostrarMenu()
@@ -33,7 +30,7 @@ public class SolicitudesManager {
         while(!seleccion.equals("q"))
         {
             mostrarMenu();
-            seleccion = inputReader.scanString("Seleccion");
+            seleccion = InputReader.scanString("Seleccion");
             if(seleccion.equals("1"))
                 cargarDatos();
             else if(seleccion.equals("2"))
@@ -56,63 +53,63 @@ public class SolicitudesManager {
         String[] intNames = {"Metros Cubicos", "Bultos"};
         String[] strInputs = new String[strNames.length+1];
         int[] intInputs = new int[intNames.length+1];
-        Ciudad ciudadOrigen, ciudadDestino;
-        Cliente cliente;
+        Comparable ciudadOrigen, ciudadDestino;
+        String[] cliente;
         boolean continuar = true;
 
-        ciudadOrigen = inputReader.scanCiudad("Origen");
+        ciudadOrigen = InputReader.scanCp("Origen");
         continuar = ciudadOrigen != null;
 
         ciudadDestino = null;
         if(continuar)
         {
-            ciudadDestino = inputReader.scanCiudad("Destino");
+            ciudadDestino = InputReader.scanCp("Destino");
             continuar = ciudadDestino != null;
         }
 
         if(continuar)
         {
-            fecha = inputReader.scanFecha();
+            fecha = InputReader.scanFecha();
             continuar = !fecha.equals("q");
         }
 
         if(continuar)
         {
-            strInputs = inputReader.cargarStringsSc(strNames);
+            strInputs = InputReader.cargarStringsSc(strNames);
             continuar = !strInputs[strNames.length].equals("q");
         }
 
         if(continuar)
         {
-            intInputs = inputReader.cargarIntsSc(intNames);
+            intInputs = InputReader.cargarIntsSc(intNames);
             continuar = !(intInputs[intNames.length] == -1);
         }
 
         cliente = null;
         if(continuar)
         {
-            cliente = inputReader.scanCliente();
+            cliente = InputReader.scanClaveCliente();
             continuar = cliente != null;
         }
 
         estaPago = false;
         if(continuar)
         {
-            estaPago = inputReader.scanBool("Esta Pago?");
+            estaPago = InputReader.scanBool("Esta Pago?");
         }
 
         // si esta todo correcto se crea la solicitud y se la inserta
         if(continuar)
         {
-            String codigoStr = ciudadOrigen.getCodigo() + "" + ciudadDestino.getCodigo();
+            String codigoStr = ciudadOrigen + "" + ciudadDestino;
             int codigo = Integer.parseInt(codigoStr);
-            Solicitud solicitud = new Solicitud((Comparable)codigo, fecha, cliente.getTipo()+cliente.getNum(), intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
+            Solicitud solicitud = new Solicitud((Comparable)codigo, fecha, cliente[0]+cliente[1], intInputs[0], intInputs[1], strInputs[0], strInputs[1], estaPago);
 
             if(insertar((Comparable)codigo, solicitud))
             {
                 System.out.println("Solicitud insertada con exito");
-                logOperacionesManager.escribirInsercion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                solicitud.getCodigo() + " " + solicitud.getMetrosCubicos() + " metros cubicos");
+                LogOperacionesManager.escribirInsercion("la solicitud de " + ciudadOrigen + " a " + 
+                solicitud.getCodigo(), path);
             }
             else
             {
@@ -126,16 +123,16 @@ public class SolicitudesManager {
         // se obtiene origen y destino
         // luego se recorren todas las solicitudes entre las ciudades
         // solicitando si deben ser eliminadas
-        Ciudad ciudadOrigen = inputReader.scanCiudad("Origen");
-        Ciudad ciudadDestino = null;
+        Comparable ciudadOrigen = InputReader.scanCp("Origen");
+        Comparable ciudadDestino = null;
         if(ciudadOrigen != null)
         {
-            ciudadDestino = inputReader.scanCiudad("Destino");
+            ciudadDestino = InputReader.scanCp("Destino");
         }
         
         if(ciudadDestino != null)
         {
-            String codigoStr = ciudadOrigen.getCodigo() + "" + ciudadDestino.getCodigo();
+            String codigoStr = ciudadOrigen + "" + ciudadDestino;
             int codigo = Integer.parseInt(codigoStr);
             Lista solicitudesADestino = solicitudes.obtenerValor((Comparable)codigo);
             Solicitud s = (Solicitud)solicitudesADestino.recuperar(1);
@@ -144,12 +141,12 @@ public class SolicitudesManager {
             {
                 System.out.println(s.getFecha());
                 System.out.println(s.getCliente());
-                if(inputReader.scanBool("Eliminar?"))
+                if(InputReader.scanBool("Eliminar?"))
                 {
-                    if(solicitudes.desasociar(ciudadDestino.getCodigo(), s))
+                    if(solicitudes.desasociar(ciudadDestino, s))
                     {
                         System.out.println("Eliminado con exito");
-                        logOperacionesManager.escribirEliminacion("la solicitud " + ciudadOrigen.getCodigo());                 }
+                        LogOperacionesManager.escribirEliminacion("la solicitud " + ciudadOrigen, path);                 }
                 }
                 else
                 {
@@ -164,16 +161,16 @@ public class SolicitudesManager {
     {
         // ingreso origen y destino
         // luego pregunto por cada dato si se debe modificar
-        Ciudad ciudadOrigen = inputReader.scanCiudad("Origen");
-        Ciudad ciudadDestino = null;
+        Comparable ciudadOrigen = InputReader.scanCp("Origen");
+        Comparable ciudadDestino = null;
         if(ciudadOrigen != null)
         {
-            ciudadDestino = inputReader.scanCiudad("Destino");
+            ciudadDestino = InputReader.scanCp("Destino");
         }
 
         if(ciudadDestino!=null)
         {
-            String codigoStr = ciudadOrigen.getCodigo() + "" + ciudadDestino.getCodigo();
+            String codigoStr = ciudadOrigen + "" + ciudadDestino;
             int codigo = Integer.parseInt(codigoStr);
             Lista listaSolicitudes = solicitudes.obtenerValor((Comparable)codigo);
             if(listaSolicitudes != null)
@@ -186,50 +183,50 @@ public class SolicitudesManager {
                 {
                     System.out.println(s.getFecha());
                     System.out.println(s.getCliente());
-                    if(inputReader.scanBool("Modificar?"))
+                    if(InputReader.scanBool("Modificar?"))
                     {
                         boolean modificado = false;
-                        if(inputReader.scanBool("Modificar fecha?"))
+                        if(InputReader.scanBool("Modificar fecha?"))
                         {
-                            s.setFecha(inputReader.scanFecha());
+                            s.setFecha(InputReader.scanFecha());
                             modificado = true;
                         }
-                        if(inputReader.scanBool("Domicilio Retiro: " + s.getDomicilioRetiro() + " Modificar?"))
+                        if(InputReader.scanBool("Domicilio Retiro: " + s.getDomicilioRetiro() + " Modificar?"))
                         {
-                            s.setDomicilioRetiro(inputReader.scanString("Domicilio Retiro"));
+                            s.setDomicilioRetiro(InputReader.scanString("Domicilio Retiro"));
                             modificado = true;
                         }
-                        if(inputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar?"))
+                        if(InputReader.scanBool("Domicilio Entrega: " + s.getDomicilioEntrega() + " Modificar?"))
                         {
-                            s.setDomicilioEntrega(inputReader.scanString("Domicilio Entrega"));
+                            s.setDomicilioEntrega(InputReader.scanString("Domicilio Entrega"));
                             modificado = true;
                         }
-                        if(inputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar?"))
+                        if(InputReader.scanBool("Metros Cubicos: " + s.getMetrosCubicos() + " Modificar?"))
                         {
-                            s.setMetrosCubicos(inputReader.scanInt("Metros Cubicos"));
+                            s.setMetrosCubicos(InputReader.scanInt("Metros Cubicos"));
                             modificado = true;
                         }
-                        if(inputReader.scanBool("Bultos: " + s.getBultos() + " Modificar?"))
+                        if(InputReader.scanBool("Bultos: " + s.getBultos() + " Modificar?"))
                         {
-                            s.setBultos(inputReader.scanInt("Bultos"));
+                            s.setBultos(InputReader.scanInt("Bultos"));
                             modificado = true;
                         }
-                        if(inputReader.scanBool("Esta pago: " + (s.isEstaPago()?"T":"F") + " Modificar?"))
+                        if(InputReader.scanBool("Esta pago: " + (s.isEstaPago()?"T":"F") + " Modificar?"))
                         {
-                            s.setEstaPago(inputReader.scanBool("Esta pago?"));
+                            s.setEstaPago(InputReader.scanBool("Esta pago?"));
                             modificado = true;
                         }
-                        if(inputReader.scanBool("Cliente: " + s.getCliente() + " Modificar?"))
+                        if(InputReader.scanBool("Cliente: " + s.getCliente() + " Modificar?"))
                         {
-                            Cliente c = inputReader.scanCliente();
-                            s.setCliente(c.getTipo()+c.getNum());
+                            String[] c = InputReader.scanClaveCliente();
+                            s.setCliente(c[0]+c[1]);
                             modificado = true;
                         }
                         if(modificado)
                         {
                             System.out.println("Modificado con exito");
-                            logOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen.getCodigo() + " a " + 
-                            s.getCodigo() + " " + s.getMetrosCubicos() + " metros cubicos");
+                            LogOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen + " a " + 
+                            s.getCodigo(), path);
                         }
                     }
                     i+=1;
@@ -244,7 +241,7 @@ public class SolicitudesManager {
         // se ingresa origen y destino
         // luego se recorren todas las solicitudes entre las ciudades mostrando cada una
         String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
+        int[] codigos = InputReader.scanCodigos(names);
         Lista pedidos=null;
         if(codigos[codigos.length-1] != -1)
         {

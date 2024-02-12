@@ -1,4 +1,4 @@
-package mudanzas;
+package mudanzas.librerias;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -8,14 +8,8 @@ import java.io.PrintWriter;
 
 public class LogOperacionesManager {
 
-    String path;
 
-    public LogOperacionesManager(String path)
-    {
-        this.path = path;
-    }
-
-    private void escribir(String str)
+    private static void escribir(String str, String path)
     {
         try(
             FileWriter file = new FileWriter(path, true);
@@ -31,18 +25,18 @@ public class LogOperacionesManager {
         }
     }
 
-    public void escribirInsercion(String str)
+    public static void escribirInsercion(String str, String path)
     {
-        escribir("Se creo " + str);
+        escribir("Se creo " + str, path);
     }
 
-    public void escribirModificacion(String str)
+    public static void escribirModificacion(String str, String path)
     {
-        escribir("Se modifico " + str);
+        escribir("Se modifico " + str, path);
     }   
 
-    public void escribirEliminacion(String str)
+    public static void escribirEliminacion(String str, String path)
     {
-        escribir("Se elimino " + str);
+        escribir("Se elimino " + str, path);
     }
 }

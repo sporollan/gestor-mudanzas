@@ -9,14 +9,12 @@ import mudanzas.Solicitud;
 import mudanzas.librerias.InputReader;
 
 public class ViajesManager {
-    private InputReader inputReader;
     private Grafo rutas;
     private Diccionario ciudades;
     private MapeoAMuchos solicitudes;
 
-    public ViajesManager(InputReader inputReader, Diccionario ciudades, Grafo rutas, MapeoAMuchos solicitudes)
+    public ViajesManager(Diccionario ciudades, Grafo rutas, MapeoAMuchos solicitudes)
     {
-        this.inputReader = inputReader;
         this.rutas = rutas;
         this.ciudades = ciudades;
         this.solicitudes = solicitudes;
@@ -39,7 +37,7 @@ public class ViajesManager {
         while(!seleccion.equals("q"))
         {
             mostrarMenu();
-            seleccion = inputReader.scanString("Seleccion");
+            seleccion = InputReader.scanString("Seleccion");
             if(seleccion.equals("1"))
                 mostrarCaminoMenorDistancia();
             else if(seleccion.equals("2"))
@@ -66,7 +64,7 @@ public class ViajesManager {
     {
         // obtengo y muestro el camino con menor cantidad de ciudades
         String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
+        int[] codigos = InputReader.scanCodigos(names);
         Lista camino = null;
 
         if(codigos[codigos.length-1]!=-1)
@@ -81,7 +79,7 @@ public class ViajesManager {
     {
         // obtengo y muestro los caminos que pasan por una ciudad dada
         String[] names = {"Origen(cp)", "Destino(cp)", "Pasando por(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
+        int[] codigos = InputReader.scanCodigos(names);
 
         if(codigos[names.length-1] != -1)
         {
@@ -102,13 +100,13 @@ public class ViajesManager {
         // obtengo el camino de menor distancia respetando el maximo dado.
         float maximo = -1;
         String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
+        int[] codigos = InputReader.scanCodigos(names);
         boolean continuar = codigos[codigos.length-1] != -1;
         Lista camino = null;
 
         if(continuar)
         {
-            maximo = inputReader.scanFloat("Longitud Maxima (KM)");
+            maximo = InputReader.scanFloat("Longitud Maxima (KM)");
             continuar = maximo != -1;
         }
 
@@ -131,7 +129,7 @@ public class ViajesManager {
         Lista camino = new Lista();
         if(camino != null)
         {
-            capacidad = inputReader.scanInt("Capacidad del Camion");
+            capacidad = InputReader.scanInt("Capacidad del Camion");
         }
 
         if(capacidad != -1)
@@ -225,7 +223,7 @@ public class ViajesManager {
             Lista camino = obtenerCaminoMenorDistancia();
             if(camino != null)
             {
-                capacidad = inputReader.scanInt("Capacidad del Camion");
+                capacidad = InputReader.scanInt("Capacidad del Camion");
             }
     
             if(capacidad != -1)
@@ -370,7 +368,7 @@ public class ViajesManager {
         // luego se devuelve el camino
         Lista camino=null;
         String[] names = {"Origen(cp)", "Destino(cp)"};
-        int[] codigos = inputReader.scanCodigos(names);
+        int[] codigos = InputReader.scanCodigos(names);
         if(codigos[codigos.length-1]!=-1)
             camino = this.rutas.obtenerCaminoPorPeso(codigos[0], codigos[1]);
         return camino;
