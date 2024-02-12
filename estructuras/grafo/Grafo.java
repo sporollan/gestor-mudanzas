@@ -41,6 +41,12 @@ public class Grafo {
         else if(inicio.getElem().equals(buscado))
         {
             // caso eliminar primer NodoVert
+            NodoAdy a = inicio.getPrimerAdy();
+            while(a != null)
+            {
+                eliminarArcos(a.getVertice(), inicio);
+                a = a.getSigAdyacente();
+            }
             inicio = inicio.getSigVertice();
             exito = true;
         }
@@ -55,11 +61,32 @@ public class Grafo {
             }
             if(aux != null && aux.getElem().equals(buscado))
             {
+                NodoAdy a = aux.getPrimerAdy();
+                while(a != null)
+                {
+                    eliminarArcos(a.getVertice(), aux);
+                    a = a.getSigAdyacente();
+                }
                 prev.setSigVertice(aux.getSigVertice());
                 exito = true;
             }
         }
         return exito;
+    }
+
+    public void eliminarArcos(NodoVert n, NodoVert origen)
+    {
+        NodoAdy prev = n.getPrimerAdy();
+        NodoAdy a = prev.getSigAdyacente();
+        while(a != null)
+        {
+            if(a.getVertice().equals(origen))
+            {
+                prev.setSigAdyacente(a.getSigAdyacente());
+            }
+            prev = a;
+            a = a.getSigAdyacente();
+        }
     }
 
     public boolean eliminarArco(Object origen, Object destino)

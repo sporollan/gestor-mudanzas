@@ -108,7 +108,7 @@ public class SolicitudesManager {
             if(insertar((Comparable)codigo, solicitud))
             {
                 System.out.println("Solicitud insertada con exito");
-                LogOperacionesManager.escribirInsercion("la solicitud de " + ciudadOrigen + " a " + 
+                LogOperacionesManager.escribirInsercion("la solicitud " + 
                 solicitud.getCodigo(), path);
             }
             else
@@ -143,10 +143,11 @@ public class SolicitudesManager {
                 System.out.println(s.getCliente());
                 if(InputReader.scanBool("Eliminar?"))
                 {
-                    if(solicitudes.desasociar(ciudadDestino, s))
+                    if(solicitudes.desasociar(codigo, s))
                     {
                         System.out.println("Eliminado con exito");
-                        LogOperacionesManager.escribirEliminacion("la solicitud " + ciudadOrigen, path);                 }
+                        LogOperacionesManager.escribirEliminacion("la solicitud " + codigo, path);
+                    }
                 }
                 else
                 {
@@ -225,7 +226,7 @@ public class SolicitudesManager {
                         if(modificado)
                         {
                             System.out.println("Modificado con exito");
-                            LogOperacionesManager.escribirModificacion("la solicitud de " + ciudadOrigen + " a " + 
+                            LogOperacionesManager.escribirModificacion("la solicitud " + 
                             s.getCodigo(), path);
                         }
                     }
