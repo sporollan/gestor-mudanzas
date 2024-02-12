@@ -6,7 +6,6 @@ import java.util.StringTokenizer;
 // clase donde se maneja el input y se comprueba la validez de los datos
 
 public class InputReader {
-
     /*  Funciones comprobar
      *  Se encargan de validar un dato dado utilizando excepciones  
      */
@@ -92,9 +91,12 @@ public class InputReader {
             {
                 System.out.print(message + ": ");
                 s = sc.nextLine();
-            } catch (Exception e){}
+            } catch (Exception e){
+                e.printStackTrace();
+                System.out.println(s);
+            }
         }
-        sc.close();
+        
         return s;
     }
 
@@ -122,7 +124,7 @@ public class InputReader {
                 valido = false;
             }
         }
-        sc.close();
+        
         return pf;
     }
 
@@ -150,7 +152,7 @@ public class InputReader {
                 valido = false;
             }
         }
-        sc.close();
+        
         return cp;
     }
 
@@ -229,7 +231,7 @@ public class InputReader {
                 valida = false;
             }
         }
-        sc.close();
+        
         return clave;
     }
 
@@ -262,7 +264,7 @@ public class InputReader {
                 s = "";
             }
         }
-        sc.close();
+        
         return s;
     }
 
@@ -280,7 +282,7 @@ public class InputReader {
                 i = Integer.parseInt(input);
             } catch (Exception e){}
         }
-        sc.close();
+        
         return i;
     }
 
@@ -298,7 +300,7 @@ public class InputReader {
                 i = Float.parseFloat(input);
             } catch (Exception e){}
         }
-        sc.close();
+        
         return i;
     }
 
