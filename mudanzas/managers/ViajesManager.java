@@ -83,7 +83,7 @@ public class ViajesManager {
 
         if(codigos[names.length-1] != -1)
         {
-            Lista caminos = this.rutas.obtenerCaminoPasandoPorCiudad(codigos[0], codigos[1], codigos[2]);
+            Lista caminos = this.rutas.obtenerCaminoPasandoPorNodo(codigos[0], codigos[1], codigos[2]);
             Lista camino;
             for(int i = 2; i < caminos.longitud()+1; i++)
             {
