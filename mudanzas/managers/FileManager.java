@@ -74,8 +74,7 @@ public class FileManager {
             }
             myReader.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Error");
-            e.printStackTrace();
+            System.out.println("estructuras.log no existe");
         }
         mostrarConteo();
         inicializarConteo();
