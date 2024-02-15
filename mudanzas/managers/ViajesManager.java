@@ -112,7 +112,7 @@ public class ViajesManager {
 
         if(continuar)
         {
-            camino = this.rutas.obtenerCaminoPorKMMaximos(codigos[0], codigos[1], maximo);
+            camino = this.rutas.obtenerCaminoPorPesoMaximo(codigos[0], codigos[1], maximo);
         }
 
         mostrarCamino(camino);

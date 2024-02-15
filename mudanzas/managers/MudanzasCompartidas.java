@@ -6,7 +6,6 @@ import estructuras.propositoEspecifico.MapeoAMuchos;
 import estructuras.propositoEspecifico.MapeoAUno;
 import mudanzas.librerias.InputReader;
 import mudanzas.librerias.LogOperacionesManager;
-import mudanzas.managers.RutasManager;
 
 
 public class MudanzasCompartidas {

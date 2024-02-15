@@ -12,6 +12,11 @@ public class Diccionario {
         this.raiz = null;
     }
 
+    public boolean esVacia()
+    {
+        return this.raiz == null;
+    }
+
     public boolean insertar(Comparable clave, Object dato)
     {
         // recibe clave y dato
