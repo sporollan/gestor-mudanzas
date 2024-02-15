@@ -126,8 +126,9 @@ public class ViajesManager {
         // de los pedidos intermedios que se podrian cargar
         int capacidad = -1;
         Lista camino = obtenerCaminoMenorDistancia();
-        if(camino != null)
+        if(!camino.esVacia())
         {
+            System.out.println(camino);
             capacidad = InputReader.scanInt("Capacidad del Camion");
             if(capacidad != -1)
             {
@@ -223,7 +224,7 @@ public class ViajesManager {
         {
             int capacidad = -1;
             Lista camino = obtenerCaminoMenorDistancia();
-            if(camino != null)
+            if(!camino.esVacia())
             {
                 capacidad = InputReader.scanInt("Capacidad del Camion");
     
