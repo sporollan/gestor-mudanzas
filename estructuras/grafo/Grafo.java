@@ -721,8 +721,6 @@ public class Grafo {
     {
         if(n != null)
         {   
-            System.out.print("Entra " + n.getElem());
-            System.out.println(vis);
             if(!pasoPorC)
                 pasoPorC = n.equals(c);
             if(!n.equals(dest))
