@@ -491,7 +491,7 @@ public class Grafo {
         }
     }
 
-    public Lista obtenerCaminoPorNumeroDeNodos(Object origen, Object destino)
+    public Lista obtenerCaminoPorNumeroDeNodos2(Object origen, Object destino)
     {
         NodoVert auxO = null;
         NodoVert auxD = null;
@@ -513,7 +513,7 @@ public class Grafo {
             linicial.insertar((float)0, 1);
             linicial.insertar(true, 2);
             visitados.insertar((Comparable)auxO.getElem(), linicial);
-            obtenerCaminoPorNumeroDeNodosAux(auxO, auxD, visitados, 0, null);
+            obtenerCaminoPorNumeroDeNodosAux2(auxO, auxD, visitados, 0, null);
 
             NodoAdy ady;
             NodoVert vis=null;
@@ -551,7 +551,7 @@ public class Grafo {
         return camino;
     }
 
-    public void obtenerCaminoPorNumeroDeNodosAux(NodoVert nodoActual, NodoVert nodoDestino, Diccionario visitados, float distancia, NodoVert prev)
+    public void obtenerCaminoPorNumeroDeNodosAux2(NodoVert nodoActual, NodoVert nodoDestino, Diccionario visitados, float distancia, NodoVert prev)
     {
         Lista nodosAVisitar = new Lista();
         // la segunda condicion me permite ingresar al while en el primer caso
@@ -842,16 +842,16 @@ public class Grafo {
         Lista camino = new Lista();
         camino.insertar((float)0, 1);
 
-        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0);
+        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, true, null);
     }
 
-    public Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float pesoAAgregar)
+    public Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float pesoAAgregar, boolean pesoDeEtiqueta, Object pasandoPor)
     {
         Lista caminoMasCorto = null;
         if(n != null)
         {
             // actualizo el camino
-            agregarNodoAlCamino(visitados, n.getElem(), pesoAAgregar);
+            agregarNodoAlCamino(visitados, n.getElem(), (float)visitados.recuperar(1) + (float)pesoAAgregar);
 
             if(n.getElem().equals(destino))
             {
@@ -871,7 +871,15 @@ public class Grafo {
                     // evito visitarlo si se encuentra en visitados
                     if(visitados.localizar(nodoAVisitar.getElem())==-1)
                     {
-                        caminoAux = obtenerCaminoPorPesoAux(ady.getVertice(), destino, visitados.clone(), ady.getEtiqueta());
+                        if(pesoDeEtiqueta)
+                        {
+                            pesoAAgregar = ady.getEtiqueta();
+                        }
+                        else
+                        {
+                            pesoAAgregar = (float)1;
+                        }
+                        caminoAux = obtenerCaminoPorPesoAux(ady.getVertice(), destino, visitados.clone(), pesoAAgregar, pesoDeEtiqueta, null);
                         if(caminoAux != null)
                         {
                             // actualizo el camino mas corto
@@ -890,13 +898,21 @@ public class Grafo {
         return caminoMasCorto;
     }
 
-    private void agregarNodoAlCamino(Lista camino, Object elem, float pesoAAgregar)
+    private void agregarNodoAlCamino(Lista camino, Object elem, Object nuevoPeso)
     {
         // formato: ["peso", "destino", "nodo", ..., "origen"]
-        float pesoCamino = (float)camino.recuperar(1);
         camino.eliminar(1);
         camino.insertar(elem, 1);
-        camino.insertar(pesoCamino + pesoAAgregar, 1);
+        camino.insertar(nuevoPeso, 1);
+    }
+
+    public Lista obtenerCaminoPorNumeroDeNodos(Object origen, Object destino)
+    {
+        // formato del camino: ["peso", "destino", "nodo", ..., "origen"]
+        Lista camino = new Lista();
+        camino.insertar((float)0, 1);
+
+        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, false, null);
     }
 
 }
