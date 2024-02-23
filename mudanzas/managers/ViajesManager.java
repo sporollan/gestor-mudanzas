@@ -131,12 +131,12 @@ public class ViajesManager {
         Lista camino = obtenerCaminoMenorDistancia();
         if(!camino.esVacia())
         {
+            
             capacidad = InputReader.scanInt("Capacidad del Camion");
             if(capacidad != -1)
             {
-                System.out.println(camino.recuperar(1));
-                Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
-                Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
+                Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()));
+                Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(2));
                 if(origen != null && destino != null)
                 {
                     Lista solicitudesIntermedias = new Lista();
@@ -154,7 +154,7 @@ public class ViajesManager {
                     MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
                     Lista descargas;
                     Ciudad ciudadOrigen;
-                    for(int indexOrigen = 1; indexOrigen < camino.longitud(); indexOrigen++)
+                    for(int indexOrigen = camino.longitud(); indexOrigen > 2; indexOrigen--)
                     {
                         // recorro partiendo de cada ciudad
                         ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
@@ -167,11 +167,11 @@ public class ViajesManager {
                         }
 
                         Lista pedidosParaEnviar = null;
-                        for(int indexDestino = indexOrigen+1; indexDestino < camino.longitud(); indexDestino++)
+                        for(int indexDestino = indexOrigen-1; indexDestino > 1; indexDestino--)
                         {
                             // recorro hacia cada destino
                             // el envio desde origen a destino tiene prioridad por lo que evito tenerlo en cuenta
-                            if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
+                            if(!(indexOrigen == camino.longitud() && indexDestino == 2))
                             {
                                 // compruebo si hay pedidos para enviar
                                 codigoStr = ciudadOrigen.getCodigo() + "" + camino.recuperar(indexDestino);
@@ -232,8 +232,8 @@ public class ViajesManager {
     
                 if(capacidad != -1)
                 {
-                    Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(1));
-                    Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()-1));
+                    Ciudad origen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(camino.longitud()));
+                    Ciudad destino = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(2));
                     if(origen != null && destino != null)
                     {
                         Lista solicitudesIntermedias = new Lista();
@@ -252,9 +252,9 @@ public class ViajesManager {
                         MapeoAMuchos pedidosEnCamion = new MapeoAMuchos();
                         Lista descargas;
                         Ciudad ciudadOrigen;
-                        int indexOrigen = 1;
+                        int indexOrigen = camino.longitud();
                         boolean caminoPerfecto = true;
-                        while(indexOrigen < camino.longitud() && caminoPerfecto)
+                        while(indexOrigen > 2 && caminoPerfecto)
                         {
                             // recorro partiendo de cada ciudad siempre haya posibilidad de ser camino perfecto
                             ciudadOrigen = (Ciudad)ciudades.obtenerInformacion((Comparable)camino.recuperar(indexOrigen));
@@ -269,15 +269,14 @@ public class ViajesManager {
                             Lista pedidosParaEnviar = null;
                             boolean haySolicitudSaliente = false;
                             int nuevoDisponible;
-                            int indexDestino = indexOrigen+1;
+                            int indexDestino = indexOrigen-1;
                             //System.out.println();
                             //System.out.println("origen" + ciudadOrigen);
-                            while(indexDestino < camino.longitud())
+                            while(indexDestino > 1)
                             {
                                 // recorro hacia cada destino
                                 // el envio desde origen a destino tiene prioridad
-                                //System.out.println("pedidos a " + camino.recuperar(indexDestino));
-                                if(!(indexOrigen == 1 && indexDestino == camino.longitud()-1))
+                                if(!(indexOrigen == camino.longitud() && indexDestino == 2))
                                 {                        
                                     // compruebo si hay espacio disponible para enviar pedidos
                                     codigoStr = ciudadOrigen.getCodigo() + "" + camino.recuperar(indexDestino);
@@ -317,14 +316,14 @@ public class ViajesManager {
                                     }
                                 }
                                 // actualizo valores del while para recorrer ciudades destino
-                                indexDestino = indexDestino + 1;
+                                indexDestino = indexDestino - 1;
                             }
                             // actualizo valores del while para recorrer ciudad origen, condicion de camino perfecto
-                            if(indexOrigen != camino.longitud()-1)
+                            if(indexOrigen != 2)
                             {
                                 caminoPerfecto = haySolicitudSaliente;
                             }
-                            indexOrigen = indexOrigen + 1;
+                            indexOrigen = indexOrigen - 1;
                         }
             
                         // muestro si es camino perfecto
