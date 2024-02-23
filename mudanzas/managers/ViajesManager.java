@@ -128,7 +128,6 @@ public class ViajesManager {
         Lista camino = obtenerCaminoMenorDistancia();
         if(!camino.esVacia())
         {
-            System.out.println(camino);
             capacidad = InputReader.scanInt("Capacidad del Camion");
             if(capacidad != -1)
             {
