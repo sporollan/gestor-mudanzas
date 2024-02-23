@@ -1,7 +1,6 @@
 package estructuras.grafo;
 
 import estructuras.lineales.dinamicas.Lista;
-import estructuras.propositoEspecifico.Diccionario;
 
 public class Grafo {
     NodoVert inicio;
@@ -336,300 +335,6 @@ public class Grafo {
         return etiqueta;
     }
 
-    public Lista obtenerCaminoPorPeso2(Object origen, Object destino)
-    {
-        NodoVert auxO = null;
-        NodoVert auxD = null;
-        NodoVert aux = this.inicio;
-        Lista camino = new Lista();
-//        camino.insertar(Float.MAX_VALUE, 1);
-
-        while((auxO == null || auxD == null) && aux != null)
-        {
-            if (aux.getElem().equals(origen)) auxO=aux;
-            if (aux.getElem().equals(destino)) auxD=aux;
-            aux = aux.getSigVertice();
-        }
-        Diccionario visitados = new Diccionario();
-
-        if(auxO != null && auxD != null)
-        {
-            Lista linicial = new Lista();
-            linicial.insertar((float)0, 1);
-            linicial.insertar(true, 2);
-            visitados.insertar((Comparable)auxO.getElem(), linicial);
-            obtenerCaminoPorPesoAux2(auxO, auxD, visitados, 0, null);
-
-            NodoAdy ady;
-            NodoVert vis=null;
-            float pesoMin=(float)-1;
-            float pesoVert;
-            Object destinoValores = visitados.obtenerInformacion((Comparable)auxD.getElem());
-            if(destinoValores != null)
-            {
-                float pesototal = (float)((Lista)destinoValores).recuperar(1);
-                camino.insertar(auxD.getElem(), 1);
-                while(auxD != auxO)
-                {
-                    ady = auxD.getPrimerAdy();
-                    auxD = ady.getVertice();
-                    Lista l =((Lista)visitados.obtenerInformacion((Comparable)ady.getVertice().getElem()));
-                    if(l != null)
-                        pesoMin = (float)(l.recuperar(1)) + (float)ady.getEtiqueta();
-                    while(ady != null)
-                    {
-                        vis = ady.getVertice();
-                        l = ((Lista)visitados.obtenerInformacion((Comparable)vis.getElem()));
-                        if(l != null)
-                        {
-                            pesoVert = (float)(l.recuperar(1)) + (float)ady.getEtiqueta();
-                            if(pesoMin > pesoVert)
-                            {
-                                pesoMin = pesoVert;
-                                auxD = vis;
-                            }
-                        }
-                        ady = ady.getSigAdyacente();
-                    }
-                    camino.insertar(auxD.getElem(), 1);
-                }
-                camino.insertar(pesototal, camino.longitud()+1);
-            }
-        }
-        return camino;
-    }
-
-    public void obtenerCaminoPorPesoAux2(NodoVert nodoActual, NodoVert nodoDestino, Diccionario visitados, float distancia, NodoVert prev)
-    {
-        Lista nodosAVisitar = new Lista();
-
-        // la segunda condicion me permite ingresar al while en el primer caso
-        // tambien me permite terminar el while en el caso de que la ruta no exista
-        while(nodoActual != nodoDestino && (!nodosAVisitar.esVacia() || prev == null))
-        {
-            //System.out.println("Estoy en " + nodoActual.getElem());
-            float pesoNodoActual = (float)(((Lista)visitados.obtenerInformacion((Comparable)nodoActual.getElem())).recuperar(1));
-            //System.out.println(pesoNodoActual);
-            NodoAdy caminoVisitante;
-            NodoVert nodoAVisitar;
-            float pesoRecorrido;
-            NodoAdy ady = nodoActual.getPrimerAdy();
-
-            while(ady != null)
-            {
-
-                // recorro nodosavisitar actualizando el peso de cada uno
-                caminoVisitante = ady;
-                nodoAVisitar = caminoVisitante.getVertice();
-                pesoRecorrido = (float)caminoVisitante.getEtiqueta();
-                boolean existeClave = visitados.existeClave((Comparable)nodoAVisitar.getElem());
-
-                if(existeClave)
-                {
-                    if((float)(((Lista)visitados.obtenerInformacion((Comparable)nodoAVisitar.getElem())).recuperar(1)) > (pesoRecorrido + pesoNodoActual))
-                    {
-                        Lista l = (Lista)visitados.obtenerInformacion((Comparable)nodoAVisitar.getElem());
-                        l.eliminar(1);
-                        l.insertar(pesoRecorrido + pesoNodoActual, 1);       
-                    }
-                }
-                else
-                {
-                    Lista l = new Lista();
-                    l.insertar(pesoRecorrido + pesoNodoActual, 1);
-                    l.insertar(true, 2);
-                    visitados.insertar((Comparable)nodoAVisitar.getElem(), l);
-                }
-                if(prev != nodoAVisitar && (boolean)(((Lista)visitados.obtenerInformacion((Comparable)(nodoAVisitar.getElem()))).recuperar(2)))
-                {
-                    boolean noInsertado = true;
-                    int i = 1;
-                    while(noInsertado && i <= nodosAVisitar.longitud() && nodosAVisitar.localizar(ady) == -1)
-                    {
-                        // inserto en orden
-                        if((float)(((Lista)visitados.obtenerInformacion((Comparable)(nodoAVisitar.getElem()))).recuperar(1)) < 
-                           (float)(((Lista)visitados.obtenerInformacion((Comparable)((NodoVert)((NodoAdy)nodosAVisitar.recuperar(i)).getVertice()).getElem()))).recuperar(1))
-                        {
-                            nodosAVisitar.insertar(ady, i);
-                            noInsertado = false;
-                        }
-                        i = i + 1;
-                    }
-                    if(noInsertado)
-                    {
-                        nodosAVisitar.insertar(ady, nodosAVisitar.longitud()+1);
-                    }
-                }
-                ady = ady.getSigAdyacente();
-            }
-            Lista l = (Lista)visitados.obtenerInformacion((Comparable)nodoActual.getElem());
-            l.eliminar(2);
-            l.insertar(false, 2);
-            while(ady != null)
-            {
-                // recorro los ady e inserto en nodosavisitar ordenados de menor a mayor
-                boolean noInsertado = true;
-                int i = 1;
-                while(noInsertado && i <= nodosAVisitar.longitud())
-                {
-                    // inserto en orden
-                    if((float)ady.getEtiqueta() < (float)((NodoAdy)nodosAVisitar.recuperar(i)).getEtiqueta())
-                    {
-                        nodosAVisitar.insertar(ady, i);
-                        noInsertado = false;
-                    }
-                    i = i + 1;
-                }
-                if(noInsertado)
-                {
-                    nodosAVisitar.insertar(ady, nodosAVisitar.longitud()+1);
-                }
-                ady = ady.getSigAdyacente();
-            }
-            nodoActual = (NodoVert)(((NodoAdy)nodosAVisitar.recuperar(1)).getVertice());
-            nodosAVisitar.eliminar(1);
-        }
-    }
-
-    public Lista obtenerCaminoPorNumeroDeNodos2(Object origen, Object destino)
-    {
-        NodoVert auxO = null;
-        NodoVert auxD = null;
-        NodoVert aux = this.inicio;
-        Lista camino = new Lista();
-//        camino.insertar(Float.MAX_VALUE, 1);
-
-        while((auxO == null || auxD == null) && aux != null)
-        {
-            if (aux.getElem().equals(origen)) auxO=aux;
-            if (aux.getElem().equals(destino)) auxD=aux;
-            aux = aux.getSigVertice();
-        }
-        Diccionario visitados = new Diccionario();
-
-        if(auxO != null && auxD != null)
-        {
-            Lista linicial = new Lista();
-            linicial.insertar((float)0, 1);
-            linicial.insertar(true, 2);
-            visitados.insertar((Comparable)auxO.getElem(), linicial);
-            obtenerCaminoPorNumeroDeNodosAux2(auxO, auxD, visitados, 0, null);
-
-            NodoAdy ady;
-            NodoVert vis=null;
-            float pesoMin=(float)-1;
-            float pesoVert;
-            float pesototal = (float)(((Lista)visitados.obtenerInformacion((Comparable)auxD.getElem())).recuperar(1));
-            camino.insertar(auxD.getElem(), 1);
-            while(auxD != auxO)
-            {
-                pesoMin = Float.MAX_VALUE;
-                ady = auxD.getPrimerAdy();
-                auxD = ady.getVertice();
-                Lista l =((Lista)visitados.obtenerInformacion((Comparable)ady.getVertice().getElem()));
-                if(l != null)
-                    pesoMin = (float)(l.recuperar(1)) + (float)1;
-                while(ady != null)
-                {
-                    vis = ady.getVertice();
-                    l = ((Lista)visitados.obtenerInformacion((Comparable)vis.getElem()));
-                    if(l != null)
-                    {
-                        pesoVert = (float)(l.recuperar(1)) + (float)1;
-                        if(pesoMin > pesoVert)
-                        {
-                            pesoMin = pesoVert;
-                            auxD = vis;
-                        }
-                    }
-                    ady = ady.getSigAdyacente();
-                }
-                camino.insertar(auxD.getElem(), 1);
-            }
-            camino.insertar(pesototal, camino.longitud()+1);
-        }
-        return camino;
-    }
-
-    public void obtenerCaminoPorNumeroDeNodosAux2(NodoVert nodoActual, NodoVert nodoDestino, Diccionario visitados, float distancia, NodoVert prev)
-    {
-        Lista nodosAVisitar = new Lista();
-        // la segunda condicion me permite ingresar al while en el primer caso
-        // tambien me permite terminar el while en el caso de que la ruta no exista
-        while(nodoActual != nodoDestino && (!nodosAVisitar.esVacia() || prev == null))        
-        {
-            //System.out.println("Estoy en " + nodoActual.getElem());
-            float pesoNodoActual = (float)(((Lista)visitados.obtenerInformacion((Comparable)nodoActual.getElem())).recuperar(1));
-            //System.out.println(pesoNodoActual);
-            NodoAdy caminoVisitante;
-            NodoVert nodoAVisitar;
-            float pesoRecorrido;
-            NodoAdy ady = nodoActual.getPrimerAdy();
-
-            while(ady != null)
-            {
-
-                // recorro nodosavisitar actualizando el peso de cada uno
-                caminoVisitante = ady;
-                nodoAVisitar = caminoVisitante.getVertice();
-                pesoRecorrido = (float)1;
-                boolean existeClave = visitados.existeClave((Comparable)nodoAVisitar.getElem());
-
-                if(existeClave)
-                {
-                    if((float)(((Lista)visitados.obtenerInformacion((Comparable)nodoAVisitar.getElem())).recuperar(1)) > (pesoRecorrido + pesoNodoActual))
-                    {
-                        Lista l = (Lista)visitados.obtenerInformacion((Comparable)nodoAVisitar.getElem());
-                        l.eliminar(1);
-                        l.insertar(pesoRecorrido + pesoNodoActual, 1);       
-                    }
-                }
-                else
-                {
-                    Lista l = new Lista();
-                    l.insertar(pesoRecorrido + pesoNodoActual, 1);
-                    l.insertar(true, 2);
-                    visitados.insertar((Comparable)nodoAVisitar.getElem(), l);
-                }
-                if(prev != nodoAVisitar && (boolean)(((Lista)visitados.obtenerInformacion((Comparable)(nodoAVisitar.getElem()))).recuperar(2)))
-                {
-                    if(nodosAVisitar.localizar(ady) == -1)
-                    {
-                        // inserto
-                        nodosAVisitar.insertar(ady, nodosAVisitar.longitud()+1);
-                    }
-                }
-                ady = ady.getSigAdyacente();
-            }
-            Lista l = (Lista)visitados.obtenerInformacion((Comparable)nodoActual.getElem());
-            l.eliminar(2);
-            l.insertar(false, 2);
-            while(ady != null)
-            {
-                // recorro los ady e inserto en nodosavisitar ordenados de menor a mayor
-                boolean noInsertado = true;
-                int i = 1;
-                while(noInsertado && i <= nodosAVisitar.longitud())
-                {
-                    // inserto en orden
-                    if((float)ady.getEtiqueta() < (float)((NodoAdy)nodosAVisitar.recuperar(i)).getEtiqueta())
-                    {
-                        nodosAVisitar.insertar(ady, i);
-                        noInsertado = false;
-                    }
-                    i = i + 1;
-                }
-                if(noInsertado)
-                {
-                    nodosAVisitar.insertar(ady, nodosAVisitar.longitud()+1);
-                }
-                ady = ady.getSigAdyacente();
-            }
-            nodoActual = (NodoVert)(((NodoAdy)nodosAVisitar.recuperar(1)).getVertice());
-            nodosAVisitar.eliminar(1);
-        }
-    }
-
     public Lista obtenerCaminoPasandoPorNodo(Object origen, Object destino, Object c)
     {
         NodoVert auxO = null;
@@ -656,7 +361,6 @@ public class Grafo {
         }
         return caminos;    
     }
-
 
     public Lista obtenerCaminoPasandoPorNodoAux(NodoVert n, float distancia, NodoVert dest,NodoVert c, 
                                                 Lista vis, Lista caminos, boolean pasoPorC)
@@ -770,88 +474,39 @@ public class Grafo {
         return destinos;
     }
 
-    public Lista obtenerCaminoPorPesoMaximo(Object origen, Object destino, float pesoMaximo)
-    {
-        NodoVert auxO = null;
-        NodoVert auxD = null;
-        NodoVert aux = this.inicio;
-        Lista camino = new Lista();
-
-        while((auxO == null || auxD == null) && aux != null)
-        {
-            if (aux.getElem().equals(origen)) auxO=aux;
-            if (aux.getElem().equals(destino)) auxD=aux;
-            aux = aux.getSigVertice();
-        }
-        Diccionario visitados = new Diccionario();
-
-        if(auxO != null && auxD != null)
-        {
-            Lista linicial = new Lista();
-            linicial.insertar((float)0, 1);
-            linicial.insertar(true, 2);
-            visitados.insertar((Comparable)auxO.getElem(), linicial);
-            obtenerCaminoPorPesoAux2(auxO, auxD, visitados, 0, null);
-
-            NodoAdy ady;
-            NodoVert vis=null;
-            float pesoMin=(float)-1;
-            float pesoVert;
-            Object destinoValores = visitados.obtenerInformacion((Comparable)auxD.getElem());
-            if(destinoValores != null)
-            {
-                float pesototal = (float)((Lista)destinoValores).recuperar(1);
-                // condicion para comprobar peso maximo
-                if(pesototal <= pesoMaximo)
-                {
-                    camino.insertar(auxD.getElem(), 1);
-                    while(auxD != auxO)
-                    {
-                        ady = auxD.getPrimerAdy();
-                        auxD = ady.getVertice();
-                        Lista l =((Lista)visitados.obtenerInformacion((Comparable)ady.getVertice().getElem()));
-                        if(l != null)
-                            pesoMin = (float)(l.recuperar(1)) + (float)ady.getEtiqueta();
-                        while(ady != null)
-                        {
-                            vis = ady.getVertice();
-                            l = ((Lista)visitados.obtenerInformacion((Comparable)vis.getElem()));
-                            if(l != null)
-                            {
-                                pesoVert = (float)(l.recuperar(1)) + (float)ady.getEtiqueta();
-                                if(pesoMin > pesoVert)
-                                {
-                                    pesoMin = pesoVert;
-                                    auxD = vis;
-                                }
-                            }
-                            ady = ady.getSigAdyacente();
-                        }
-                        camino.insertar(auxD.getElem(), 1);
-                    }
-                    camino.insertar(pesototal, camino.longitud()+1);
-                }
-            }
-        }
-        return camino;
-    }
-
     public Lista obtenerCaminoPorPeso(Object origen, Object destino)
     {
         // formato del camino: ["peso", "destino", "nodo", ..., "origen"]
         Lista camino = new Lista();
         camino.insertar((float)0, 1);
 
-        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, true, null);
+        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, true, Float.MAX_VALUE);
     }
 
-    public Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float pesoAAgregar, boolean pesoDeEtiqueta, Object pasandoPor)
+    public Lista obtenerCaminoPorNumeroDeNodos(Object origen, Object destino)
+    {
+        // formato del camino: ["peso", "destino", "nodo", ..., "origen"]
+        Lista camino = new Lista();
+        camino.insertar((float)0, 1);
+
+        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, false, Float.MAX_VALUE);
+    }
+
+    public Lista obtenerCaminoPorPesoMaximo(Object origen, Object destino, float pesoMaximo)
+    {
+        Lista camino = new Lista();
+        camino.insertar((float)0, 1);
+
+        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, true, pesoMaximo);
+    }
+
+    public Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float nuevoPeso, boolean usarPesoDeEtiqueta, float maximo)
     {
         Lista caminoMasCorto = null;
-        if(n != null)
+        if(n != null && visitados.localizar(n.getElem())==-1 && nuevoPeso <= maximo)
         {
             // actualizo el camino
-            agregarNodoAlCamino(visitados, n.getElem(), (float)visitados.recuperar(1) + (float)pesoAAgregar);
+            agregarNodoAlCamino(visitados, n.getElem(), nuevoPeso);
 
             if(n.getElem().equals(destino))
             {
@@ -861,36 +516,20 @@ public class Grafo {
             else
             {
                 // continuo recorriendo
-                NodoVert nodoAVisitar;
                 NodoAdy ady = n.getPrimerAdy();
                 Lista caminoAux;
+                float sumaPeso;
                 while(ady != null)
                 {
-                    nodoAVisitar = ady.getVertice();
-
                     // evito visitarlo si se encuentra en visitados
-                    if(visitados.localizar(nodoAVisitar.getElem())==-1)
+                    sumaPeso = usarPesoDeEtiqueta ? ady.getEtiqueta() + nuevoPeso : (float)1 + nuevoPeso;
+                    caminoAux = obtenerCaminoPorPesoAux(ady.getVertice(), destino, visitados.clone(), sumaPeso, usarPesoDeEtiqueta, maximo);
+                    if(caminoAux != null)
                     {
-                        if(pesoDeEtiqueta)
-                        {
-                            pesoAAgregar = ady.getEtiqueta();
-                        }
-                        else
-                        {
-                            pesoAAgregar = (float)1;
-                        }
-                        caminoAux = obtenerCaminoPorPesoAux(ady.getVertice(), destino, visitados.clone(), pesoAAgregar, pesoDeEtiqueta, null);
-                        if(caminoAux != null)
-                        {
-                            // actualizo el camino mas corto
-                            if(caminoMasCorto == null || 
-                            (float)caminoAux.recuperar(1) < (float)caminoMasCorto.recuperar(1))
-                            {
-                                caminoMasCorto = caminoAux;
-                            }
-                        }
+                        // actualizo el camino mas corto
+                        caminoMasCorto = caminoAux;
+                        maximo = (float)caminoMasCorto.recuperar(1);
                     }
-
                     ady = ady.getSigAdyacente();
                 }
             }
@@ -904,15 +543,6 @@ public class Grafo {
         camino.eliminar(1);
         camino.insertar(elem, 1);
         camino.insertar(nuevoPeso, 1);
-    }
-
-    public Lista obtenerCaminoPorNumeroDeNodos(Object origen, Object destino)
-    {
-        // formato del camino: ["peso", "destino", "nodo", ..., "origen"]
-        Lista camino = new Lista();
-        camino.insertar((float)0, 1);
-
-        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, false, null);
     }
 
 }
