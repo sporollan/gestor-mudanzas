@@ -335,87 +335,6 @@ public class Grafo {
         return etiqueta;
     }
 
-    public Lista obtenerCaminoPasandoPorNodo(Object origen, Object destino, Object c)
-    {
-        NodoVert auxO = null;
-        NodoVert auxD = null;
-        NodoVert auxC = null;
-        NodoVert aux = this.inicio;
-        Lista caminos = new Lista();
-        caminos.insertar(Float.MAX_VALUE, 1);
-
-        // busco origen, destino y c
-        while((auxO == null || auxD == null || auxC == null) && aux != null)
-        {
-            if (aux.getElem().equals(origen)) auxO=aux;
-            if (aux.getElem().equals(destino)) auxD=aux;
-            if (aux.getElem().equals(c)) auxC=aux;
-            aux = aux.getSigVertice();
-        }
-
-        // busco el camino
-        if(auxO != null && auxD != null && auxC != null)
-        {
-            Lista visitados = new Lista();
-            caminos = obtenerCaminoPasandoPorNodoAux(auxO, 0, auxD, auxC,  visitados, caminos, false);
-        }
-        return caminos;    
-    }
-
-    public Lista obtenerCaminoPasandoPorNodoAux(NodoVert n, float distancia, NodoVert dest,NodoVert c, 
-                                                Lista vis, Lista caminos, boolean pasoPorC)
-    {
-        if(n != null)
-        {   
-            if(!pasoPorC)
-                pasoPorC = n.equals(c);
-            if(!n.equals(dest))
-            {
-                // si el nodo actual no es el destino
-                // inserto el nodo en los visitados
-                vis.insertar(n.getElem(), vis.longitud() + 1);
-
-                // recorro los caminos
-                NodoAdy ady = n.getPrimerAdy();
-                while (ady != null)
-                {
-                    // si el camino existe
-                    // calculo la distancia total recorrida hasta el momento
-
-                    // compruebo si vale la pena seguir recorriendo (no fue visitado ni es el destino)
-                    // (!ady.getVertice().equals(dest) || (ady.getVertice().equals(dest) && pasoPorC))
-                    if(vis.localizar(ady.getVertice().getElem()) < 0 )
-                    {
-                        // clono visitados, cada camino almacena sus propios visitados
-                        Lista v = vis.clone();
-                        
-                        // recorro el camino hacia el proximo vertice
-                        obtenerCaminoPasandoPorNodoAux(ady.getVertice(), distancia+(float)ady.getEtiqueta(), dest, c, v, caminos, pasoPorC);
-                    }
-                    // continuo recorriendo el proximo camino
-                    ady = ady.getSigAdyacente();
-                }
-            }else if(pasoPorC)
-            {
-                // si el nodo actual es el destino
-                // inserto el vertobtenerCaminoPorNumeroDeNodosice en visitados
-                vis.insertar(n.getElem(), vis.longitud()+1);
-                vis.insertar(distancia, vis.longitud()+1);
-                
-                // inserto visitados en caminos
-                caminos.insertar(vis, caminos.longitud()+1);
-
-                // calculo la nueva distancia maxima
-                if(distancia < (float)caminos.recuperar(1))
-                {
-                    caminos.eliminar(1);
-                    caminos.insertar(distancia, 1);
-                }
-            }
-        }
-        return caminos;
-    }
-
     public String toString()
     {
         String s = "";
@@ -500,14 +419,16 @@ public class Grafo {
         return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, true, pesoMaximo);
     }
 
-    public Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float nuevoPeso, boolean usarPesoDeEtiqueta, float maximo)
+    private Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float nuevoPeso, boolean usarPesoDeEtiqueta, float maximo)
     {
         Lista caminoMasCorto = null;
+        // evito seguir recorriendo si ya fue visitado o si es mayor al maximo
         if(n != null && visitados.localizar(n.getElem())==-1 && nuevoPeso <= maximo)
         {
             // actualizo el camino
             agregarNodoAlCamino(visitados, n.getElem(), nuevoPeso);
 
+            // evaluo si llegue al destino o si continuo buscando
             if(n.getElem().equals(destino))
             {
                 // termino de recorrer
@@ -521,11 +442,13 @@ public class Grafo {
                 float sumaPeso;
                 while(ady != null)
                 {
-                    // evito visitarlo si se encuentra en visitados
+                    // sumo el peso del recorrido hasta ahora con el peso del ady, segun si se tiene en cuenta la etiqueta
                     sumaPeso = usarPesoDeEtiqueta ? ady.getEtiqueta() + nuevoPeso : (float)1 + nuevoPeso;
+                    // obtengo el camino
                     caminoAux = obtenerCaminoPorPesoAux(ady.getVertice(), destino, visitados.clone(), sumaPeso, usarPesoDeEtiqueta, maximo);
                     if(caminoAux != null)
-                    {
+                    {                    
+                        // si caminoAux != null entonces encontro un nuevo caminoMasCorto
                         // actualizo el camino mas corto
                         caminoMasCorto = caminoAux;
                         maximo = (float)caminoMasCorto.recuperar(1);
@@ -545,4 +468,42 @@ public class Grafo {
         camino.insertar(nuevoPeso, 1);
     }
 
+    public Lista obtenerCaminosPasandoPorNodo(Object origen, Object destino, Object C)
+    {
+        Lista caminos = new Lista();
+        Lista visitados = new Lista();
+        visitados.insertar((float)0, 1);
+        obtenerCaminosPasandoPorNodoAux(caminos, ubicarVertice(origen), destino, C, false, visitados, (float)0);
+        return caminos;
+    }
+
+    public void obtenerCaminosPasandoPorNodoAux(Lista caminos, NodoVert n, Object destino, Object C, boolean pasoPorC, Lista visitados, float nuevoPeso)
+    {
+        // visito el nodo si fue visitado,
+        // y segun si paso por c y es el destino
+        if(n != null && 
+          (pasoPorC || (!pasoPorC && !n.getElem().equals(destino))) && 
+          visitados.localizar(n.getElem())==-1)
+        {
+            // actualizo visitados
+            agregarNodoAlCamino(visitados, n.getElem(), nuevoPeso);
+            pasoPorC = (pasoPorC || n.getElem().equals(C));
+            // compruebo si continuar recorriendo
+            if(n.getElem().equals(destino))
+            {
+                // dejo de recorrer, guardo el camino
+                caminos.insertar(visitados, 1);
+            }
+            else
+            {
+                // continuo recorriendo
+                NodoAdy ady = n.getPrimerAdy();
+                while(ady != null)
+                {
+                    obtenerCaminosPasandoPorNodoAux(caminos, ady.getVertice(), destino, C, pasoPorC, visitados.clone(), nuevoPeso + ady.getEtiqueta());
+                    ady = ady.getSigAdyacente();
+                }
+            }
+        }
+    }
 }

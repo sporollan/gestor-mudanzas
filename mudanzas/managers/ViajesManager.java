@@ -83,14 +83,17 @@ public class ViajesManager {
 
         if(codigos[names.length-1] != -1)
         {
-            Lista caminos = this.rutas.obtenerCaminoPasandoPorNodo(codigos[0], codigos[1], codigos[2]);
+            Lista caminos = this.rutas.obtenerCaminosPasandoPorNodo(codigos[0], codigos[1], codigos[2]);
             Lista camino;
-            for(int i = 2; i < caminos.longitud()+1; i++)
+            for(int i = 1; i <= caminos.longitud(); i++)
             {
+                System.out.println();
                 camino = (Lista)caminos.recuperar(i);
                 mostrarCamino(camino);
             }
-            System.out.println("Longitud min " + caminos.recuperar(1));
+            System.out.println();
+            System.out.println("Cantidad de caminos encontrados: " + caminos.longitud());
+            System.out.println();
         }
     }
 
