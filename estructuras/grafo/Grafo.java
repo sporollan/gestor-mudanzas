@@ -260,7 +260,7 @@ public class Grafo {
         return exito;
     }
 
-    private void insertarNodoAdy(NodoVert nodoOrigen, NodoVert nodoDestino, Object e)
+    private void insertarNodoAdy(NodoVert nodoOrigen, NodoVert nodoDestino, float e)
     {
         NodoAdy adyO;
         adyO = nodoOrigen.getPrimerAdy();
@@ -276,7 +276,7 @@ public class Grafo {
         }
     }
 
-    public boolean insertarArco(Object o, Object d, Object e)
+    public boolean insertarArco(Object o, Object d, float e)
     {
         boolean exito = false;
         NodoVert nodoOrigen = this.ubicarVertice(o);
@@ -336,7 +336,7 @@ public class Grafo {
         return etiqueta;
     }
 
-    public Lista obtenerCaminoPorPeso(Object origen, Object destino)
+    public Lista obtenerCaminoPorPeso2(Object origen, Object destino)
     {
         NodoVert auxO = null;
         NodoVert auxD = null;
@@ -358,7 +358,7 @@ public class Grafo {
             linicial.insertar((float)0, 1);
             linicial.insertar(true, 2);
             visitados.insertar((Comparable)auxO.getElem(), linicial);
-            obtenerCaminoPorPesoAux(auxO, auxD, visitados, 0, null);
+            obtenerCaminoPorPesoAux2(auxO, auxD, visitados, 0, null);
 
             NodoAdy ady;
             NodoVert vis=null;
@@ -399,7 +399,7 @@ public class Grafo {
         return camino;
     }
 
-    public void obtenerCaminoPorPesoAux(NodoVert nodoActual, NodoVert nodoDestino, Diccionario visitados, float distancia, NodoVert prev)
+    public void obtenerCaminoPorPesoAux2(NodoVert nodoActual, NodoVert nodoDestino, Diccionario visitados, float distancia, NodoVert prev)
     {
         Lista nodosAVisitar = new Lista();
 
@@ -791,7 +791,7 @@ public class Grafo {
             linicial.insertar((float)0, 1);
             linicial.insertar(true, 2);
             visitados.insertar((Comparable)auxO.getElem(), linicial);
-            obtenerCaminoPorPesoAux(auxO, auxD, visitados, 0, null);
+            obtenerCaminoPorPesoAux2(auxO, auxD, visitados, 0, null);
 
             NodoAdy ady;
             NodoVert vis=null;
@@ -834,6 +834,69 @@ public class Grafo {
             }
         }
         return camino;
+    }
+
+    public Lista obtenerCaminoPorPeso(Object origen, Object destino)
+    {
+        // formato del camino: ["peso", "destino", "nodo", ..., "origen"]
+        Lista camino = new Lista();
+        camino.insertar((float)0, 1);
+
+        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0);
+    }
+
+    public Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float pesoAAgregar)
+    {
+        Lista caminoMasCorto = null;
+        if(n != null)
+        {
+            // actualizo el camino
+            agregarNodoAlCamino(visitados, n.getElem(), pesoAAgregar);
+
+            if(n.getElem().equals(destino))
+            {
+                // termino de recorrer
+                caminoMasCorto = visitados;
+            }
+            else
+            {
+                // continuo recorriendo
+                NodoVert nodoAVisitar;
+                NodoAdy ady = n.getPrimerAdy();
+                Lista caminoAux;
+                while(ady != null)
+                {
+                    nodoAVisitar = ady.getVertice();
+
+                    // evito visitarlo si se encuentra en visitados
+                    if(visitados.localizar(nodoAVisitar.getElem())==-1)
+                    {
+                        caminoAux = obtenerCaminoPorPesoAux(ady.getVertice(), destino, visitados.clone(), ady.getEtiqueta());
+                        if(caminoAux != null)
+                        {
+                            // actualizo el camino mas corto
+                            if(caminoMasCorto == null || 
+                            (float)caminoAux.recuperar(1) < (float)caminoMasCorto.recuperar(1))
+                            {
+                                caminoMasCorto = caminoAux;
+                            }
+                        }
+                    }
+
+                    ady = ady.getSigAdyacente();
+                }
+            }
+        }
+        return caminoMasCorto;
+    }
+
+    private void agregarNodoAlCamino(Lista camino, Object elem, float pesoAAgregar)
+    {
+        // formato: ["peso", "destino", "nodo", ..., "origen"]
+        float pesoCamino = (float)camino.recuperar(1);
+        camino.eliminar(1);
+        camino.insertar(elem, 1);
+        camino.insertar(pesoCamino + pesoAAgregar, 1);
     }
 
 }

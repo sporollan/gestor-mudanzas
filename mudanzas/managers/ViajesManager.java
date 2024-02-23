@@ -358,11 +358,11 @@ public class ViajesManager {
         // al final se muestra su longitud
         if(camino != null)
         {
-            for(int i = 1; i < camino.longitud(); i++)
+            for(int i = 2; i <= camino.longitud(); i++)
             {
                 System.out.println(this.ciudades.obtenerInformacion((Comparable)camino.recuperar(i)));
             }
-            System.out.println("Longitud: " + camino.recuperar(camino.longitud()));
+            System.out.println("Longitud: " + camino.recuperar(1));
         }
     }
 
@@ -374,7 +374,16 @@ public class ViajesManager {
         String[] names = {"Origen(cp)", "Destino(cp)"};
         int[] codigos = InputReader.scanCodigos(names);
         if(codigos[codigos.length-1]!=-1)
-            camino = this.rutas.obtenerCaminoPorPeso(codigos[0], codigos[1]);
+        {
+            try
+            {
+                camino = this.rutas.obtenerCaminoPorPeso(codigos[0], codigos[1]);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
         return camino;
     }
 

@@ -3,9 +3,9 @@ package estructuras.grafo;
 public class NodoAdy {
     NodoVert vertice;
     NodoAdy sigAdyacente;
-    Object etiqueta;
+    float etiqueta;
 
-    public NodoAdy(NodoVert vertice, NodoAdy sigAdyacente, Object etiqueta)
+    public NodoAdy(NodoVert vertice, NodoAdy sigAdyacente, float etiqueta)
     {
         this.vertice = vertice;
         this.sigAdyacente = sigAdyacente;
@@ -23,7 +23,7 @@ public class NodoAdy {
     public void setSigAdyacente(NodoAdy sigAdyacente) {
         this.sigAdyacente = sigAdyacente;
     }
-    public Object getEtiqueta()
+    public float getEtiqueta()
     {
         return this.etiqueta;
     }
