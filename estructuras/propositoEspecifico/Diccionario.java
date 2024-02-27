@@ -62,6 +62,7 @@ public class Diccionario {
             {
                 // encontrado
                 NodoAVLDicc i, d, reemplazo=null;
+                Comparable areemplazar = n.getClave();
                 boolean dobleHijo=false;
                 i = n.getHijoIzquierdo();
                 d = n.getHijoDerecho();
@@ -98,17 +99,38 @@ public class Diccionario {
                 NodoAVLDicc encontrado, derecho, izquierdo;
                 if(p == null)
                 {
-                    // inserto en la raiz
-                    if(this.raiz != null && reemplazo != null)
+
+
+                    if(raiz.getClave() == areemplazar)
                     {
-                        izquierdo = this.raiz.getHijoIzquierdo();
-                        derecho = this.raiz.getHijoDerecho();
-                        reemplazo.setHijoIzquierdo(izquierdo);
-                        reemplazo.setHijoDerecho(derecho);
-                        reemplazo.recalcularAltura();
-                        comprobarBalance(reemplazo);
+                        if(reemplazo != null)
+                        {
+                            izquierdo = n.getHijoIzquierdo();
+                            if(reemplazo.getClave().compareTo(izquierdo.getClave()) == 0)
+                            {
+                                izquierdo = null;
+                            }
+                            derecho = n.getHijoDerecho();
+                            reemplazo.setHijoIzquierdo(izquierdo);
+                            reemplazo.setHijoDerecho(derecho);
+                            raiz = reemplazo;
+                            raiz.recalcularAltura();
+                            comprobarBalance(raiz);
+                        }
+                        else
+                        {
+                            raiz = reemplazo;
+                        }
                     }
-                    this.raiz = reemplazo;
+                    else
+                    {
+                        boolean e = reemplazar(raiz.getHijoIzquierdo(), areemplazar, reemplazo);
+                        if(!e)
+                        {
+                            reemplazar(raiz.getHijoDerecho(), areemplazar, reemplazo);
+                        }
+                    }
+
                 }
                 else if(esIzquierdo)
                 {
@@ -183,6 +205,26 @@ public class Diccionario {
                     n.recalcularAltura();
                     comprobarBalance(n);
                 }
+            }
+        }
+        return exito;
+    }
+
+    private boolean reemplazar(NodoAVLDicc n, Comparable areemplazar, NodoAVLDicc reemplazo)
+    {
+        boolean exito =false;
+        if(n.getClave() == areemplazar)
+        {
+            n.setClave(reemplazo.getClave());
+            n.setDato(reemplazo.getDato());
+            exito = true;
+        } 
+        else
+        {
+            exito = reemplazar(n.getHijoIzquierdo(), areemplazar, reemplazo);
+            if(!exito)
+            {
+                exito = reemplazar(n.getHijoDerecho(), areemplazar, reemplazo);
             }
         }
         return exito;
@@ -276,7 +318,19 @@ public class Diccionario {
 
     public Lista listarClaves()
     {
-        return new Lista();
+        Lista claves = new Lista();
+        listarClavesAux(claves, raiz);
+        return claves;
+    }
+
+    private void listarClavesAux(Lista claves, NodoAVLDicc aux)
+    {
+        if(aux != null)
+        {
+            claves.insertar(aux.getClave(), claves.longitud()+1);
+            listarClavesAux(claves, aux.getHijoIzquierdo());
+            listarClavesAux(claves, aux.getHijoDerecho());
+        }
     }
 
     public Lista listarDatos()

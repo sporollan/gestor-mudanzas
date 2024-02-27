@@ -123,6 +123,148 @@ public class ViajesManager {
 
     private void mostrarPedidosIntermedios()
     {
+        int capacidad = -1;
+        Lista camino = obtenerCaminoMenorDistancia();
+        if(!camino.esVacia())
+        {
+            capacidad = InputReader.scanInt("Capacidad del Camion");
+        }
+        if(capacidad != -1)
+        {
+            mostrarCamino(camino);
+            mostrarSolicitudes(obtenerSolicitudesIntermedias(camino, capacidad, false));
+        }
+    }
+    private void verificarCaminoPerfecto()
+    {
+        int capacidad = -1;
+        Lista camino = obtenerCaminoMenorDistancia();
+        if(!camino.esVacia())
+        {
+            capacidad = InputReader.scanInt("Capacidad del Camion");
+        }
+        if(capacidad != -1)
+        {
+            mostrarCamino(camino);
+            Lista caminoPerfecto = obtenerSolicitudesIntermedias(camino, capacidad, true);
+            if(caminoPerfecto != null)
+            {
+                System.out.println("Es camino perfecto");
+                mostrarSolicitudes(caminoPerfecto);
+            }
+            else
+            {
+                System.out.println("No es camino perfecto");
+            }
+        }
+    }
+    private Lista obtenerSolicitudesIntermedias(Lista camino, int capacidad, boolean flagPerfecto)
+    {
+        Lista solicitudesIntermedias = new Lista();
+        Lista s;
+        Diccionario solicitudesADestino = new Diccionario();
+        // inicializo solicitudesADestino
+        for(int i = 2; i <= camino.longitud(); i++)
+        {
+            solicitudesADestino.insertar(i, 0);
+        }
+        capacidad = procesarSolicitudes(solicitudesIntermedias, solicitudesADestino, 
+                                        solicitudes.obtenerValor((Comparable)(Integer.parseInt(
+                                                        camino.recuperar(2)+""+
+                                                        camino.recuperar(camino.longitud())))), 
+                                                        capacidad, camino.longitud());
+        System.out.println(solicitudesADestino.listarClaves());
+        boolean esPerfecto = true;
+        int i = 2;
+        int j;
+        while(esPerfecto && i < camino.longitud())
+        {
+            // descargar en i
+            capacidad = capacidad + (int)solicitudesADestino.obtenerInformacion(i);
+            // cargar de i a j
+            j = i+1;
+            if(flagPerfecto)
+            {
+                esPerfecto = false;
+            }
+            while(j <= camino.longitud())
+            {
+                if(i == 2 && j == camino.longitud())
+                {
+                    // origen a destino, ya estan cargadas porque se priorizan, calculo camino perfecto
+                    if(flagPerfecto)
+                    {
+                        if(!esPerfecto)
+                        {
+                            esPerfecto = (int)solicitudesADestino.obtenerInformacion(j)!=0;
+                        }
+                    }
+                }
+                else
+                {
+                    // obtengo lista solicitudes de origen i a destino j
+                    s = solicitudes.obtenerValor((Comparable)(Integer.parseInt(camino.recuperar(i)+""+camino.recuperar(j))));
+                    if(s != null)
+                    {
+                        int nuevaCapacidad = procesarSolicitudes(solicitudesIntermedias, solicitudesADestino, s, capacidad, j);
+                        if(flagPerfecto)
+                        {
+                            if(!esPerfecto)
+                            {
+                                esPerfecto = nuevaCapacidad != capacidad;
+                            }
+                        }
+                        capacidad = nuevaCapacidad;
+                    }
+                }
+                j = j + 1;
+            }
+            i = i + 1;
+        }
+        if(!esPerfecto)
+        {
+            solicitudesIntermedias = null;
+        }
+        return solicitudesIntermedias;
+    }
+
+    private int procesarSolicitudes(Lista solicitudesIntermedias, Diccionario solicitudesADestino, Lista s, int capacidad, int j)
+    {
+        if(s != null)
+        {
+            int m2Solicitud;
+            int k=1;
+            int totalAgregado=0;
+            while(capacidad >= 0 && k <= s.longitud())
+            {
+                Solicitud sol = (Solicitud)s.recuperar(k);
+                m2Solicitud = sol.getMetrosCubicos();
+                if(capacidad-m2Solicitud >= 0)
+                {
+                    capacidad = capacidad - m2Solicitud;
+                    totalAgregado = totalAgregado + m2Solicitud;
+                    solicitudesIntermedias.insertar(sol, 1);
+                }
+                k = k + 1;
+            }
+            System.out.println("##############");
+            System.out.println(j);
+            System.out.println(solicitudesADestino.listarClaves());
+            System.out.println(solicitudesADestino.listarDatos());
+            System.out.println(solicitudesADestino);
+            int aux = (int)solicitudesADestino.obtenerInformacion(j);
+            solicitudesADestino.eliminar(j);
+            solicitudesADestino.insertar(j, totalAgregado+aux);
+            System.out.println(j);
+            System.out.println(solicitudesADestino.listarClaves());
+            System.out.println(solicitudesADestino.listarDatos());
+            System.out.println(solicitudesADestino);
+        }
+        return capacidad;
+    }
+
+    private void mostrarPedidosIntermedios1()
+    {
         // obtengo el camino de menor distancia entre dos ciudades
         // luego ingreso la capacidad del camion
         // finalmente recorro el camino simulando cargas y descargas para hacer una lista 
@@ -218,7 +360,7 @@ public class ViajesManager {
         return disponible;
     }
 
-    private void verificarCaminoPerfecto()
+    private void verificarCaminoPerfecto1()
     {
         // se obtiene un camino
         // luego se comprueba que para cada ciudad haya al menos un pedido saliente
@@ -346,11 +488,9 @@ public class ViajesManager {
     private void mostrarSolicitudes(Lista solicitudesIntermedias)
     {
         // se muestran los datos de la lista dada
-        Lista solicitudIntermedia;
         for(int i = 1; i <= solicitudesIntermedias.longitud(); i++)
         {
-            solicitudIntermedia = (Lista)solicitudesIntermedias.recuperar(i);
-            System.out.println(solicitudIntermedia.toString());
+            System.out.println(solicitudesIntermedias.recuperar(i));
         }
     }
 
