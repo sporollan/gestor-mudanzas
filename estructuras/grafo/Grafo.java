@@ -399,7 +399,7 @@ public class Grafo {
         Lista camino = new Lista();
         camino.insertar((float)0, 1);
 
-        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, (float)0, true, Float.MAX_VALUE);
+        return invertir(obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, (float)0, true, Float.MAX_VALUE));
     }
 
     public Lista obtenerCaminoPorNumeroDeNodos(Object origen, Object destino)
@@ -408,7 +408,7 @@ public class Grafo {
         Lista camino = new Lista();
         camino.insertar((float)0, 1);
 
-        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, (float)0, false, Float.MAX_VALUE);
+        return invertir(obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, (float)0, false, Float.MAX_VALUE));
     }
 
     public Lista obtenerCaminoPorPesoMaximo(Object origen, Object destino, float pesoMaximo)
@@ -416,7 +416,7 @@ public class Grafo {
         Lista camino = new Lista();
         camino.insertar((float)0, 1);
 
-        return obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, (float)0, true, pesoMaximo);
+        return invertir(obtenerCaminoPorPesoAux(ubicarVertice(origen), destino, camino, (float)0, (float)0, true, pesoMaximo));
     }
 
     private Lista obtenerCaminoPorPesoAux(NodoVert n, Object destino, Lista visitados, float pesoAgregado, float pesoTotalAnterior, boolean usarPesoDeEtiqueta, float maximo)
@@ -501,7 +501,7 @@ public class Grafo {
             if(n.getElem().equals(destino))
             {
                 // dejo de recorrer, guardo el camino
-                caminos.insertar(visitados.clone(), 1);
+                caminos.insertar(invertir(visitados.clone()), 1);
             }
             else
             {
@@ -515,5 +515,19 @@ public class Grafo {
             }
             eliminarNodoDelCamino(visitados, pesoTotalAnterior);
         }
+    }
+
+    public Lista invertir(Lista l)
+    {
+        Lista nl = new Lista();
+        if(l != null)
+        {
+            nl.insertar(l.recuperar(1), 1);
+            for(int i = 2; i <= l.longitud(); i++)
+            {
+                nl.insertar(l.recuperar(l.longitud()-i+2), i);
+            }
+        }
+        return nl;
     }
 }
