@@ -522,11 +522,15 @@ public class Grafo {
         Lista nl = new Lista();
         if(l != null)
         {
-            nl.insertar(l.recuperar(1), 1);
-            for(int i = 2; i <= l.longitud(); i++)
+            float dist = (float)l.recuperar(1);
+            l.eliminar(1);
+            int L = l.longitud();
+            for(int i = 1; i <= L; i++)
             {
-                nl.insertar(l.recuperar(l.longitud()-i+2), i);
+                nl.insertar(l.recuperar(1), 1);
+                l.eliminar(1);
             }
+            nl.insertar(dist, 1);
         }
         return nl;
     }
